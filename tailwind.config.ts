@@ -10,41 +10,51 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        bg: {
-          DEFAULT: "#0a0a0f",
-          card: "#111118",
-          elev: "#15151e",
-        },
-        line: "#232330",
+        bg: "#F4EFE7",
+        paper: "#FFFFFF",
         ink: {
-          DEFAULT: "#f4f4f6",
-          mute: "#9b9bab",
-          dim: "#6b6b7b",
+          DEFAULT: "#0F0F0F",
+          soft: "#2a2a2a",
         },
-        brand: {
-          DEFAULT: "#8b5cf6",
-          soft: "#a78bfa",
-          deep: "#6d28d9",
-          glow: "rgba(139, 92, 246, 0.2)",
+        muted: "#6B6B6B",
+        line: {
+          DEFAULT: "#E4DDD0",
+          strong: "#C9BFA9",
         },
-        tip: {
-          DEFAULT: "#10b981",
-          soft: "#34d399",
-          bg: "rgba(16, 185, 129, 0.08)",
+        accent: {
+          DEFAULT: "#16A34A",
+          soft: "#D1FAE5",
+          strong: "#15803D",
         },
-        warn: "#f59e0b",
-        err: "#ef4444",
+        ok: {
+          DEFAULT: "#2F7A3D",
+          soft: "#E4F1E4",
+        },
+        warn: {
+          DEFAULT: "#B33A16",
+          soft: "#FBEAE2",
+        },
       },
       fontFamily: {
-        sans: ["var(--font-geist)", "ui-sans-serif", "system-ui"],
+        sans: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"],
+        serif: ["Fraunces", "Georgia", "serif"],
+        mono: ["'JetBrains Mono'", "ui-monospace", "monospace"],
       },
       borderRadius: {
-        xl: "0.875rem",
-        "2xl": "1.125rem",
+        sm: "6px",
+        md: "8px",
+        lg: "12px",
+        xl: "16px",
+        "2xl": "20px",
+        "3xl": "24px",
       },
       boxShadow: {
-        card: "0 1px 2px rgba(0,0,0,0.4), 0 8px 24px rgba(0,0,0,0.25)",
-        glow: "0 0 0 1px rgba(139,92,246,0.4), 0 0 24px rgba(139,92,246,0.15)",
+        card: "0 1px 0 rgba(0,0,0,0.03)",
+        soft: "0 4px 20px -8px rgba(0,0,0,0.08)",
+        focus: "0 0 0 3px rgba(22,163,74,0.18)",
+      },
+      letterSpacing: {
+        eye: "0.14em",
       },
     },
   },

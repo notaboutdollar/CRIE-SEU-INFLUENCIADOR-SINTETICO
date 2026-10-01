@@ -29,13 +29,13 @@ export function Wizard({ id }: { id: string }) {
     return (
       <main className="mx-auto max-w-5xl px-4 py-10">
         <div className="card p-8 text-center">
-          <h2 className="text-lg font-medium">Personagem não encontrado</h2>
-          <p className="text-ink-mute text-sm mt-2">
+          <h2 className="serif text-xl">Personagem não encontrado</h2>
+          <p className="text-muted text-sm mt-2">
             Pode ter sido excluído em outra aba.
           </p>
           <button
             onClick={() => router.push("/")}
-            className="mt-4 text-brand-soft hover:underline"
+            className="mt-4 text-accent hover:underline font-semibold"
           >
             Voltar para a lista
           </button>
@@ -55,11 +55,12 @@ export function Wizard({ id }: { id: string }) {
         <div className="min-w-0">
           <section className="card p-5 sm:p-7">
             <div className="mb-5">
-              <h2 className="text-xl font-semibold">{current.title}</h2>
-              <p className="text-ink-mute text-sm mt-0.5">{current.subtitle}</p>
+              <div className="eyebrow-accent mb-1">Etapa</div>
+              <h2 className="serif text-2xl sm:text-3xl text-ink">{current.title}</h2>
+              <p className="text-muted text-[15px] mt-1">{current.subtitle}</p>
             </div>
 
-            <div className="mb-5">
+            <div className="mb-6">
               <DicaBox>{current.dica}</DicaBox>
             </div>
 

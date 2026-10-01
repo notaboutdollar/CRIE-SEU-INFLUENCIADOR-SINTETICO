@@ -170,7 +170,7 @@ export function NichoStep({ id }: { id: string }) {
               />
               <button
                 type="button"
-                className="h-10 w-10 inline-flex items-center justify-center rounded-xl border border-line bg-bg-elev text-ink-mute hover:text-err"
+                className="h-10 w-10 inline-flex items-center justify-center rounded-full border border-line bg-paper text-muted hover:text-warn hover:border-warn/60"
                 onClick={() => set((c) => { c.nicho.pilares.splice(i, 1); })}
                 aria-label="Remover pilar"
               >
@@ -180,7 +180,7 @@ export function NichoStep({ id }: { id: string }) {
           ))}
           {n.pilares.length < 5 ? (
             <Button
-              variant="secondary"
+              variant="ghost"
               size="sm"
               className="self-start"
               onClick={() => set((c) => { c.nicho.pilares.push({ nome: "", pct: 0 }); })}

@@ -22,32 +22,33 @@ export default function Home() {
   }
 
   return (
-    <main className="mx-auto max-w-5xl px-4 sm:px-6 py-8 sm:py-14">
-      <header className="mb-10 sm:mb-14">
-        <div className="inline-flex items-center gap-2 text-brand-soft text-sm mb-3">
-          <Sparkles className="w-4 h-4" />
-          <span className="label-cap !text-brand-soft">Crie seu Influenciador Sintético</span>
+    <main className="mx-auto max-w-5xl px-4 sm:px-6 py-10 sm:py-16">
+      <header className="mb-12 sm:mb-16">
+        <div className="inline-flex items-center gap-2 mb-4">
+          <Sparkles className="w-4 h-4 text-accent" />
+          <span className="eyebrow-accent">Curadoria de personagens</span>
         </div>
-        <h1 className="text-3xl sm:text-5xl font-semibold tracking-tight leading-tight">
-          Defina quem é seu <span className="text-brand-soft">influenciador</span>, campo a campo.
+        <h1 className="serif text-[44px] sm:text-[68px] leading-[1.02] tracking-tight text-ink">
+          Defina quem é seu<br />
+          <span className="text-accent">influenciador sintético</span>, campo a campo.
         </h1>
-        <p className="text-ink-mute mt-4 max-w-2xl leading-relaxed">
+        <p className="text-[18px] text-[#3a3a3a] mt-6 max-w-[640px] leading-relaxed">
           Um wizard em 7 etapas que leva você da ideia solta até uma ficha completa, com um Prompt Mestre pronto para gerar imagem, vídeo e roteiro. Tudo salvo no seu navegador — nada vai para servidor.
         </p>
       </header>
 
       <section>
-        <div className="flex items-center justify-between mb-5">
-          <h2 className="text-lg font-medium">Seus Personagens</h2>
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="serif text-2xl text-ink">Seus Personagens</h2>
           {mounted && characters.length > 0 ? (
-            <Button onClick={onCreate}>
+            <Button variant="accent" onClick={onCreate}>
               <Plus className="w-4 h-4" /> Novo personagem
             </Button>
           ) : null}
         </div>
 
         {!mounted ? (
-          <div className="card p-10 text-center text-ink-dim">Carregando…</div>
+          <div className="card p-10 text-center text-muted">Carregando…</div>
         ) : characters.length === 0 ? (
           <EmptyState onCreate={onCreate} />
         ) : (
@@ -59,8 +60,11 @@ export default function Home() {
         )}
       </section>
 
-      <footer className="mt-16 text-xs text-ink-dim">
-        v1 — persistência local. v2 vem com login, link público e geração de imagem.
+      <footer className="mt-20 pt-8 border-t border-line text-[13px] text-muted">
+        <span className="eyebrow">v1</span>
+        <span className="ml-3">
+          Persistência local. v2 vem com login, link público e geração de imagem.
+        </span>
       </footer>
     </main>
   );

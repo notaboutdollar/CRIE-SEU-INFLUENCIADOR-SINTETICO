@@ -47,7 +47,7 @@ export function TagInput({ value, onChange, placeholder, max, className, id }: P
       {value.map((tag) => (
         <span
           key={tag}
-          className="inline-flex items-center gap-1 rounded-lg bg-brand/15 border border-brand/30 text-brand-soft px-2 py-0.5 text-sm"
+          className="inline-flex items-center gap-1 rounded-full bg-accent-soft border border-accent/30 text-accent-strong px-2.5 py-0.5 text-[13px] font-medium"
         >
           {tag}
           <button
@@ -62,7 +62,7 @@ export function TagInput({ value, onChange, placeholder, max, className, id }: P
       ))}
       <input
         id={id}
-        className="flex-1 min-w-[8ch] bg-transparent focus:outline-none text-sm py-1"
+        className="flex-1 min-w-[8ch] bg-transparent focus:outline-none text-sm py-1 text-ink placeholder:text-[#a0a0a0]"
         placeholder={atMax ? "Limite atingido" : placeholder ?? "Digite e pressione Enter"}
         value={buf}
         disabled={atMax}

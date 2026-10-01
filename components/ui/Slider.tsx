@@ -19,9 +19,9 @@ export function Slider({ value, onChange, leftLabel, rightLabel, className }: Pr
         max={100}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="w-full accent-brand"
+        className="w-full"
       />
-      <div className="flex justify-between text-xs text-ink-dim">
+      <div className="flex justify-between text-[11px] text-muted mono uppercase tracking-wider">
         <span>{leftLabel}</span>
         <span>{rightLabel}</span>
       </div>

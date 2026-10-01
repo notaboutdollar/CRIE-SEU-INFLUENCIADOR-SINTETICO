@@ -19,14 +19,14 @@ export const FichaPoster = forwardRef<HTMLDivElement, Props>(function FichaPoste
     <div
       ref={ref}
       className={cn(
-        "bg-bg text-ink font-sans p-10",
+        "bg-bg text-ink p-12",
         vertical ? "w-[720px] min-h-[1020px]" : "w-[1180px] min-h-[720px]",
         className
       )}
-      style={{ fontFamily: "ui-sans-serif, system-ui, sans-serif" }}
+      style={{ fontFamily: "Inter, system-ui, sans-serif" }}
     >
-      <header className="mb-8 flex items-start gap-6">
-        <div className="h-28 w-28 rounded-2xl overflow-hidden bg-bg-elev border border-line shrink-0">
+      <header className="mb-10 flex items-start gap-6">
+        <div className="h-28 w-28 rounded-2xl overflow-hidden bg-paper border border-line shrink-0 shadow-card">
           {c.visual.referencias[0]?.dataUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -39,16 +39,21 @@ export const FichaPoster = forwardRef<HTMLDivElement, Props>(function FichaPoste
           )}
         </div>
         <div className="min-w-0">
-          <div className="text-xs uppercase tracking-widest text-brand-soft">
+          <div className="text-[11px] font-bold uppercase mono text-accent-strong" style={{ letterSpacing: "0.14em" }}>
             Ficha do Influenciador Sintético
           </div>
-          <h1 className="text-4xl font-semibold mt-1 leading-tight">
+          <h1
+            className="text-5xl font-bold mt-1 leading-[1.05] tracking-tight text-ink"
+            style={{ fontFamily: "Fraunces, Georgia, serif", letterSpacing: "-0.02em" }}
+          >
             {c.identidade.nome || "Sem nome"}
           </h1>
           {c.identidade.bio ? (
-            <p className="text-ink-mute mt-2 text-base leading-relaxed">“{c.identidade.bio}”</p>
+            <p className="text-[16px] text-[#3a3a3a] mt-3 leading-relaxed italic">
+              “{c.identidade.bio}”
+            </p>
           ) : null}
-          <div className="flex flex-wrap gap-2 mt-3 text-xs">
+          <div className="flex flex-wrap gap-2 mt-4 text-[11px]">
             {c.identidade.genero && <Tag>{c.identidade.genero}</Tag>}
             {c.identidade.forma && <Tag>{c.identidade.forma}</Tag>}
             {c.identidade.idadeAparente && <Tag>{c.identidade.idadeAparente}</Tag>}
@@ -58,7 +63,7 @@ export const FichaPoster = forwardRef<HTMLDivElement, Props>(function FichaPoste
         </div>
       </header>
 
-      <div className={cn("grid gap-6", vertical ? "grid-cols-2" : "grid-cols-3")}>
+      <div className={cn("grid gap-5", vertical ? "grid-cols-2" : "grid-cols-3")}>
         <Block title="Visual">
           <KV label="Traço" value={c.visual.traco} />
           <KV label="Cabelo" value={c.visual.cabelo} />
@@ -129,7 +134,10 @@ export const FichaPoster = forwardRef<HTMLDivElement, Props>(function FichaPoste
         </Block>
       </div>
 
-      <footer className="mt-10 pt-6 border-t border-line text-[10px] text-ink-dim uppercase tracking-widest">
+      <footer
+        className="mt-12 pt-6 border-t border-line text-[10px] font-bold text-muted uppercase mono"
+        style={{ letterSpacing: "0.14em" }}
+      >
         Ficha gerada por Crie seu Influenciador Sintético
       </footer>
     </div>
@@ -138,7 +146,7 @@ export const FichaPoster = forwardRef<HTMLDivElement, Props>(function FichaPoste
 
 function Tag({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-flex items-center px-2 py-0.5 rounded-full border border-line bg-bg-elev capitalize">
+    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full border border-line bg-paper text-muted capitalize font-medium">
       {children}
     </span>
   );
@@ -146,11 +154,14 @@ function Tag({ children }: { children: React.ReactNode }) {
 
 function Block({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-2xl border border-line bg-bg-card p-5">
-      <h3 className="text-sm font-semibold text-brand-soft mb-3 uppercase tracking-wider">
+    <section className="rounded-2xl border border-line bg-paper p-5 shadow-card">
+      <h3
+        className="text-[11px] font-bold text-accent-strong mb-3 uppercase mono"
+        style={{ letterSpacing: "0.14em" }}
+      >
         {title}
       </h3>
-      <div className="space-y-2 text-sm leading-relaxed">{children}</div>
+      <div className="space-y-2.5 text-[14px] leading-relaxed">{children}</div>
     </section>
   );
 }
@@ -159,8 +170,13 @@ function KV({ label, value }: { label: string; value?: string }) {
   if (!value || !String(value).trim()) return null;
   return (
     <div>
-      <div className="text-[0.65rem] uppercase tracking-wider text-ink-dim">{label}</div>
-      <div className="text-ink">{value}</div>
+      <div
+        className="text-[10px] uppercase mono text-muted font-semibold"
+        style={{ letterSpacing: "0.12em" }}
+      >
+        {label}
+      </div>
+      <div className="text-ink mt-0.5">{value}</div>
     </div>
   );
 }

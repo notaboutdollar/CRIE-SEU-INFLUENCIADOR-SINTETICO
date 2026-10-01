@@ -18,17 +18,17 @@ export function StepFooter({ current, onChange }: Props) {
   return (
     <div className="flex items-center justify-between mt-8 pt-6 border-t border-line">
       <Button
-        variant="secondary"
+        variant="ghost"
         onClick={() => prev && onChange(prev.id)}
         disabled={!prev}
       >
         <ArrowLeft className="w-4 h-4" />
         Voltar
       </Button>
-      <div className="text-xs text-ink-dim">
-        Etapa {i + 1} de {STEPS.length}
+      <div className="eyebrow">
+        Etapa {String(i + 1).padStart(2, "0")} / {String(STEPS.length).padStart(2, "0")}
       </div>
-      <Button onClick={() => next && onChange(next.id)} disabled={!next}>
+      <Button variant="accent" onClick={() => next && onChange(next.id)} disabled={!next}>
         {next ? (
           <>
             Avançar

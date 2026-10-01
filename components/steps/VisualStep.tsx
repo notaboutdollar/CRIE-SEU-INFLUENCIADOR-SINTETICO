@@ -78,7 +78,7 @@ export function VisualStep({ id }: { id: string }) {
           {v.referencias.map((r) => (
             <div
               key={r.id}
-              className="relative aspect-square rounded-xl overflow-hidden border border-line bg-bg-elev group"
+              className="relative aspect-square rounded-xl overflow-hidden border border-line bg-bg group"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={r.dataUrl} alt={r.name} className="w-full h-full object-cover" />
@@ -95,7 +95,7 @@ export function VisualStep({ id }: { id: string }) {
           <button
             type="button"
             onClick={() => inputRef.current?.click()}
-            className="aspect-square rounded-xl border-2 border-dashed border-line hover:border-brand/60 hover:bg-bg-elev transition flex flex-col items-center justify-center text-ink-mute hover:text-ink gap-2"
+            className="aspect-square rounded-xl border-2 border-dashed border-line-strong hover:border-accent hover:bg-accent-soft/40 transition flex flex-col items-center justify-center text-muted hover:text-accent-strong gap-2"
           >
             <ImagePlus className="w-5 h-5" />
             <span className="text-xs">Adicionar</span>

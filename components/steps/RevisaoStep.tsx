@@ -56,19 +56,19 @@ export function RevisaoStep({ id }: { id: string }) {
 
   return (
     <div className="grid grid-cols-1 gap-6">
-      <div className="rounded-xl border border-line bg-bg-elev p-4 flex items-start gap-3">
+      <div className="rounded-xl border border-line bg-paper p-4 flex items-start gap-3">
         {st === "completo" ? (
-          <CheckCircle2 className="w-5 h-5 text-tip-soft mt-0.5" />
+          <CheckCircle2 className="w-5 h-5 text-ok mt-0.5" />
         ) : (
           <AlertTriangle className="w-5 h-5 text-warn mt-0.5" />
         )}
         <div className="flex-1">
-          <div className="font-medium text-ink">
+          <div className="font-semibold text-ink">
             {st === "completo"
               ? "Personagem completo. Hora de usar."
               : "Ainda está em rascunho."}
           </div>
-          <div className="text-sm text-ink-mute mt-0.5">
+          <div className="text-[14px] text-muted mt-0.5">
             {st === "completo"
               ? "Nome preenchido e pelo menos uma imagem de referência: critérios mínimos cumpridos."
               : "Faltam os obrigatórios: nome do personagem + pelo menos 1 imagem de referência."}
@@ -77,9 +77,9 @@ export function RevisaoStep({ id }: { id: string }) {
       </div>
 
       <section>
-        <h3 className="label-cap mb-2">Checklist de consistência</h3>
+        <h3 className="label-cap mb-3">Checklist de consistência</h3>
         {check.length === 0 ? (
-          <div className="rounded-xl border border-tip/30 bg-tip-bg p-4 text-sm text-ink">
+          <div className="rounded-xl border border-ok/25 bg-ok-soft p-4 text-sm text-ok">
             Nenhuma inconsistência detectada. Bom trabalho.
           </div>
         ) : (
@@ -90,22 +90,22 @@ export function RevisaoStep({ id }: { id: string }) {
                 className={cn(
                   "rounded-xl border p-3 text-sm flex gap-3",
                   item.tipo === "contradicao"
-                    ? "border-err/40 bg-err/5"
+                    ? "border-warn/40 bg-warn-soft"
                     : item.tipo === "vazio"
-                    ? "border-warn/40 bg-warn/5"
-                    : "border-line bg-bg-elev"
+                    ? "border-warn/25 bg-warn-soft/60"
+                    : "border-line bg-paper"
                 )}
               >
                 {item.tipo === "contradicao" ? (
-                  <AlertTriangle className="w-4 h-4 text-err mt-0.5 shrink-0" />
+                  <AlertTriangle className="w-4 h-4 text-warn mt-0.5 shrink-0" />
                 ) : item.tipo === "vazio" ? (
                   <AlertTriangle className="w-4 h-4 text-warn mt-0.5 shrink-0" />
                 ) : (
-                  <Info className="w-4 h-4 text-ink-mute mt-0.5 shrink-0" />
+                  <Info className="w-4 h-4 text-muted mt-0.5 shrink-0" />
                 )}
                 <div>
                   <div className="text-ink">{item.mensagem}</div>
-                  <div className="text-xs text-ink-dim mt-0.5">Campo: {item.campo}</div>
+                  <div className="text-[11px] mono text-muted mt-0.5">Campo: {item.campo}</div>
                 </div>
               </li>
             ))}
@@ -121,10 +121,10 @@ export function RevisaoStep({ id }: { id: string }) {
               type="button"
               onClick={() => setOrient("vertical")}
               className={cn(
-                "px-3 h-8 rounded-lg border",
+                "px-3.5 h-8 rounded-full border font-semibold",
                 orient === "vertical"
-                  ? "border-brand text-ink bg-brand/10"
-                  : "border-line text-ink-mute bg-bg-elev hover:text-ink"
+                  ? "border-accent text-white bg-accent"
+                  : "border-line text-muted bg-paper hover:text-ink"
               )}
             >
               Vertical
@@ -133,10 +133,10 @@ export function RevisaoStep({ id }: { id: string }) {
               type="button"
               onClick={() => setOrient("horizontal")}
               className={cn(
-                "px-3 h-8 rounded-lg border",
+                "px-3.5 h-8 rounded-full border font-semibold",
                 orient === "horizontal"
-                  ? "border-brand text-ink bg-brand/10"
-                  : "border-line text-ink-mute bg-bg-elev hover:text-ink"
+                  ? "border-accent text-white bg-accent"
+                  : "border-line text-muted bg-paper hover:text-ink"
               )}
             >
               Horizontal
@@ -144,7 +144,7 @@ export function RevisaoStep({ id }: { id: string }) {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-line bg-bg-elev p-4 overflow-auto">
+        <div className="rounded-2xl border border-line bg-paper p-4 overflow-auto">
           <div
             className="origin-top-left mx-auto"
             style={{
@@ -196,23 +196,23 @@ export function RevisaoStep({ id }: { id: string }) {
       </section>
 
       <section className="flex flex-wrap gap-2 items-center">
-        <Button onClick={onCopyMaster}>
+        <Button variant="accent" onClick={onCopyMaster}>
           <Copy className="w-4 h-4" /> Copiar Prompt Mestre
         </Button>
-        <Button variant="secondary" onClick={onExportMd}>
+        <Button variant="ghost" onClick={onExportMd}>
           <FileText className="w-4 h-4" /> Markdown
         </Button>
-        <Button variant="secondary" onClick={onExportJson}>
+        <Button variant="ghost" onClick={onExportJson}>
           <FileJson className="w-4 h-4" /> JSON
         </Button>
-        <Button variant="secondary" onClick={onExportPng}>
+        <Button variant="ghost" onClick={onExportPng}>
           <ImageIcon className="w-4 h-4" /> PNG da ficha
         </Button>
-        <Button variant="secondary" onClick={onExportPdf}>
+        <Button variant="ghost" onClick={onExportPdf}>
           <Download className="w-4 h-4" /> PDF da ficha
         </Button>
         {feedback ? (
-          <span className="text-xs text-tip-soft ml-2" role="status">
+          <span className="text-[13px] text-ok font-semibold ml-2" role="status">
             {feedback}
           </span>
         ) : null}
@@ -231,18 +231,18 @@ function PromptBlock({
   onCopy: () => void;
 }) {
   return (
-    <div className="rounded-xl border border-line bg-bg-elev flex flex-col min-h-[180px]">
-      <div className="flex items-center justify-between px-3 py-2 border-b border-line">
+    <div className="rounded-xl border border-line bg-paper flex flex-col min-h-[180px]">
+      <div className="flex items-center justify-between px-3.5 py-2.5 border-b border-line">
         <span className="label-cap">{title}</span>
         <button
           type="button"
           onClick={onCopy}
-          className="text-xs text-ink-mute hover:text-ink inline-flex items-center gap-1"
+          className="text-[12px] text-muted hover:text-ink inline-flex items-center gap-1 font-semibold"
         >
           <Copy className="w-3.5 h-3.5" /> Copiar
         </button>
       </div>
-      <pre className="p-3 text-xs text-ink whitespace-pre-wrap leading-relaxed overflow-auto max-h-80">
+      <pre className="p-3.5 text-[12px] mono text-ink whitespace-pre-wrap leading-relaxed overflow-auto max-h-80 bg-bg/60 rounded-b-xl">
         {text}
       </pre>
     </div>

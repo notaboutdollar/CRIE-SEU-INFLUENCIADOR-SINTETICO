@@ -27,13 +27,15 @@ export function Field({
       <div className="flex items-baseline justify-between gap-3">
         <label htmlFor={htmlFor} className="label-cap">
           {label}
-          {optional ? <span className="text-ink-dim normal-case font-normal tracking-normal"> (opcional)</span> : null}
+          {optional ? (
+            <span className="text-muted/80 normal-case font-normal tracking-normal"> (opcional)</span>
+          ) : null}
         </label>
         {counter ? (
           <span
             className={cn(
-              "text-[0.7rem] tabular-nums",
-              counter.value > counter.max ? "text-err" : "text-ink-dim"
+              "text-[11px] tabular-nums mono",
+              counter.value > counter.max ? "text-warn" : "text-muted/80"
             )}
           >
             {counter.value}/{counter.max}
@@ -41,7 +43,7 @@ export function Field({
         ) : null}
       </div>
       {children}
-      {hint ? <p className="text-xs text-ink-dim">{hint}</p> : null}
+      {hint ? <p className="text-[13px] text-muted leading-relaxed">{hint}</p> : null}
     </div>
   );
 }
