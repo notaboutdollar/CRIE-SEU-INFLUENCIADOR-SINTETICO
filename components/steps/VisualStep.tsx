@@ -45,7 +45,7 @@ export function VisualStep({ id }: { id: string }) {
 
   return (
     <div className="grid grid-cols-1 gap-5">
-      <Field label="Traço / estilo" hint="Cards são placeholders — na v2 vem pré-visualização com arte real.">
+      <Field label="Traço / estilo" fieldId="visual.traco" hint="Cards são placeholders — na v2 vem pré-visualização com arte real.">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {tracos.map((t) => (
             <CardChoice
@@ -104,42 +104,42 @@ export function VisualStep({ id }: { id: string }) {
       </Field>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <Field label="Cabelo" optional>
+        <Field label="Cabelo" fieldId="visual.cabelo" optional>
           <Input
             placeholder="Ex.: Cacheado, cor cobre, altura dos ombros"
             value={v.cabelo ?? ""}
             onChange={(e) => set((c) => (c.visual.cabelo = e.target.value))}
           />
         </Field>
-        <Field label="Pele" optional>
+        <Field label="Pele" fieldId="visual.pele" optional>
           <Input
             placeholder="Ex.: Pele quente, sardas no nariz"
             value={v.pele ?? ""}
             onChange={(e) => set((c) => (c.visual.pele = e.target.value))}
           />
         </Field>
-        <Field label="Olhos" optional>
+        <Field label="Olhos" fieldId="visual.olhos" optional>
           <Input
             placeholder="Ex.: Castanhos, levemente puxados"
             value={v.olhos ?? ""}
             onChange={(e) => set((c) => (c.visual.olhos = e.target.value))}
           />
         </Field>
-        <Field label="Estilo de roupa" optional>
+        <Field label="Estilo de roupa" fieldId="visual.roupa" optional>
           <Input
             placeholder="Ex.: Oversize vintage com peças coloridas"
             value={v.roupa ?? ""}
             onChange={(e) => set((c) => (c.visual.roupa = e.target.value))}
           />
         </Field>
-        <Field label="Acessórios" optional>
+        <Field label="Acessórios" fieldId="visual.acessorios" optional>
           <Input
             placeholder="Ex.: Óculos redondo, anéis grandes"
             value={v.acessorios ?? ""}
             onChange={(e) => set((c) => (c.visual.acessorios = e.target.value))}
           />
         </Field>
-        <Field label="Traços marcantes" optional>
+        <Field label="Traços marcantes" fieldId="visual.tracosMarcantes" optional>
           <Input
             placeholder="Ex.: Tatuagem no antebraço, piercing no septo"
             value={v.tracosMarcantes ?? ""}
@@ -148,7 +148,7 @@ export function VisualStep({ id }: { id: string }) {
         </Field>
       </div>
 
-      <Field label="Paleta de cores" optional hint="Use nomes, hex ou descrição livre.">
+      <Field label="Paleta de cores" fieldId="visual.paleta" optional hint="Use nomes, hex ou descrição livre.">
         <Input
           placeholder="Ex.: Terracota, bege, verde-oliva e um toque de azul petróleo"
           value={v.paleta ?? ""}
@@ -157,7 +157,22 @@ export function VisualStep({ id }: { id: string }) {
       </Field>
 
       <Field
+        label="Cenários recorrentes"
+        fieldId="visual.cenarios"
+        optional
+        hint="Onde você costuma vê-lo? Ex.: cozinha com luz amarela, café de bairro, estúdio minimalista."
+      >
+        <Textarea
+          rows={2}
+          placeholder="Ex.: cozinha com janela grande ao fundo, café no bairro vila buarque, estúdio com cortina preta"
+          value={v.cenarios ?? ""}
+          onChange={(e) => set((c) => (c.visual.cenarios = e.target.value))}
+        />
+      </Field>
+
+      <Field
         label="O que NUNCA deve aparecer na imagem"
+        fieldId="visual.negativos"
         hint="Negative prompt. Entre com elementos a evitar."
       >
         <Textarea

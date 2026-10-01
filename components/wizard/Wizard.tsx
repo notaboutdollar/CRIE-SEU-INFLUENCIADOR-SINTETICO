@@ -7,6 +7,8 @@ import type { StepId } from "@/lib/types";
 import { CharacterHeader } from "./CharacterHeader";
 import { StepTabs } from "./StepTabs";
 import { StepFooter } from "./StepFooter";
+import { SuggestionCounter } from "./SuggestionCounter";
+import { WizardProvider } from "./WizardContext";
 import { DicaBox } from "@/components/ui/DicaBox";
 import { CharacterCard } from "@/components/preview/CharacterCard";
 import { IdentidadeStep } from "@/components/steps/IdentidadeStep";
@@ -45,11 +47,13 @@ export function Wizard({ id }: { id: string }) {
   }
 
   return (
-    <main className="mx-auto max-w-7xl px-4 sm:px-6 py-6 sm:py-10">
-      <CharacterHeader character={character} />
-      <div className="mb-6">
-        <StepTabs current={currentId} character={character} onPick={setCurrentId} />
-      </div>
+    <WizardProvider characterId={character.id}>
+      <main className="mx-auto max-w-7xl px-4 sm:px-6 py-6 sm:py-10">
+        <CharacterHeader character={character} />
+        <SuggestionCounter character={character} />
+        <div className="mb-6">
+          <StepTabs current={currentId} character={character} onPick={setCurrentId} />
+        </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6">
         <div className="min-w-0">
@@ -74,7 +78,8 @@ export function Wizard({ id }: { id: string }) {
           <CharacterCard character={character} />
         </aside>
       </div>
-    </main>
+      </main>
+    </WizardProvider>
   );
 }
 

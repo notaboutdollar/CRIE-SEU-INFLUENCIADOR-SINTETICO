@@ -4,6 +4,7 @@ import { useCharacter } from "@/lib/useCharacter";
 import { Field } from "@/components/ui/Field";
 import { Input, Textarea } from "@/components/ui/Input";
 import { CardChoice } from "@/components/ui/CardChoice";
+import { TagInput } from "@/components/ui/TagInput";
 import { formas, generos } from "@/data/choices";
 
 export function IdentidadeStep({ id }: { id: string }) {
@@ -14,7 +15,7 @@ export function IdentidadeStep({ id }: { id: string }) {
   return (
     <div className="grid grid-cols-1 gap-5">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <Field label="Nome / apelido" counter={{ value: d.nome.length, max: 50 }}>
+        <Field label="Nome / apelido" fieldId="identidade.nome" counter={{ value: d.nome.length, max: 50 }}>
           <Input
             maxLength={50}
             placeholder="Ex.: Lila, Jr., Noa, Vulpes…"
@@ -22,7 +23,7 @@ export function IdentidadeStep({ id }: { id: string }) {
             onChange={(e) => set((c) => (c.identidade.nome = e.target.value))}
           />
         </Field>
-        <Field label="Nome por extenso" optional>
+        <Field label="Nome por extenso" fieldId="identidade.nomeExtenso" optional>
           <Input
             placeholder="Ex.: Lila Serafina Costa"
             value={d.nomeExtenso ?? ""}
@@ -31,7 +32,7 @@ export function IdentidadeStep({ id }: { id: string }) {
         </Field>
       </div>
 
-      <Field label="Gênero">
+      <Field label="Gênero" fieldId="identidade.genero">
         <div className="grid grid-cols-3 gap-3">
           {generos.map((g) => (
             <CardChoice
@@ -45,7 +46,7 @@ export function IdentidadeStep({ id }: { id: string }) {
         </div>
       </Field>
 
-      <Field label="Forma" hint="A natureza do personagem define o resto da imagem.">
+      <Field label="Forma" fieldId="identidade.forma" hint="A natureza do personagem define o resto da imagem.">
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
           {formas.map((f) => (
             <CardChoice
@@ -60,28 +61,28 @@ export function IdentidadeStep({ id }: { id: string }) {
       </Field>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <Field label="Idade aparente" optional>
+        <Field label="Idade aparente" fieldId="identidade.idadeAparente" optional>
           <Input
             placeholder="Ex.: 28 anos, atemporal, infantil…"
             value={d.idadeAparente ?? ""}
             onChange={(e) => set((c) => (c.identidade.idadeAparente = e.target.value))}
           />
         </Field>
-        <Field label="Cidade / País" optional>
+        <Field label="Cidade / País" fieldId="identidade.cidade" optional>
           <Input
             placeholder="Ex.: São Paulo, BR"
             value={d.cidade ?? ""}
             onChange={(e) => set((c) => (c.identidade.cidade = e.target.value))}
           />
         </Field>
-        <Field label="Idioma" optional>
+        <Field label="Idioma" fieldId="identidade.idioma" optional>
           <Input
             placeholder="Ex.: Português do Brasil"
             value={d.idioma ?? ""}
             onChange={(e) => set((c) => (c.identidade.idioma = e.target.value))}
           />
         </Field>
-        <Field label="Sotaque" optional>
+        <Field label="Sotaque" fieldId="identidade.sotaque" optional>
           <Input
             placeholder="Ex.: Paulistano suave, neutro, interior do nordeste"
             value={d.sotaque ?? ""}
@@ -90,8 +91,27 @@ export function IdentidadeStep({ id }: { id: string }) {
         </Field>
       </div>
 
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <Field label="Ocupação na vida real" fieldId="identidade.ocupacao" optional hint="O que ele faz além de criar conteúdo?">
+          <Input
+            placeholder="Ex.: Arquiteta de interiores, DJ nos fins de semana"
+            value={d.ocupacao ?? ""}
+            onChange={(e) => set((c) => (c.identidade.ocupacao = e.target.value))}
+          />
+        </Field>
+        <Field label="@ sugeridos" fieldId="identidade.handles" optional hint="Até 3 opções de handle. Enter para adicionar.">
+          <TagInput
+            value={d.handles ?? []}
+            onChange={(v) => set((c) => (c.identidade.handles = v))}
+            placeholder="Ex.: @lilaserafina"
+            max={3}
+          />
+        </Field>
+      </div>
+
       <Field
         label="Bio em 1 linha"
+        fieldId="identidade.bio"
         hint="O resumo do personagem. Pense em algo que você diria em uma reunião: ‘ele é o ___ que ___’."
         counter={{ value: (d.bio ?? "").length, max: 140 }}
       >

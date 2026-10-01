@@ -14,7 +14,7 @@ export function SoulStep({ id }: { id: string }) {
 
   return (
     <div className="grid grid-cols-1 gap-5">
-      <Field label="Arquétipo" hint="Comece por um atalho — depois mexa nos adjetivos pra afinar.">
+      <Field label="Arquétipo" fieldId="soul.arquetipo" hint="Comece por um atalho — depois mexa nos adjetivos pra afinar.">
         <div className="flex flex-wrap gap-2">
           {arquetipos.map((a) => (
             <Chip
@@ -30,7 +30,7 @@ export function SoulStep({ id }: { id: string }) {
         </div>
       </Field>
 
-      <Field label="5 adjetivos que definem o jeito dele" hint="Enter para adicionar. Mínimo recomendado: 3.">
+      <Field label="5 adjetivos que definem o jeito dele" fieldId="soul.adjetivos" hint="Enter para adicionar. Mínimo recomendado: 3.">
         <TagInput
           value={s.adjetivos}
           onChange={(v) => set((c) => (c.soul.adjetivos = v))}
@@ -42,22 +42,22 @@ export function SoulStep({ id }: { id: string }) {
       <section>
         <div className="label-cap mb-2">Gostos</div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Field label="Comidas">
+          <Field label="Comidas" fieldId="soul.gostos.comidas">
             <TagInput value={s.gostos.comidas} onChange={(v) => set((c) => (c.soul.gostos.comidas = v))} />
           </Field>
-          <Field label="Músicas">
+          <Field label="Músicas" fieldId="soul.gostos.musicas">
             <TagInput value={s.gostos.musicas} onChange={(v) => set((c) => (c.soul.gostos.musicas = v))} />
           </Field>
-          <Field label="Hobbies">
+          <Field label="Hobbies" fieldId="soul.gostos.hobbies">
             <TagInput value={s.gostos.hobbies} onChange={(v) => set((c) => (c.soul.gostos.hobbies = v))} />
           </Field>
-          <Field label="Marcas">
+          <Field label="Marcas" fieldId="soul.gostos.marcas">
             <TagInput value={s.gostos.marcas} onChange={(v) => set((c) => (c.soul.gostos.marcas = v))} />
           </Field>
-          <Field label="Lugares">
+          <Field label="Lugares" fieldId="soul.gostos.lugares">
             <TagInput value={s.gostos.lugares} onChange={(v) => set((c) => (c.soul.gostos.lugares = v))} />
           </Field>
-          <Field label="Séries / filmes">
+          <Field label="Séries / filmes" fieldId="soul.gostos.series">
             <TagInput value={s.gostos.series} onChange={(v) => set((c) => (c.soul.gostos.series = v))} />
           </Field>
         </div>
@@ -66,23 +66,23 @@ export function SoulStep({ id }: { id: string }) {
       <section>
         <div className="label-cap mb-2">O que ele odeia</div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Field label="Manias">
+          <Field label="Manias" fieldId="soul.odeia.manias">
             <TagInput value={s.odeia.manias} onChange={(v) => set((c) => (c.soul.odeia.manias = v))} />
           </Field>
-          <Field label="Tipos de conteúdo">
+          <Field label="Tipos de conteúdo" fieldId="soul.odeia.conteudos">
             <TagInput value={s.odeia.conteudos} onChange={(v) => set((c) => (c.soul.odeia.conteudos = v))} />
           </Field>
-          <Field label="Comportamentos">
+          <Field label="Comportamentos" fieldId="soul.odeia.comportamentos">
             <TagInput value={s.odeia.comportamentos} onChange={(v) => set((c) => (c.soul.odeia.comportamentos = v))} />
           </Field>
-          <Field label="Assuntos">
+          <Field label="Assuntos" fieldId="soul.odeia.assuntos">
             <TagInput value={s.odeia.assuntos} onChange={(v) => set((c) => (c.soul.odeia.assuntos = v))} />
           </Field>
         </div>
       </section>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <Field label="O que defende">
+        <Field label="O que defende" fieldId="soul.valoresDefende">
           <Textarea
             rows={2}
             value={s.valoresDefende ?? ""}
@@ -90,7 +90,7 @@ export function SoulStep({ id }: { id: string }) {
             placeholder="Valores inegociáveis…"
           />
         </Field>
-        <Field label="O que combate">
+        <Field label="O que combate" fieldId="soul.valoresCombate">
           <Textarea
             rows={2}
             value={s.valoresCombate ?? ""}
@@ -101,21 +101,21 @@ export function SoulStep({ id }: { id: string }) {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Field label="Medos">
+        <Field label="Medos" fieldId="soul.medos">
           <Input
             value={s.medos ?? ""}
             onChange={(e) => set((c) => (c.soul.medos = e.target.value))}
             placeholder="Ex.: ser esquecido"
           />
         </Field>
-        <Field label="Manias">
+        <Field label="Manias" fieldId="soul.manias">
           <Input
             value={s.manias ?? ""}
             onChange={(e) => set((c) => (c.soul.manias = e.target.value))}
             placeholder="Ex.: morder a caneta"
           />
         </Field>
-        <Field label="Defeitos">
+        <Field label="Defeitos" fieldId="soul.defeitos">
           <Input
             value={s.defeitos ?? ""}
             onChange={(e) => set((c) => (c.soul.defeitos = e.target.value))}
@@ -126,6 +126,7 @@ export function SoulStep({ id }: { id: string }) {
 
       <Field
         label="História de origem"
+        fieldId="soul.origem"
         hint="De onde veio, o que viveu, por que fala sobre esse nicho. 3–5 linhas."
       >
         <Textarea
@@ -139,28 +140,28 @@ export function SoulStep({ id }: { id: string }) {
       <section>
         <div className="label-cap mb-2">Como reagiria a…</div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Field label="Elogio">
+          <Field label="Elogio" fieldId="soul.reacoes.elogio">
             <Input
               value={s.reacoes.elogio ?? ""}
               onChange={(e) => set((c) => (c.soul.reacoes.elogio = e.target.value))}
               placeholder="Ex.: agradece e muda de assunto"
             />
           </Field>
-          <Field label="Crítica">
+          <Field label="Crítica" fieldId="soul.reacoes.critica">
             <Input
               value={s.reacoes.critica ?? ""}
               onChange={(e) => set((c) => (c.soul.reacoes.critica = e.target.value))}
               placeholder="Ex.: pergunta o porquê antes de reagir"
             />
           </Field>
-          <Field label="Polêmica">
+          <Field label="Polêmica" fieldId="soul.reacoes.polemica">
             <Input
               value={s.reacoes.polemica ?? ""}
               onChange={(e) => set((c) => (c.soul.reacoes.polemica = e.target.value))}
               placeholder="Ex.: evita até ter certeza; depois é claro"
             />
           </Field>
-          <Field label="Hater">
+          <Field label="Hater" fieldId="soul.reacoes.hater">
             <Input
               value={s.reacoes.hater ?? ""}
               onChange={(e) => set((c) => (c.soul.reacoes.hater = e.target.value))}
@@ -169,6 +170,19 @@ export function SoulStep({ id }: { id: string }) {
           </Field>
         </div>
       </section>
+
+      <Field
+        label="Regras de consistência (até 5)"
+        fieldId="soul.regrasConsistencia"
+        hint="Linhas inegociáveis do personagem — vão viram parte do Prompt de sistema."
+      >
+        <TagInput
+          value={s.regrasConsistencia}
+          onChange={(v) => set((c) => (c.soul.regrasConsistencia = v))}
+          placeholder="Ex.: nunca fala sobre política partidária"
+          max={5}
+        />
+      </Field>
     </div>
   );
 }

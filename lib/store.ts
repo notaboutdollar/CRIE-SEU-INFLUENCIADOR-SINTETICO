@@ -4,7 +4,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { Character } from "./types";
 import { duplicateCharacter, emptyCharacter, hydrate } from "./defaults";
-import { writePath } from "./paths";
+import { readPath, writePath } from "./paths";
 
 type Updater = (c: Character) => void;
 
@@ -33,6 +33,45 @@ interface State {
   undoLast: (id: string) => void;
 }
 
+/** Atualização sem auto-confirmar sugestões (usada internamente). */
+function mutateCharacter(
+  list: Character[],
+  id: string,
+  mutate: Updater
+): Character[] {
+  return list.map((c) => {
+    if (c.id !== id) return c;
+    const next = JSON.parse(JSON.stringify(c)) as Character;
+    mutate(next);
+    next.updatedAt = Date.now();
+    return next;
+  });
+}
+
+/**
+ * Atualização pública: compara os paths em _suggestions antes/depois.
+ * Qualquer campo que o usuário tenha editado automaticamente perde o
+ * badge "Sugestão da IA" — a edição conta como aceitação.
+ */
+function mutateWithAutoConfirm(
+  list: Character[],
+  id: string,
+  mutate: Updater
+): Character[] {
+  return list.map((c) => {
+    if (c.id !== id) return c;
+    const next = JSON.parse(JSON.stringify(c)) as Character;
+    mutate(next);
+    next.updatedAt = Date.now();
+    for (const fieldId of Object.keys(next._suggestions)) {
+      const before = JSON.stringify(readPath(c as unknown, fieldId));
+      const after = JSON.stringify(readPath(next as unknown, fieldId));
+      if (before !== after) delete next._suggestions[fieldId];
+    }
+    return next;
+  });
+}
+
 export const useCharacters = create<State>()(
   persist(
     (set, get) => ({
@@ -52,14 +91,7 @@ export const useCharacters = create<State>()(
         return copy.id;
       },
       update: (id, mutate) => {
-        const list = get().characters.map((c) => {
-          if (c.id !== id) return c;
-          const next = JSON.parse(JSON.stringify(c)) as Character;
-          mutate(next);
-          next.updatedAt = Date.now();
-          return next;
-        });
-        set({ characters: list });
+        set({ characters: mutateWithAutoConfirm(get().characters, id, mutate) });
       },
       rename: (id, nome) =>
         get().update(id, (c) => {
@@ -68,41 +100,61 @@ export const useCharacters = create<State>()(
       get: (id) => get().characters.find((c) => c.id === id),
 
       applySuggestions: (id, suggestions, label) => {
-        get().snapshotHistory(id, label);
-        get().update(id, (c) => {
-          for (const s of suggestions) {
-            if (c._locks.includes(s.fieldId)) continue;
-            writePath(c as unknown as Record<string, unknown>, s.fieldId, s.valor);
-            c._suggestions[s.fieldId] = s.origem;
-          }
+        // snapshot + apply em uma passagem só, sem auto-confirmar (os próprios
+        // writes abaixo é que escrevem os valores novos — eles NÃO podem ser
+        // interpretados como "edição do usuário").
+        set({
+          characters: mutateCharacter(get().characters, id, (c) => {
+            const { _history, ...rest } = c;
+            void _history;
+            c._history = [
+              { at: Date.now(), label, snapshot: JSON.parse(JSON.stringify(rest)) },
+              ...c._history,
+            ].slice(0, 3);
+            for (const s of suggestions) {
+              if (c._locks.includes(s.fieldId)) continue;
+              writePath(c as unknown as Record<string, unknown>, s.fieldId, s.valor);
+              c._suggestions[s.fieldId] = s.origem;
+            }
+          }),
         });
       },
       confirmSuggestion: (id, fieldId) =>
-        get().update(id, (c) => {
-          delete c._suggestions[fieldId];
+        set({
+          characters: mutateCharacter(get().characters, id, (c) => {
+            delete c._suggestions[fieldId];
+          }),
         }),
       confirmAllSuggestions: (id) =>
-        get().update(id, (c) => {
-          c._suggestions = {};
+        set({
+          characters: mutateCharacter(get().characters, id, (c) => {
+            c._suggestions = {};
+          }),
         }),
       dropSuggestion: (id, fieldId) =>
-        get().update(id, (c) => {
-          delete c._suggestions[fieldId];
+        set({
+          characters: mutateCharacter(get().characters, id, (c) => {
+            delete c._suggestions[fieldId];
+          }),
         }),
       toggleLock: (id, fieldId) =>
-        get().update(id, (c) => {
-          c._locks = c._locks.includes(fieldId)
-            ? c._locks.filter((f) => f !== fieldId)
-            : [...c._locks, fieldId];
+        set({
+          characters: mutateCharacter(get().characters, id, (c) => {
+            c._locks = c._locks.includes(fieldId)
+              ? c._locks.filter((f) => f !== fieldId)
+              : [...c._locks, fieldId];
+          }),
         }),
       snapshotHistory: (id, label) =>
-        get().update(id, (c) => {
-          const { _history, ...rest } = c;
-          void _history;
-          c._history = [
-            { at: Date.now(), label, snapshot: JSON.parse(JSON.stringify(rest)) },
-            ...c._history,
-          ].slice(0, 3);
+        set({
+          characters: mutateCharacter(get().characters, id, (c) => {
+            const { _history, ...rest } = c;
+            void _history;
+            c._history = [
+              { at: Date.now(), label, snapshot: JSON.parse(JSON.stringify(rest)) },
+              ...c._history,
+            ].slice(0, 3);
+          }),
         }),
       undoLast: (id) => {
         const c = get().characters.find((x) => x.id === id);
@@ -121,7 +173,6 @@ export const useCharacters = create<State>()(
       name: "cis.characters.v1",
       onRehydrateStorage: () => (state) => {
         if (!state) return;
-        // Migra personagens antigos (fase 1) para o novo schema sem crashar.
         state.characters = state.characters.map((c) => hydrate(c));
       },
     }

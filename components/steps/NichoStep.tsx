@@ -23,14 +23,14 @@ export function NichoStep({ id }: { id: string }) {
   return (
     <div className="grid grid-cols-1 gap-5">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <Field label="Nicho principal">
+        <Field label="Nicho principal" fieldId="nicho.principal">
           <Input
             value={n.principal ?? ""}
             onChange={(e) => set((c) => (c.nicho.principal = e.target.value))}
             placeholder="Ex.: Produtividade pra criativos"
           />
         </Field>
-        <Field label="Subnicho" optional>
+        <Field label="Subnicho" fieldId="nicho.subnicho" optional>
           <Input
             value={n.subnicho ?? ""}
             onChange={(e) => set((c) => (c.nicho.subnicho = e.target.value))}
@@ -39,7 +39,7 @@ export function NichoStep({ id }: { id: string }) {
         </Field>
       </div>
 
-      <Field label="Público-alvo" hint="Idade, dores, desejos — descreva como uma pessoa real.">
+      <Field label="Público-alvo" fieldId="nicho.publico" hint="Idade, dores, desejos — descreva como uma pessoa real.">
         <Textarea
           rows={3}
           value={n.publico ?? ""}
@@ -48,7 +48,7 @@ export function NichoStep({ id }: { id: string }) {
         />
       </Field>
 
-      <Field label="Promessa do perfil em 1 frase" hint="‘Quem me segue ganha X.’">
+      <Field label="Promessa do perfil em 1 frase" fieldId="nicho.promessa" hint="‘Quem me segue ganha X.’">
         <Input
           value={n.promessa ?? ""}
           onChange={(e) => set((c) => (c.nicho.promessa = e.target.value))}
@@ -59,7 +59,7 @@ export function NichoStep({ id }: { id: string }) {
       <section>
         <div className="label-cap mb-2">O que mais performa no nicho</div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Field label="Formatos">
+          <Field label="Formatos" fieldId="nicho.performaFormatos">
             <div className="flex flex-wrap gap-2">
               {formatos.map((f) => (
                 <Chip
@@ -72,7 +72,7 @@ export function NichoStep({ id }: { id: string }) {
               ))}
             </div>
           </Field>
-          <Field label="Temas que performam" optional>
+          <Field label="Temas que performam" fieldId="nicho.performaTemas" optional>
             <Textarea
               rows={2}
               value={n.performaTemas ?? ""}
@@ -80,7 +80,7 @@ export function NichoStep({ id }: { id: string }) {
               placeholder="Ex.: rotinas, antes-e-depois, erros honestos"
             />
           </Field>
-          <Field label="Ganchos que funcionam" optional>
+          <Field label="Ganchos que funcionam" fieldId="nicho.performaGanchos" optional>
             <Textarea
               rows={2}
               value={n.performaGanchos ?? ""}
@@ -89,21 +89,21 @@ export function NichoStep({ id }: { id: string }) {
             />
           </Field>
           <div className="grid grid-cols-3 gap-3">
-            <Field label="Duração" optional>
+            <Field label="Duração" fieldId="nicho.performaDuracao" optional>
               <Input
                 value={n.performaDuracao ?? ""}
                 onChange={(e) => set((c) => (c.nicho.performaDuracao = e.target.value))}
                 placeholder="30–60s"
               />
             </Field>
-            <Field label="Frequência" optional>
+            <Field label="Frequência" fieldId="nicho.performaFrequencia" optional>
               <Input
                 value={n.performaFrequencia ?? ""}
                 onChange={(e) => set((c) => (c.nicho.performaFrequencia = e.target.value))}
                 placeholder="4x/sem"
               />
             </Field>
-            <Field label="Horários" optional>
+            <Field label="Horários" fieldId="nicho.performaHorarios" optional>
               <Input
                 value={n.performaHorarios ?? ""}
                 onChange={(e) => set((c) => (c.nicho.performaHorarios = e.target.value))}
@@ -114,7 +114,7 @@ export function NichoStep({ id }: { id: string }) {
         </div>
       </section>
 
-      <Field label="Concorrentes / referências (3 a 5)" hint="Separados por vírgula ou Enter.">
+      <Field label="Concorrentes / referências (3 a 5)" fieldId="nicho.concorrentes" hint="Separados por vírgula ou Enter.">
         <TagInput
           value={n.concorrentes}
           onChange={(v) => set((c) => (c.nicho.concorrentes = v))}
@@ -123,7 +123,7 @@ export function NichoStep({ id }: { id: string }) {
         />
       </Field>
 
-      <Field label="O que o seu influenciador faz de diferente">
+      <Field label="O que o seu influenciador faz de diferente" fieldId="nicho.diferencial">
         <Textarea
           rows={3}
           value={n.diferencial ?? ""}
@@ -132,7 +132,7 @@ export function NichoStep({ id }: { id: string }) {
         />
       </Field>
 
-      <Field label="Plataformas prioritárias">
+      <Field label="Plataformas prioritárias" fieldId="nicho.plataformas">
         <div className="flex flex-wrap gap-2">
           {plataformas.map((p) => (
             <Chip
