@@ -1,25 +1,19 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Plus, Sparkles } from "lucide-react";
 import { useCharacters } from "@/lib/store";
 import { Button } from "@/components/ui/Button";
 import { EmptyState } from "@/components/home/EmptyState";
 import { CharacterListItem } from "@/components/home/CharacterListItem";
+import { CreateDialog } from "@/components/home/CreateDialog";
 
 export default function Home() {
-  const router = useRouter();
   const [mounted, setMounted] = useState(false);
+  const [open, setOpen] = useState(false);
   const characters = useCharacters((s) => s.characters);
-  const create = useCharacters((s) => s.createCharacter);
 
   useEffect(() => setMounted(true), []);
-
-  function onCreate() {
-    const id = create();
-    router.push(`/personagem/${id}`);
-  }
 
   return (
     <main className="mx-auto max-w-5xl px-4 sm:px-6 py-10 sm:py-16">
@@ -33,7 +27,7 @@ export default function Home() {
           <span className="text-accent">influenciador sintético</span>, campo a campo.
         </h1>
         <p className="text-[18px] text-[#3a3a3a] mt-6 max-w-[640px] leading-relaxed">
-          Um wizard em 7 etapas que leva você da ideia solta até uma ficha completa, com um Prompt Mestre pronto para gerar imagem, vídeo e roteiro. Tudo salvo no seu navegador — nada vai para servidor.
+          Um wizard em 7 etapas que leva você da ideia solta até uma ficha completa, com um Prompt Mestre pronto para gerar imagem, vídeo e roteiro. Escreva um contexto curto e deixe a IA preencher — você revisa.
         </p>
       </header>
 
@@ -41,7 +35,7 @@ export default function Home() {
         <div className="flex items-center justify-between mb-6">
           <h2 className="serif text-2xl text-ink">Seus Personagens</h2>
           {mounted && characters.length > 0 ? (
-            <Button variant="accent" onClick={onCreate}>
+            <Button variant="accent" onClick={() => setOpen(true)}>
               <Plus className="w-4 h-4" /> Novo personagem
             </Button>
           ) : null}
@@ -50,7 +44,7 @@ export default function Home() {
         {!mounted ? (
           <div className="card p-10 text-center text-muted">Carregando…</div>
         ) : characters.length === 0 ? (
-          <EmptyState onCreate={onCreate} />
+          <EmptyState onCreate={() => setOpen(true)} />
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {characters.map((c) => (
@@ -61,11 +55,13 @@ export default function Home() {
       </section>
 
       <footer className="mt-20 pt-8 border-t border-line text-[13px] text-muted">
-        <span className="eyebrow">v1</span>
+        <span className="eyebrow">v2</span>
         <span className="ml-3">
-          Persistência local. v2 vem com login, link público e geração de imagem.
+          Expansão por IA + persistência local. v3 vem com login, link público e geração de imagem.
         </span>
       </footer>
+
+      <CreateDialog open={open} onClose={() => setOpen(false)} />
     </main>
   );
 }
