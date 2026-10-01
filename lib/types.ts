@@ -22,6 +22,8 @@ export interface ReferenciaImagem {
 export interface Identidade {
   nome: string;
   nomeExtenso?: string;
+  handles?: string[];
+  ocupacao?: string;
   genero?: Genero;
   forma?: Forma;
   idadeAparente?: string;
@@ -41,6 +43,7 @@ export interface Visual {
   acessorios?: string;
   tracosMarcantes?: string;
   paleta?: string;
+  cenarios?: string;
   negativos?: string;
 }
 
@@ -73,11 +76,18 @@ export interface Soul {
     polemica?: string;
     hater?: string;
   };
+  regrasConsistencia: string[];
 }
 
 export interface Pilar {
   nome: string;
   pct: number;
+}
+
+export interface IdeiaConteudo {
+  formato: string;
+  titulo: string;
+  descricao?: string;
 }
 
 export interface Nicho {
@@ -95,6 +105,7 @@ export interface Nicho {
   diferencial?: string;
   plataformas: string[];
   pilares: Pilar[];
+  ideiasConteudo: IdeiaConteudo[];
 }
 
 export interface Voz {
@@ -123,6 +134,21 @@ export interface Monetizacao {
   transparencia?: string;
 }
 
+export interface PontoEmAberto {
+  decisao: string;
+  porQueImporta: string;
+  resposta?: string;
+}
+
+export interface HistoryEntry {
+  at: number;
+  label: string;
+  snapshot: SerializableCharacter;
+}
+
+/** Snapshot sem metadados de IA — usado em _history pra evitar recursão. */
+export type SerializableCharacter = Omit<Character, "_history">;
+
 export interface Character {
   id: string;
   createdAt: number;
@@ -133,6 +159,13 @@ export interface Character {
   nicho: Nicho;
   voz: Voz;
   monetizacao: Monetizacao;
+  pontosEmAberto: PontoEmAberto[];
+  /** fieldId → "contexto"|"suposicao". Enquanto estiver aqui, o campo mostra badge. */
+  _suggestions: Record<string, "contexto" | "suposicao">;
+  /** fieldIds travados: nunca sobrescritos por regeneração. */
+  _locks: string[];
+  /** Snapshots das últimas gerações, pra Desfazer. */
+  _history: HistoryEntry[];
 }
 
 export const STEP_IDS = [

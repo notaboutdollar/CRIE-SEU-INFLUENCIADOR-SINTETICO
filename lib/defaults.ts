@@ -21,12 +21,14 @@ export function emptyCharacter(): Character {
       },
       odeia: { manias: [], conteudos: [], comportamentos: [], assuntos: [] },
       reacoes: {},
+      regrasConsistencia: [],
     },
     nicho: {
       performaFormatos: [],
       concorrentes: [],
       plataformas: [],
       pilares: [],
+      ideiasConteudo: [],
     },
     voz: {
       tomFormalidade: 50,
@@ -40,6 +42,10 @@ export function emptyCharacter(): Character {
       exemplos: [],
     },
     monetizacao: { modelos: [], marcasOk: [], marcasNao: [] },
+    pontosEmAberto: [],
+    _suggestions: {},
+    _locks: [],
+    _history: [],
   };
 }
 
@@ -49,5 +55,35 @@ export function duplicateCharacter(c: Character): Character {
   copy.createdAt = Date.now();
   copy.updatedAt = Date.now();
   copy.identidade.nome = c.identidade.nome ? `${c.identidade.nome} (cópia)` : "";
+  copy._suggestions = {};
+  copy._locks = [];
+  copy._history = [];
   return copy;
+}
+
+/**
+ * Migração defensiva: personagens antigos no localStorage não têm
+ * `_suggestions`, `_locks`, `_history`, `pontosEmAberto`, `regrasConsistencia`,
+ * `ideiasConteudo`. Esse helper garante que ninguém crashe ao ler um objeto
+ * antigo depois do upgrade.
+ */
+export function hydrate(c: Character): Character {
+  const base = emptyCharacter();
+  return {
+    ...c,
+    pontosEmAberto: c.pontosEmAberto ?? [],
+    _suggestions: c._suggestions ?? {},
+    _locks: c._locks ?? [],
+    _history: c._history ?? [],
+    soul: {
+      ...base.soul,
+      ...c.soul,
+      regrasConsistencia: c.soul?.regrasConsistencia ?? [],
+    },
+    nicho: {
+      ...base.nicho,
+      ...c.nicho,
+      ideiasConteudo: c.nicho?.ideiasConteudo ?? [],
+    },
+  };
 }
