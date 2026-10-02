@@ -1,18 +1,19 @@
 # Crie seu Influenciador Sintético
 
-Wizard em etapas para definir, campo a campo, quem é o seu influenciador sintético. Na v2, você escreve um contexto curto e a IA preenche a ficha; no final, entrega a **Ficha do Influenciador** completa e o **Prompt Mestre** (imagem, roteiro, vídeo) + o **Prompt de sistema** pronto para colar em qualquer chat de IA.
+Wizard em etapas para definir, campo a campo, quem é o seu influenciador sintético. No final, entrega a **Ficha do Influenciador** completa e o **Prompt Mestre** (imagem, roteiro, vídeo) + o **Prompt de sistema** pronto para colar em qualquer chat de IA.
 
-> **v2.** Personagens vivem no `localStorage`. A geração por IA usa a API da Anthropic no server-side.
+As features de IA (expansão por contexto, sugerir campo, regenerar seção, checar coerência) são **opcionais** — ficam escondidas por padrão. O wizard manual funciona 100% sem configurar nada.
+
+> **v2.** Personagens vivem no `localStorage`. Quando a IA é ligada, a geração usa a API da Anthropic no server-side.
 
 ## Rodar localmente
 
 ```bash
-cp .env.example .env.local   # (ou "copy" no Windows) e preencha ANTHROPIC_API_KEY
 npm install
 npm run dev
 ```
 
-Abra http://localhost:3000. Sem a chave, o wizard manual funciona 100%; só as ações "Expandir com IA", "Sugerir com IA", "Regenerar seção" e "Checar com IA" retornam erro `CONFIG_MISSING` com mensagem em pt-BR.
+Abra http://localhost:3000. Pronto — o wizard manual já funciona.
 
 Build e start de produção:
 
@@ -28,13 +29,22 @@ npm run typecheck
 npm test
 ```
 
-## Configurando a IA
+## Ligar a IA (opcional)
 
-- `ANTHROPIC_API_KEY` — obrigatória para as rotas de IA. A chave só é usada server-side (nas Route Handlers) e nunca entra no bundle do client.
+Por padrão, nenhum botão de IA aparece — assim nenhum request vai pra Anthropic e não tem custo. Para habilitar as features de IA:
+
+1. Copie `.env.example` para `.env.local` (ignorado pelo git).
+2. Preencha `ANTHROPIC_API_KEY=sk-ant-...` (só server-side, nunca vai pro bundle).
+3. Setar `NEXT_PUBLIC_AI_ENABLED=true` (controla a UI).
+4. Reinicie o `npm run dev`.
+
+Com a flag desligada, os botões "Expandir com IA", "Sugerir com IA", "Regenerar esta seção" e "Checar com IA" ficam escondidos; o resto do app funciona normal. Com a flag ligada mas sem chave, os botões aparecem mas devolvem erro `CONFIG_MISSING` em pt-BR.
+
+Variáveis adicionais:
 - `ANTHROPIC_MODEL` — opcional. Default `claude-sonnet-5-5`.
 - `RATE_LIMIT_PER_MINUTE` — opcional. Default `10` (janela deslizante de 1 min por IP, em memória).
 
-Deploy na Vercel: `Settings → Environment Variables → ANTHROPIC_API_KEY`. Depois um `Redeploy`.
+Deploy na Vercel: `Settings → Environment Variables` → adicione `ANTHROPIC_API_KEY` **e** `NEXT_PUBLIC_AI_ENABLED=true` → Redeploy. Deixar as duas em branco mantém o deploy no modo manual, zero custo.
 
 ## Stack
 

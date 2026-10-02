@@ -8,6 +8,7 @@ import { Field } from "@/components/ui/Field";
 import { useCharacters } from "@/lib/store";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/cn";
+import { AI_ENABLED } from "@/lib/ai/flag";
 
 type Mode = "pick" | "scratch" | "expand" | "loading";
 
@@ -40,13 +41,20 @@ export function CreateDialog({ open, onClose }: Props) {
   const dialogRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (open) {
-      setMode("pick");
-      setContexto("");
-      setErro(null);
-      setLoadingStep(0);
+    if (!open) return;
+    setContexto("");
+    setErro(null);
+    setLoadingStep(0);
+    // Com a IA desligada, não faz sentido mostrar a tela de escolha —
+    // cria direto o personagem em branco e vai pro wizard.
+    if (!AI_ENABLED) {
+      const id = create();
+      onClose();
+      router.push(`/personagem/${id}`);
+      return;
     }
-  }, [open]);
+    setMode("pick");
+  }, [open, create, onClose, router]);
 
   useEffect(() => {
     if (!open) return;

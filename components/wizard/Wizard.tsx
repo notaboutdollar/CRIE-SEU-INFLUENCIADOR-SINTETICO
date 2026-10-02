@@ -10,6 +10,7 @@ import { StepFooter } from "./StepFooter";
 import { SuggestionCounter } from "./SuggestionCounter";
 import { WizardProvider } from "./WizardContext";
 import { RegenerateSection } from "./RegenerateSection";
+import { AI_ENABLED } from "@/lib/ai/flag";
 import { DicaBox } from "@/components/ui/DicaBox";
 import { CharacterCard } from "@/components/preview/CharacterCard";
 import { IdentidadeStep } from "@/components/steps/IdentidadeStep";
@@ -71,7 +72,7 @@ export function Wizard({ id }: { id: string }) {
 
             {renderStep(currentId, character.id)}
 
-            {currentId !== "revisao" ? (
+            {AI_ENABLED && currentId !== "revisao" ? (
               <div className="mt-6">
                 <RegenerateSection
                   characterId={character.id}

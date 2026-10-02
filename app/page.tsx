@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { EmptyState } from "@/components/home/EmptyState";
 import { CharacterListItem } from "@/components/home/CharacterListItem";
 import { CreateDialog } from "@/components/home/CreateDialog";
+import { AI_ENABLED } from "@/lib/ai/flag";
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -27,7 +28,9 @@ export default function Home() {
           <span className="text-accent">influenciador sintético</span>, campo a campo.
         </h1>
         <p className="text-[18px] text-[#3a3a3a] mt-6 max-w-[640px] leading-relaxed">
-          Um wizard em 7 etapas que leva você da ideia solta até uma ficha completa, com um Prompt Mestre pronto para gerar imagem, vídeo e roteiro. Escreva um contexto curto e deixe a IA preencher — você revisa.
+          {AI_ENABLED
+            ? "Um wizard em 7 etapas que leva você da ideia solta até uma ficha completa, com um Prompt Mestre pronto para gerar imagem, vídeo e roteiro. Escreva um contexto curto e deixe a IA preencher — você revisa."
+            : "Um wizard em 7 etapas que leva você da ideia solta até uma ficha completa, com um Prompt Mestre pronto para gerar imagem, vídeo e roteiro. Tudo salvo no seu navegador — nada vai para servidor."}
         </p>
       </header>
 
@@ -57,7 +60,9 @@ export default function Home() {
       <footer className="mt-20 pt-8 border-t border-line text-[13px] text-muted">
         <span className="eyebrow">v2</span>
         <span className="ml-3">
-          Expansão por IA + persistência local. v3 vem com login, link público e geração de imagem.
+          {AI_ENABLED
+            ? "Expansão por IA + persistência local. v3 vem com login, link público e geração de imagem."
+            : "Persistência local. Expansão por IA e geração de imagem chegam em uma versão futura."}
         </span>
       </footer>
 

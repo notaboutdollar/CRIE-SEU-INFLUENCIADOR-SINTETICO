@@ -6,6 +6,7 @@ import type { ReactNode } from "react";
 import { useCharacters } from "@/lib/store";
 import { useWizardCharacterId } from "@/components/wizard/WizardContext";
 import { SuggestFieldButton } from "@/components/wizard/SuggestFieldButton";
+import { AI_ENABLED } from "@/lib/ai/flag";
 
 interface FieldProps {
   label: string;
@@ -118,7 +119,7 @@ export function Field({
           <span />
         )}
         <div className="flex items-center gap-3">
-          {!showBadge && characterId && fieldId && aiDescricao ? (
+          {AI_ENABLED && !showBadge && characterId && fieldId && aiDescricao ? (
             <SuggestFieldButton
               characterId={characterId}
               fieldId={fieldId}

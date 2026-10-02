@@ -12,6 +12,7 @@ import { FichaPoster } from "@/components/export/FichaPoster";
 import { cn } from "@/lib/cn";
 import { PontosEmAberto } from "@/components/revisao/PontosEmAberto";
 import { ConsistenciaIA } from "@/components/revisao/ConsistenciaIA";
+import { AI_ENABLED } from "@/lib/ai/flag";
 
 type Orient = "vertical" | "horizontal";
 
@@ -120,7 +121,7 @@ export function RevisaoStep({ id }: { id: string }) {
         )}
       </section>
 
-      <ConsistenciaIA characterId={c.id} />
+      {AI_ENABLED ? <ConsistenciaIA characterId={c.id} /> : null}
 
       <PontosEmAberto character={c} />
 
