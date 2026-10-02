@@ -1,0 +1,69 @@
+"use client";
+
+import { useState } from "react";
+import { Sparkles } from "lucide-react";
+import { useCharacters } from "@/lib/store";
+import { writePath } from "@/lib/paths";
+import { cn } from "@/lib/cn";
+
+interface Props {
+  characterId: string;
+  fieldId: string;
+  descricao: string;
+  className?: string;
+}
+
+/**
+ * Botão compacto "Sugerir com IA" — pede uma sugestão para o campo específico
+ * usando o resto da ficha como contexto, aplica no store e marca como sugestão
+ * ("suposicao") para o usuário revisar.
+ */
+export function SuggestFieldButton({ characterId, fieldId, descricao, className }: Props) {
+  const update = useCharacters((s) => s.update);
+  const character = useCharacters((s) => s.characters.find((c) => c.id === characterId));
+  const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+
+  async function onClick() {
+    if (!character) return;
+    setLoading(true);
+    setErr(null);
+    try {
+      const res = await fetch("/api/sugerir-campo", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ character, fieldId, fieldDescricao: descricao }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setErr(data?.error ?? "Falha ao sugerir.");
+        return;
+      }
+      update(characterId, (c) => {
+        writePath(c as unknown as Record<string, unknown>, fieldId, data.valor);
+        c._suggestions[fieldId] = "suposicao";
+      });
+    } catch (e) {
+      setErr((e as Error).message ?? "Falha de rede.");
+    } finally {
+      setLoading(false);
+      if (err) setTimeout(() => setErr(null), 3000);
+    }
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={loading}
+      title={err ?? "Deixar a IA sugerir este campo"}
+      className={cn(
+        "inline-flex items-center gap-1 text-[11px] mono uppercase font-bold text-accent-strong hover:text-ink transition disabled:opacity-50",
+        className
+      )}
+    >
+      <Sparkles className={cn("w-3 h-3", loading && "animate-pulse")} />
+      {loading ? "gerando…" : "Sugerir com IA"}
+    </button>
+  );
+}

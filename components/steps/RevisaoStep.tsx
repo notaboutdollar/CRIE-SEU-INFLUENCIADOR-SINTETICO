@@ -1,14 +1,17 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { AlertTriangle, CheckCircle2, Copy, Download, FileJson, FileText, Image as ImageIcon, Info } from "lucide-react";
+import { AlertTriangle, CheckCircle2, Copy, Download, FileJson, FileText, Image as ImageIcon, Info, UserCheck } from "lucide-react";
 import { useCharacter } from "@/lib/useCharacter";
 import { Button } from "@/components/ui/Button";
 import { assembleMasterPrompt, fullMasterPrompt } from "@/lib/prompts";
+import { promptSistema } from "@/lib/prompts/sistema";
 import { checarConsistencia, status } from "@/lib/completion";
 import { copyToClipboard, downloadJson, downloadPdf, downloadPng, downloadText, toMarkdown } from "@/lib/export";
 import { FichaPoster } from "@/components/export/FichaPoster";
 import { cn } from "@/lib/cn";
+import { PontosEmAberto } from "@/components/revisao/PontosEmAberto";
+import { ConsistenciaIA } from "@/components/revisao/ConsistenciaIA";
 
 type Orient = "vertical" | "horizontal";
 
@@ -37,6 +40,10 @@ export function RevisaoStep({ id }: { id: string }) {
   async function onCopyBloco(nome: string, texto: string) {
     const ok = await copyToClipboard(texto);
     flash(ok ? `Prompt de ${nome} copiado.` : "Não deu para copiar.");
+  }
+  async function onCopySistema() {
+    const ok = await copyToClipboard(promptSistema(c));
+    flash(ok ? "Prompt de sistema copiado." : "Não deu para copiar.");
   }
 
   function onExportMd() {
@@ -112,6 +119,10 @@ export function RevisaoStep({ id }: { id: string }) {
           </ul>
         )}
       </section>
+
+      <ConsistenciaIA characterId={c.id} />
+
+      <PontosEmAberto character={c} />
 
       <section>
         <div className="flex items-center justify-between mb-3">
@@ -198,6 +209,9 @@ export function RevisaoStep({ id }: { id: string }) {
       <section className="flex flex-wrap gap-2 items-center">
         <Button variant="accent" onClick={onCopyMaster}>
           <Copy className="w-4 h-4" /> Copiar Prompt Mestre
+        </Button>
+        <Button variant="ghost" onClick={onCopySistema}>
+          <UserCheck className="w-4 h-4" /> Prompt de sistema
         </Button>
         <Button variant="ghost" onClick={onExportMd}>
           <FileText className="w-4 h-4" /> Markdown

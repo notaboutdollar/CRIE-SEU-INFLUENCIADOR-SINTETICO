@@ -39,7 +39,7 @@ export function NichoStep({ id }: { id: string }) {
         </Field>
       </div>
 
-      <Field label="Público-alvo" fieldId="nicho.publico" hint="Idade, dores, desejos — descreva como uma pessoa real.">
+      <Field label="Público-alvo" fieldId="nicho.publico" aiDescricao="Descrição do público ideal: idade, contexto de vida, dores, desejos. Como se fosse uma pessoa real." hint="Idade, dores, desejos — descreva como uma pessoa real.">
         <Textarea
           rows={3}
           value={n.publico ?? ""}
@@ -48,7 +48,7 @@ export function NichoStep({ id }: { id: string }) {
         />
       </Field>
 
-      <Field label="Promessa do perfil em 1 frase" fieldId="nicho.promessa" hint="‘Quem me segue ganha X.’">
+      <Field label="Promessa do perfil em 1 frase" fieldId="nicho.promessa" aiDescricao="Promessa em 1 frase no formato 'Quem me segue ganha X.' Direta e concreta." hint="‘Quem me segue ganha X.’">
         <Input
           value={n.promessa ?? ""}
           onChange={(e) => set((c) => (c.nicho.promessa = e.target.value))}
@@ -123,7 +123,7 @@ export function NichoStep({ id }: { id: string }) {
         />
       </Field>
 
-      <Field label="O que o seu influenciador faz de diferente" fieldId="nicho.diferencial">
+      <Field label="O que o seu influenciador faz de diferente" fieldId="nicho.diferencial" aiDescricao="Diferencial do personagem no nicho. Específico — não 'ser autêntico'.">
         <Textarea
           rows={3}
           value={n.diferencial ?? ""}

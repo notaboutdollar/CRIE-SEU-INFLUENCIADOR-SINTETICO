@@ -5,6 +5,7 @@ import { Check, Lock, LockOpen, Sparkles } from "lucide-react";
 import type { ReactNode } from "react";
 import { useCharacters } from "@/lib/store";
 import { useWizardCharacterId } from "@/components/wizard/WizardContext";
+import { SuggestFieldButton } from "@/components/wizard/SuggestFieldButton";
 
 interface FieldProps {
   label: string;
@@ -14,6 +15,8 @@ interface FieldProps {
   counter?: { value: number; max: number };
   /** Caminho dot-notation (ex.: "identidade.bio"). Habilita badge "Sugestão da IA" e cadeado. */
   fieldId?: string;
+  /** Descrição curta para a IA quando o usuário clica em "Sugerir com IA". */
+  aiDescricao?: string;
   children: ReactNode;
   className?: string;
 }
@@ -25,6 +28,7 @@ export function Field({
   htmlFor,
   counter,
   fieldId,
+  aiDescricao,
   children,
   className,
 }: FieldProps) {
@@ -113,16 +117,25 @@ export function Field({
         ) : (
           <span />
         )}
-        {showBadge && characterId && fieldId ? (
-          <button
-            type="button"
-            onClick={() => confirmSuggestion(characterId, fieldId)}
-            className="text-[11px] mono text-accent-strong hover:text-ink inline-flex items-center gap-1 font-bold uppercase"
-          >
-            <Check className="w-3 h-3" />
-            Confirmar
-          </button>
-        ) : null}
+        <div className="flex items-center gap-3">
+          {!showBadge && characterId && fieldId && aiDescricao ? (
+            <SuggestFieldButton
+              characterId={characterId}
+              fieldId={fieldId}
+              descricao={aiDescricao}
+            />
+          ) : null}
+          {showBadge && characterId && fieldId ? (
+            <button
+              type="button"
+              onClick={() => confirmSuggestion(characterId, fieldId)}
+              className="text-[11px] mono text-accent-strong hover:text-ink inline-flex items-center gap-1 font-bold uppercase"
+            >
+              <Check className="w-3 h-3" />
+              Confirmar
+            </button>
+          ) : null}
+        </div>
       </div>
     </div>
   );

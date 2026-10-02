@@ -127,6 +127,7 @@ export function SoulStep({ id }: { id: string }) {
       <Field
         label="História de origem"
         fieldId="soul.origem"
+        aiDescricao="Parágrafo curto (3-5 linhas) de background: de onde veio, o que viveu, por que fala desse nicho. Específico, com detalhes concretos."
         hint="De onde veio, o que viveu, por que fala sobre esse nicho. 3–5 linhas."
       >
         <Textarea

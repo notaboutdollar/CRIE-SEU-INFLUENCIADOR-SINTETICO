@@ -112,6 +112,7 @@ export function IdentidadeStep({ id }: { id: string }) {
       <Field
         label="Bio em 1 linha"
         fieldId="identidade.bio"
+        aiDescricao="Bio curta (até 140 chars) que resume o personagem em uma frase. Específica, não genérica."
         hint="O resumo do personagem. Pense em algo que você diria em uma reunião: ‘ele é o ___ que ___’."
         counter={{ value: (d.bio ?? "").length, max: 140 }}
       >

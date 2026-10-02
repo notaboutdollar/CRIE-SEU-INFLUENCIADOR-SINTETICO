@@ -9,6 +9,7 @@ import { StepTabs } from "./StepTabs";
 import { StepFooter } from "./StepFooter";
 import { SuggestionCounter } from "./SuggestionCounter";
 import { WizardProvider } from "./WizardContext";
+import { RegenerateSection } from "./RegenerateSection";
 import { DicaBox } from "@/components/ui/DicaBox";
 import { CharacterCard } from "@/components/preview/CharacterCard";
 import { IdentidadeStep } from "@/components/steps/IdentidadeStep";
@@ -69,6 +70,16 @@ export function Wizard({ id }: { id: string }) {
             </div>
 
             {renderStep(currentId, character.id)}
+
+            {currentId !== "revisao" ? (
+              <div className="mt-6">
+                <RegenerateSection
+                  characterId={character.id}
+                  stepId={currentId}
+                  stepTitulo={current.title}
+                />
+              </div>
+            ) : null}
 
             <StepFooter current={currentId} onChange={setCurrentId} />
           </section>

@@ -18,7 +18,7 @@ export function MonetizacaoStep({ id }: { id: string }) {
 
   return (
     <div className="grid grid-cols-1 gap-5">
-      <Field label="Modelo de negócio" hint="Selecione um ou mais.">
+      <Field label="Modelo de negócio" fieldId="monetizacao.modelos" hint="Selecione um ou mais.">
         <div className="flex flex-wrap gap-2">
           {modelosNegocio.map((p) => (
             <Chip
@@ -33,14 +33,14 @@ export function MonetizacaoStep({ id }: { id: string }) {
       </Field>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <Field label="Tipos de marca que combinam">
+        <Field label="Tipos de marca que combinam" fieldId="monetizacao.marcasOk">
           <TagInput
             value={m.marcasOk}
             onChange={(v) => set((c) => (c.monetizacao.marcasOk = v))}
             placeholder="Ex.: papelaria independente, café, saúde mental"
           />
         </Field>
-        <Field label="Tipos de marca que NÃO combinam">
+        <Field label="Tipos de marca que NÃO combinam" fieldId="monetizacao.marcasNao">
           <TagInput
             value={m.marcasNao}
             onChange={(v) => set((c) => (c.monetizacao.marcasNao = v))}
@@ -51,6 +51,8 @@ export function MonetizacaoStep({ id }: { id: string }) {
 
       <Field
         label="Limites éticos"
+        fieldId="monetizacao.limites"
+        aiDescricao="O que o personagem JAMAIS divulgaria mesmo com dinheiro bom na mesa. Específico, coerente com os valores."
         hint="O que ele jamais divulgaria — mesmo com um cheque bom na mesa."
       >
         <Textarea
@@ -63,6 +65,8 @@ export function MonetizacaoStep({ id }: { id: string }) {
 
       <Field
         label="Transparência: como e onde ele avisa que é um personagem sintético"
+        fieldId="monetizacao.transparencia"
+        aiDescricao="Como e onde o personagem sinaliza publicamente que é sintético (bio, marca-d'água, pin no perfil, etc.)."
         hint="A primeira linha da bio? Pin no perfil? Em cada vídeo? Decida."
       >
         <Textarea

@@ -18,7 +18,7 @@ export function VozStep({ id }: { id: string }) {
       <section>
         <div className="label-cap mb-2">Tom de voz</div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <Field label="Formalidade">
+          <Field label="Formalidade" fieldId="voz.tomFormalidade">
             <Slider
               value={v.tomFormalidade}
               onChange={(x) => set((c) => (c.voz.tomFormalidade = x))}
@@ -26,7 +26,7 @@ export function VozStep({ id }: { id: string }) {
               rightLabel="Informal"
             />
           </Field>
-          <Field label="Humor">
+          <Field label="Humor" fieldId="voz.tomHumor">
             <Slider
               value={v.tomHumor}
               onChange={(x) => set((c) => (c.voz.tomHumor = x))}
@@ -34,7 +34,7 @@ export function VozStep({ id }: { id: string }) {
               rightLabel="Engraçado"
             />
           </Field>
-          <Field label="Complexidade">
+          <Field label="Complexidade" fieldId="voz.tomComplexidade">
             <Slider
               value={v.tomComplexidade}
               onChange={(x) => set((c) => (c.voz.tomComplexidade = x))}
@@ -46,19 +46,19 @@ export function VozStep({ id }: { id: string }) {
       </section>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Field label="Gírias">
+        <Field label="Gírias" fieldId="voz.girias">
           <TagInput value={v.girias} onChange={(x) => set((c) => (c.voz.girias = x))} />
         </Field>
-        <Field label="Bordões">
+        <Field label="Bordões" fieldId="voz.bordoes">
           <TagInput value={v.bordoes} onChange={(x) => set((c) => (c.voz.bordoes = x))} />
         </Field>
-        <Field label="Palavras proibidas">
+        <Field label="Palavras proibidas" fieldId="voz.proibidas" hint="Como ele NUNCA falaria.">
           <TagInput value={v.proibidas} onChange={(x) => set((c) => (c.voz.proibidas = x))} />
         </Field>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <Field label="Como começa os conteúdos" optional>
+        <Field label="Como começa os conteúdos" fieldId="voz.abertura" aiDescricao="Abertura típica das falas dele. Curto, 1 frase, no estilo dele." optional>
           <Textarea
             rows={2}
             value={v.abertura ?? ""}
@@ -66,7 +66,7 @@ export function VozStep({ id }: { id: string }) {
             placeholder="Ex.: ‘Bora pra um papo rápido…’"
           />
         </Field>
-        <Field label="Como termina" optional>
+        <Field label="Como termina" fieldId="voz.fechamento" aiDescricao="Fechamento típico das falas dele. Curto, 1 frase, no estilo dele." optional>
           <Textarea
             rows={2}
             value={v.fechamento ?? ""}
@@ -77,7 +77,7 @@ export function VozStep({ id }: { id: string }) {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <Field label="Uso de emoji">
+        <Field label="Uso de emoji" fieldId="voz.emoji">
           <div className="flex gap-2">
             {emojiOpcoes.map((o) => (
               <Chip
@@ -90,7 +90,7 @@ export function VozStep({ id }: { id: string }) {
             ))}
           </div>
         </Field>
-        <Field label="Tamanho médio das frases">
+        <Field label="Tamanho médio das frases" fieldId="voz.tamanhoFrase">
           <div className="flex gap-2">
             {tamanhoFraseOpcoes.map((o) => (
               <Chip
@@ -105,7 +105,7 @@ export function VozStep({ id }: { id: string }) {
         </Field>
       </div>
 
-      <Field label="Exemplos de 3 falas dele" hint="Escreva do jeito que ele falaria. Serve pra calibrar o estilo.">
+      <Field label="Exemplos de 3 falas dele" fieldId="voz.exemplos" hint="Escreva do jeito que ele falaria. Serve pra calibrar o estilo.">
         <div className="grid gap-2">
           {[0, 1, 2].map((i) => (
             <Textarea
@@ -128,21 +128,21 @@ export function VozStep({ id }: { id: string }) {
       <section>
         <div className="label-cap mb-2">Voz (áudio)</div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Field label="Gênero da voz" optional>
+          <Field label="Gênero da voz" fieldId="voz.vozGenero" optional>
             <Input
               value={v.vozGenero ?? ""}
               onChange={(e) => set((c) => (c.voz.vozGenero = e.target.value))}
               placeholder="Ex.: feminina"
             />
           </Field>
-          <Field label="Timbre" optional>
+          <Field label="Timbre" fieldId="voz.vozTimbre" optional>
             <Input
               value={v.vozTimbre ?? ""}
               onChange={(e) => set((c) => (c.voz.vozTimbre = e.target.value))}
               placeholder="Ex.: grave, arrastada"
             />
           </Field>
-          <Field label="Ritmo" optional>
+          <Field label="Ritmo" fieldId="voz.vozRitmo" optional>
             <Input
               value={v.vozRitmo ?? ""}
               onChange={(e) => set((c) => (c.voz.vozRitmo = e.target.value))}
