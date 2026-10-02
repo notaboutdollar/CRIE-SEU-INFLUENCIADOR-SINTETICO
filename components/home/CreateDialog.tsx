@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { Sparkles, UserPlus, Wand2, X } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Check, ClipboardPaste, Copy, ExternalLink, Sparkles, UserPlus, Wand2, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Textarea } from "@/components/ui/Input";
 import { Field } from "@/components/ui/Field";
@@ -9,8 +9,10 @@ import { useCharacters } from "@/lib/store";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/cn";
 import { AI_ENABLED } from "@/lib/ai/flag";
+import { buildPromptClaude, parseRespostaClaude } from "@/lib/prompts/gerar-no-claude";
+import { copyToClipboard } from "@/lib/export";
 
-type Mode = "pick" | "scratch" | "expand" | "loading";
+type Mode = "pick" | "claude" | "expand" | "loading";
 
 const LOADING_STEPS = [
   "Lendo o contexto",
@@ -35,26 +37,29 @@ export function CreateDialog({ open, onClose }: Props) {
   const [contexto, setContexto] = useState("");
   const [erro, setErro] = useState<string | null>(null);
   const [loadingStep, setLoadingStep] = useState(0);
+
+  const [ideia, setIdeia] = useState("");
+  const [resposta, setResposta] = useState("");
+  const [erroImport, setErroImport] = useState<string | null>(null);
+  const [copiado, setCopiado] = useState(false);
+
   const create = useCharacters((s) => s.createCharacter);
   const applySuggestions = useCharacters((s) => s.applySuggestions);
   const updateChar = useCharacters((s) => s.update);
-  const dialogRef = useRef<HTMLDivElement>(null);
+
+  const prompt = useMemo(() => buildPromptClaude(ideia), [ideia]);
 
   useEffect(() => {
     if (!open) return;
+    setMode("pick");
     setContexto("");
     setErro(null);
     setLoadingStep(0);
-    // Com a IA desligada, não faz sentido mostrar a tela de escolha —
-    // cria direto o personagem em branco e vai pro wizard.
-    if (!AI_ENABLED) {
-      const id = create();
-      onClose();
-      router.push(`/personagem/${id}`);
-      return;
-    }
-    setMode("pick");
-  }, [open, create, onClose, router]);
+    setIdeia("");
+    setResposta("");
+    setErroImport(null);
+    setCopiado(false);
+  }, [open]);
 
   useEffect(() => {
     if (!open) return;
@@ -65,7 +70,6 @@ export function CreateDialog({ open, onClose }: Props) {
     return () => window.removeEventListener("keydown", onKey);
   }, [open, onClose]);
 
-  // "Carregamento progressivo" — anima as mensagens enquanto a request roda
   useEffect(() => {
     if (mode !== "loading") return;
     const t = setInterval(() => {
@@ -76,8 +80,36 @@ export function CreateDialog({ open, onClose }: Props) {
 
   if (!open) return null;
 
-  async function onCriarDoZero() {
+  function onCriarDoZero() {
     const id = create();
+    onClose();
+    router.push(`/personagem/${id}`);
+  }
+
+  async function onCopiarPrompt() {
+    const ok = await copyToClipboard(prompt);
+    if (!ok) {
+      setErroImport("Não deu para copiar automaticamente. Abra “Ver o prompt” e copie à mão.");
+      return;
+    }
+    setErroImport(null);
+    setCopiado(true);
+    setTimeout(() => setCopiado(false), 2000);
+  }
+
+  function onImportar() {
+    const r = parseRespostaClaude(resposta);
+    if (!r.ok) {
+      setErroImport(r.error);
+      return;
+    }
+    const id = create();
+    applySuggestions(id, r.suggestions, "Importado do Claude");
+    if (r.pontosEmAberto.length) {
+      updateChar(id, (c) => {
+        c.pontosEmAberto = r.pontosEmAberto;
+      });
+    }
     onClose();
     router.push(`/personagem/${id}`);
   }
@@ -127,10 +159,7 @@ export function CreateDialog({ open, onClose }: Props) {
         if (e.target === e.currentTarget && mode !== "loading") onClose();
       }}
     >
-      <div
-        ref={dialogRef}
-        className="card max-w-2xl w-full p-6 sm:p-8 relative max-h-[90vh] overflow-y-auto"
-      >
+      <div className="card max-w-2xl w-full p-6 sm:p-8 relative max-h-[90vh] overflow-y-auto">
         {mode !== "loading" && (
           <button
             type="button"
@@ -149,23 +178,126 @@ export function CreateDialog({ open, onClose }: Props) {
               Vamos criar seu personagem.
             </h2>
             <p className="text-muted mt-2 leading-relaxed">
-              Dois caminhos: montar manualmente, campo a campo, ou escrever um contexto curto e deixar a IA preencher pra você revisar.
+              Preencha campo a campo, ou, se ainda não tem a ideia fechada, pegue um prompt pronto
+              para o Claude montar a ficha por você.
             </p>
 
-            <div className="grid sm:grid-cols-2 gap-3 mt-6">
+            <div
+              className={cn(
+                "grid gap-3 mt-6",
+                AI_ENABLED ? "sm:grid-cols-3" : "sm:grid-cols-2"
+              )}
+            >
               <Option
                 icon={<UserPlus className="w-5 h-5" />}
-                title="Começar do zero"
+                title="Criar manualmente"
                 description="Vai direto ao wizard em branco. Você preenche cada campo no seu ritmo."
                 onClick={onCriarDoZero}
               />
               <Option
-                icon={<Wand2 className="w-5 h-5" />}
-                title="Expandir a partir de uma ideia"
-                description="Escreve um contexto curto. A IA preenche a ficha; você revisa as sugestões."
-                onClick={() => setMode("expand")}
+                icon={<ClipboardPaste className="w-5 h-5" />}
+                title="Gerar no Claude"
+                description="Copie um prompt pronto, rode no seu Claude e cole a resposta aqui para preencher a ficha."
+                onClick={() => setMode("claude")}
                 accent
               />
+              {AI_ENABLED ? (
+                <Option
+                  icon={<Wand2 className="w-5 h-5" />}
+                  title="Expandir com IA do site"
+                  description="Escreva um contexto curto e a IA do site preenche a ficha."
+                  onClick={() => setMode("expand")}
+                />
+              ) : null}
+            </div>
+          </div>
+        )}
+
+        {mode === "claude" && (
+          <div>
+            <div className="eyebrow-accent mb-2 inline-flex items-center gap-2">
+              <ClipboardPaste className="w-3.5 h-3.5" />
+              Gerar no Claude
+            </div>
+            <h2 className="serif text-2xl sm:text-3xl text-ink leading-tight">
+              Pegue o prompt, rode no Claude e traga a resposta.
+            </h2>
+
+            <div className="mt-6 grid gap-6">
+              <Step n={1} titulo="Conte sua ideia (opcional)">
+                <Field
+                  label="Ideia do personagem"
+                  counter={{ value: ideia.length, max: 1500 }}
+                  hint="Se deixar vazio, o Claude vai te fazer algumas perguntas antes de montar a ficha."
+                >
+                  <Textarea
+                    rows={4}
+                    maxLength={1500}
+                    placeholder={PLACEHOLDER}
+                    value={ideia}
+                    onChange={(e) => setIdeia(e.target.value)}
+                  />
+                </Field>
+              </Step>
+
+              <Step n={2} titulo="Copie o prompt e cole no Claude">
+                <div className="flex flex-wrap items-center gap-2">
+                  <Button variant="accent" onClick={onCopiarPrompt}>
+                    {copiado ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                    {copiado ? "Copiado!" : "Copiar prompt"}
+                  </Button>
+                  <a
+                    href="https://claude.ai/new"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2 font-bold rounded-full h-10 px-5 text-sm bg-transparent text-ink border border-line-strong hover:bg-paper transition"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                    Abrir o Claude
+                  </a>
+                </div>
+                <details className="mt-3 group">
+                  <summary className="text-[13px] text-muted hover:text-ink cursor-pointer font-semibold">
+                    Ver o prompt
+                  </summary>
+                  <pre className="mt-2 max-h-64 overflow-auto rounded-xl border border-line bg-bg/60 p-3.5 text-[12px] mono whitespace-pre-wrap leading-relaxed">
+                    {prompt}
+                  </pre>
+                </details>
+              </Step>
+
+              <Step n={3} titulo="Cole a resposta do Claude">
+                <Field
+                  label="Resposta do Claude"
+                  hint="Pode colar a mensagem inteira, o site acha o JSON sozinho."
+                >
+                  <Textarea
+                    rows={6}
+                    placeholder={'{ "identidade": { "nome": "..." }, ... }'}
+                    value={resposta}
+                    onChange={(e) => {
+                      setResposta(e.target.value);
+                      setErroImport(null);
+                    }}
+                    className="mono text-[12px]"
+                  />
+                </Field>
+                {erroImport ? (
+                  <div className="mt-3 rounded-xl border border-warn/40 bg-warn-soft px-3.5 py-2.5 text-sm text-warn">
+                    {erroImport}
+                  </div>
+                ) : null}
+              </Step>
+            </div>
+
+            <div className="flex justify-between items-center mt-6 gap-3 flex-wrap">
+              <Button variant="ghost" onClick={() => setMode("pick")}>
+                Voltar
+              </Button>
+              <Button variant="accent" onClick={onImportar} disabled={!resposta.trim()}>
+                <Sparkles className="w-4 h-4" />
+                Criar personagem
+              </Button>
             </div>
           </div>
         )}
@@ -262,6 +394,28 @@ export function CreateDialog({ open, onClose }: Props) {
         )}
       </div>
     </div>
+  );
+}
+
+function Step({
+  n,
+  titulo,
+  children,
+}: {
+  n: number;
+  titulo: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section>
+      <div className="flex items-center gap-2.5 mb-3">
+        <span className="h-6 w-6 inline-flex items-center justify-center rounded-full bg-accent-soft text-accent-strong mono text-[12px] font-bold">
+          {n}
+        </span>
+        <h3 className="font-semibold text-ink">{titulo}</h3>
+      </div>
+      {children}
+    </section>
   );
 }
 

@@ -30,7 +30,7 @@ export default function Home() {
         <p className="text-[18px] text-[#3a3a3a] mt-6 max-w-[640px] leading-relaxed">
           {AI_ENABLED
             ? "Um wizard em 7 etapas que leva você da ideia solta até uma ficha completa, com um Prompt Mestre pronto para gerar imagem, vídeo e roteiro. Escreva um contexto curto e deixe a IA preencher — você revisa."
-            : "Um wizard em 7 etapas que leva você da ideia solta até uma ficha completa, com um Prompt Mestre pronto para gerar imagem, vídeo e roteiro. Tudo salvo no seu navegador — nada vai para servidor."}
+            : "Um wizard em 7 etapas que leva você da ideia solta até uma ficha completa, com um Prompt Mestre pronto para gerar imagem, vídeo e roteiro. Sem ideia fechada? Pegue um prompt pronto e deixe o Claude montar a ficha. Tudo salvo no seu navegador — nada vai para servidor."}
         </p>
       </header>
 

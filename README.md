@@ -29,6 +29,15 @@ npm run typecheck
 npm test
 ```
 
+## Gerar no Claude (sem custo, sem chave)
+
+Ao clicar em **Criar personagem**, o site pergunta como começar:
+
+- **Criar manualmente** — wizard em branco.
+- **Gerar no Claude** — o site monta um prompt com todas as perguntas do wizard (+ a ideia que você escrever, opcional). Você copia, cola no seu Claude (claude.ai), e cola a resposta JSON de volta no site. A ficha é preenchida e cada campo vem marcado como "sugestão" para você revisar.
+
+Tudo roda no navegador: nenhuma chave de API, nenhum custo para o site. O prompt e o importador são gerados a partir de [`data/perguntas.ts`](data/perguntas.ts); o texto-base fica em [`data/prompts/gerar-no-claude.ts`](data/prompts/gerar-no-claude.ts).
+
 ## Ligar a IA (opcional)
 
 Por padrão, nenhum botão de IA aparece — assim nenhum request vai pra Anthropic e não tem custo. Para habilitar as features de IA:
@@ -114,6 +123,7 @@ data/
 
 1. Novo campo? Acrescente a propriedade em [`lib/types.ts`](lib/types.ts) e inicialize em [`lib/defaults.ts`](lib/defaults.ts) (também em `hydrate()` se for aditivo).
 2. Abra o step correspondente em `components/steps/` e inclua um `<Field>` com o componente adequado. Passe `fieldId="chave.subchave"` para habilitar o badge "Sugestão da IA", o cadeado e o auto-confirm. Passe `aiDescricao` se quiser o botão "Sugerir com IA".
+3. Registre a pergunta em [`data/perguntas.ts`](data/perguntas.ts) (mesmo `fieldId`, tipo e descrição). É isso que faz o prompt "Gerar no Claude" perguntar e o importador aceitar o campo.
 3. Se o campo deve contar para "Rascunho/Completo" ou para o checker regex, adicione em [`lib/completion.ts`](lib/completion.ts).
 4. Se o campo deve ir para a ficha ou os prompts, inclua em `lib/export.ts`, nos `lib/prompts/*` e em `data/prompts/expandir-ficha.md`.
 5. Para a IA conhecer o novo campo, adicione a entrada no esquema de [`lib/ai/schema.ts`](lib/ai/schema.ts) e em `data/prompts/expandir-ficha.md`.
