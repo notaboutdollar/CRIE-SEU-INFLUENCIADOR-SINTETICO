@@ -36,7 +36,7 @@ export default function Home() {
           <p className="text-ink-mute text-[17px] text-center mt-6 max-w-[640px] mx-auto leading-relaxed">
             Um wizard em 7 etapas que leva você da ideia solta até uma ficha completa com Prompt
             Mestre pronto para gerar imagem, vídeo e roteiro. Sem ideia fechada? Pegue um prompt
-            pronto e deixe o Claude montar a ficha.
+            pronto e deixe uma IA montar a ficha.
           </p>
           <div className="mt-9 flex items-center justify-center gap-3 flex-wrap">
             <Button variant="accent" size="lg" onClick={() => setOpen(true)}>

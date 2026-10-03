@@ -1,9 +1,9 @@
 /**
- * Template do prompt "Gerar no Claude": o usuário copia, cola no Claude
- * (claude.ai) e traz a resposta de volta para o site.
+ * Template do prompt "Gerar com IA": o usuário copia, cola em qualquer IA
+ * (ChatGPT, Claude, Gemini, Grok, etc.) e traz a resposta de volta para o site.
  *
  * Placeholders (substituídos em lib/prompts/gerar-no-claude.ts):
- *   {{ideia}}      ideia do usuário (ou aviso para o Claude perguntar)
+ *   {{ideia}}      ideia do usuário (ou aviso para a IA perguntar)
  *   {{perguntas}}  lista das perguntas, gerada de data/perguntas.ts
  *   {{esqueleto}}  JSON de exemplo com todas as chaves, gerado do mesmo catálogo
  *

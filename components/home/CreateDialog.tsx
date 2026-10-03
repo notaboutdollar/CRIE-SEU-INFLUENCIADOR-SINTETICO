@@ -104,7 +104,7 @@ export function CreateDialog({ open, onClose }: Props) {
       return;
     }
     const id = create();
-    applySuggestions(id, r.suggestions, "Importado do Claude");
+    applySuggestions(id, r.suggestions, "Importado da IA");
     if (r.pontosEmAberto.length) {
       updateChar(id, (c) => {
         c.pontosEmAberto = r.pontosEmAberto;
@@ -179,7 +179,7 @@ export function CreateDialog({ open, onClose }: Props) {
             </h2>
             <p className="text-ink-mute mt-3 leading-relaxed">
               Preencha campo a campo, ou, se ainda não tem a ideia fechada, pegue um prompt pronto
-              para o Claude montar a ficha por você.
+              para uma IA (ChatGPT, Claude, Gemini...) montar a ficha por você.
             </p>
 
             <div
@@ -196,8 +196,8 @@ export function CreateDialog({ open, onClose }: Props) {
               />
               <Option
                 icon={<ClipboardPaste className="w-5 h-5" />}
-                title="Gerar no Claude"
-                description="Copie um prompt pronto, rode no seu Claude e cole a resposta aqui para preencher a ficha."
+                title="Gerar com IA"
+                description="Copie um prompt pronto, rode na IA que você preferir (ChatGPT, Claude, Gemini...) e cole a resposta aqui."
                 onClick={() => setMode("claude")}
                 accent
               />
@@ -217,10 +217,10 @@ export function CreateDialog({ open, onClose }: Props) {
           <div>
             <div className="eyebrow-accent mb-2 inline-flex items-center gap-2">
               <ClipboardPaste className="w-3.5 h-3.5" />
-              Gerar no Claude
+              Gerar com IA
             </div>
             <h2 className="display text-2xl sm:text-3xl text-ink uppercase leading-tight">
-              Pegue o prompt, rode no Claude e traga a resposta.
+              Pegue o prompt, rode na IA e traga a resposta.
             </h2>
 
             <div className="mt-6 grid gap-6">
@@ -228,7 +228,7 @@ export function CreateDialog({ open, onClose }: Props) {
                 <Field
                   label="Ideia do personagem"
                   counter={{ value: ideia.length, max: 1500 }}
-                  hint="Se deixar vazio, o Claude vai te fazer algumas perguntas antes de montar a ficha."
+                  hint="Se deixar vazio, a IA vai te fazer algumas perguntas antes de montar a ficha."
                 >
                   <Textarea
                     rows={4}
@@ -240,21 +240,15 @@ export function CreateDialog({ open, onClose }: Props) {
                 </Field>
               </Step>
 
-              <Step n={2} titulo="Copie o prompt e cole no Claude">
+              <Step n={2} titulo="Copie o prompt e cole na sua IA">
                 <div className="flex flex-wrap items-center gap-2">
                   <Button variant="accent" onClick={onCopiarPrompt}>
                     {copiado ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                     {copiado ? "Copiado!" : "Copiar prompt"}
                   </Button>
-                  <a
-                    href="https://claude.ai/new"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2 font-bold rounded-full h-10 px-5 text-sm bg-transparent text-ink border border-line-strong hover:bg-panel transition"
-                  >
-                    <ExternalLink className="w-4 h-4" />
-                    Abrir o Claude
-                  </a>
+                  <IaLink href="https://chat.openai.com/" label="ChatGPT" />
+                  <IaLink href="https://claude.ai/new" label="Claude" />
+                  <IaLink href="https://gemini.google.com/" label="Gemini" />
                 </div>
                 <details className="mt-3 group">
                   <summary className="text-[13px] text-ink-mute hover:text-ink cursor-pointer font-semibold">
@@ -266,9 +260,9 @@ export function CreateDialog({ open, onClose }: Props) {
                 </details>
               </Step>
 
-              <Step n={3} titulo="Cole a resposta do Claude">
+              <Step n={3} titulo="Cole a resposta da IA">
                 <Field
-                  label="Resposta do Claude"
+                  label="Resposta da IA"
                   hint="Pode colar a mensagem inteira, o site acha o JSON sozinho."
                 >
                   <Textarea
@@ -454,5 +448,19 @@ function Option({
       <div className="display text-base uppercase text-ink tracking-tight">{title}</div>
       <div className="text-[13px] text-ink-mute mt-1.5 leading-relaxed">{description}</div>
     </button>
+  );
+}
+
+function IaLink({ href, label }: { href: string; label: string }) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="inline-flex items-center justify-center gap-1.5 font-semibold rounded-full h-9 px-3.5 text-[12px] bg-transparent text-ink-mute border border-line hover:border-line-strong hover:text-ink transition"
+    >
+      <ExternalLink className="w-3 h-3" />
+      {label}
+    </a>
   );
 }
