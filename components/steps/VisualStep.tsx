@@ -9,6 +9,7 @@ import { Input, Textarea } from "@/components/ui/Input";
 import { CardChoice } from "@/components/ui/CardChoice";
 import { tracos } from "@/data/choices";
 import type { ReferenciaImagem } from "@/lib/types";
+import { GerarImagem } from "@/components/revisao/GerarImagem";
 
 const MAX_SIZE = 4 * 1024 * 1024; // 4MB
 
@@ -182,6 +183,9 @@ export function VisualStep({ id }: { id: string }) {
           onChange={(e) => set((c) => (c.visual.negativos = e.target.value))}
         />
       </Field>
+
+      <div className="pt-2 border-t border-line" />
+      <GerarImagem character={character} />
     </div>
   );
 }

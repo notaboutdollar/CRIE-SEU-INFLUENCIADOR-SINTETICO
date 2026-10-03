@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Check, ClipboardPaste, Copy, ExternalLink, Sparkles, UserPlus, Wand2, X } from "lucide-react";
+import { Check, ClipboardPaste, Copy, ExternalLink, ImageIcon, Sparkles, UserPlus, Wand2, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Textarea } from "@/components/ui/Input";
 import { Field } from "@/components/ui/Field";
@@ -84,6 +84,12 @@ export function CreateDialog({ open, onClose }: Props) {
     const id = create();
     onClose();
     router.push(`/personagem/${id}`);
+  }
+
+  function onComecarPelaImagem() {
+    const id = create();
+    onClose();
+    router.push(`/personagem/${id}?step=visual`);
   }
 
   async function onCopiarPrompt() {
@@ -178,16 +184,11 @@ export function CreateDialog({ open, onClose }: Props) {
               Vamos criar seu personagem.
             </h2>
             <p className="text-ink-mute mt-3 leading-relaxed">
-              Preencha campo a campo, ou, se ainda não tem a ideia fechada, pegue um prompt pronto
-              para uma IA (ChatGPT, Claude, Gemini...) montar a ficha por você.
+              Três caminhos. Preencha campo a campo, pegue um prompt pronto para uma IA montar a ficha,
+              ou comece pela imagem do personagem e depois volte para a identidade.
             </p>
 
-            <div
-              className={cn(
-                "grid gap-3 mt-6",
-                AI_ENABLED ? "sm:grid-cols-3" : "sm:grid-cols-2"
-              )}
-            >
+            <div className="grid gap-3 mt-6 sm:grid-cols-3">
               <Option
                 icon={<UserPlus className="w-5 h-5" />}
                 title="Criar manualmente"
@@ -200,6 +201,12 @@ export function CreateDialog({ open, onClose }: Props) {
                 description="Copie um prompt pronto, rode na IA que você preferir (ChatGPT, Claude, Gemini...) e cole a resposta aqui."
                 onClick={() => setMode("claude")}
                 accent
+              />
+              <Option
+                icon={<ImageIcon className="w-5 h-5" />}
+                title="Começar pela imagem"
+                description="Abre direto na etapa Visual. Preencha a aparência, gere a imagem numa IA, depois complete o resto."
+                onClick={onComecarPelaImagem}
               />
               {AI_ENABLED ? (
                 <Option

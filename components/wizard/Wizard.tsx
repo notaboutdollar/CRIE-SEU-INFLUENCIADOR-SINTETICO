@@ -1,9 +1,10 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { useCharacters } from "@/lib/store";
 import { STEPS, stepIndex } from "@/data/steps";
-import type { StepId } from "@/lib/types";
+import { STEP_IDS, type StepId } from "@/lib/types";
 import { CharacterHeader } from "./CharacterHeader";
 import { StepTabs } from "./StepTabs";
 import { StepFooter } from "./StepFooter";
@@ -24,8 +25,15 @@ import { useRouter } from "next/navigation";
 
 export function Wizard({ id }: { id: string }) {
   const router = useRouter();
+  const params = useSearchParams();
   const character = useCharacters((s) => s.characters.find((c) => c.id === id));
-  const [currentId, setCurrentId] = useState<StepId>("identidade");
+  const initialStep = useMemo<StepId>(() => {
+    const raw = params?.get("step");
+    return (STEP_IDS as readonly string[]).includes(raw ?? "")
+      ? (raw as StepId)
+      : "identidade";
+  }, [params]);
+  const [currentId, setCurrentId] = useState<StepId>(initialStep);
 
   const current = useMemo(() => STEPS[stepIndex(currentId)] ?? STEPS[0], [currentId]);
 
