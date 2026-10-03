@@ -170,7 +170,7 @@ export function NichoStep({ id }: { id: string }) {
               />
               <button
                 type="button"
-                className="h-10 w-10 inline-flex items-center justify-center rounded-full border border-line bg-paper text-muted hover:text-warn hover:border-warn/60"
+                className="h-10 w-10 inline-flex items-center justify-center rounded-full border border-line bg-panel text-ink-mute hover:text-pink hover:border-pink/60"
                 onClick={() => set((c) => { c.nicho.pilares.splice(i, 1); })}
                 aria-label="Remover pilar"
               >

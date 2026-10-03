@@ -64,11 +64,11 @@ export function RevisaoStep({ id }: { id: string }) {
 
   return (
     <div className="grid grid-cols-1 gap-6">
-      <div className="rounded-xl border border-line bg-paper p-4 flex items-start gap-3">
+      <div className="rounded-xl border border-line bg-panel p-4 flex items-start gap-3">
         {st === "completo" ? (
           <CheckCircle2 className="w-5 h-5 text-ok mt-0.5" />
         ) : (
-          <AlertTriangle className="w-5 h-5 text-warn mt-0.5" />
+          <AlertTriangle className="w-5 h-5 text-pink mt-0.5" />
         )}
         <div className="flex-1">
           <div className="font-semibold text-ink">
@@ -76,7 +76,7 @@ export function RevisaoStep({ id }: { id: string }) {
               ? "Personagem completo. Hora de usar."
               : "Ainda está em rascunho."}
           </div>
-          <div className="text-[14px] text-muted mt-0.5">
+          <div className="text-[14px] text-ink-mute mt-0.5">
             {st === "completo"
               ? "Nome preenchido e pelo menos uma imagem de referência: critérios mínimos cumpridos."
               : "Faltam os obrigatórios: nome do personagem + pelo menos 1 imagem de referência."}
@@ -87,7 +87,7 @@ export function RevisaoStep({ id }: { id: string }) {
       <section>
         <h3 className="label-cap mb-3">Checklist de consistência</h3>
         {check.length === 0 ? (
-          <div className="rounded-xl border border-ok/25 bg-ok-soft p-4 text-sm text-ok">
+          <div className="rounded-xl border border-ok/30 bg-ok/10 p-4 text-sm text-ok">
             Nenhuma inconsistência detectada. Bom trabalho.
           </div>
         ) : (
@@ -98,22 +98,22 @@ export function RevisaoStep({ id }: { id: string }) {
                 className={cn(
                   "rounded-xl border p-3 text-sm flex gap-3",
                   item.tipo === "contradicao"
-                    ? "border-warn/40 bg-warn-soft"
+                    ? "border-pink/40 bg-pink/5"
                     : item.tipo === "vazio"
-                    ? "border-warn/25 bg-warn-soft/60"
-                    : "border-line bg-paper"
+                    ? "border-pink/25 bg-pink/5"
+                    : "border-line bg-panel"
                 )}
               >
                 {item.tipo === "contradicao" ? (
-                  <AlertTriangle className="w-4 h-4 text-warn mt-0.5 shrink-0" />
+                  <AlertTriangle className="w-4 h-4 text-pink mt-0.5 shrink-0" />
                 ) : item.tipo === "vazio" ? (
-                  <AlertTriangle className="w-4 h-4 text-warn mt-0.5 shrink-0" />
+                  <AlertTriangle className="w-4 h-4 text-pink mt-0.5 shrink-0" />
                 ) : (
-                  <Info className="w-4 h-4 text-muted mt-0.5 shrink-0" />
+                  <Info className="w-4 h-4 text-ink-mute mt-0.5 shrink-0" />
                 )}
                 <div>
                   <div className="text-ink">{item.mensagem}</div>
-                  <div className="text-[11px] mono text-muted mt-0.5">Campo: {item.campo}</div>
+                  <div className="text-[11px] mono text-ink-dim mt-0.5">Campo: {item.campo}</div>
                 </div>
               </li>
             ))}
@@ -135,8 +135,8 @@ export function RevisaoStep({ id }: { id: string }) {
               className={cn(
                 "px-3.5 h-8 rounded-full border font-semibold",
                 orient === "vertical"
-                  ? "border-accent text-white bg-accent"
-                  : "border-line text-muted bg-paper hover:text-ink"
+                  ? "border-accent text-bg bg-accent"
+                  : "border-line text-ink-mute bg-panel hover:text-ink hover:border-line-strong"
               )}
             >
               Vertical
@@ -147,8 +147,8 @@ export function RevisaoStep({ id }: { id: string }) {
               className={cn(
                 "px-3.5 h-8 rounded-full border font-semibold",
                 orient === "horizontal"
-                  ? "border-accent text-white bg-accent"
-                  : "border-line text-muted bg-paper hover:text-ink"
+                  ? "border-accent text-bg bg-accent"
+                  : "border-line text-ink-mute bg-panel hover:text-ink hover:border-line-strong"
               )}
             >
               Horizontal
@@ -156,7 +156,7 @@ export function RevisaoStep({ id }: { id: string }) {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-line bg-paper p-4 overflow-auto">
+        <div className="rounded-2xl border border-line bg-panel p-4 overflow-auto">
           <div
             className="origin-top-left mx-auto"
             style={{
@@ -246,18 +246,18 @@ function PromptBlock({
   onCopy: () => void;
 }) {
   return (
-    <div className="rounded-xl border border-line bg-paper flex flex-col min-h-[180px]">
+    <div className="rounded-xl border border-line bg-panel flex flex-col min-h-[180px]">
       <div className="flex items-center justify-between px-3.5 py-2.5 border-b border-line">
         <span className="label-cap">{title}</span>
         <button
           type="button"
           onClick={onCopy}
-          className="text-[12px] text-muted hover:text-ink inline-flex items-center gap-1 font-semibold"
+          className="text-[12px] text-ink-mute hover:text-ink inline-flex items-center gap-1 font-semibold"
         >
           <Copy className="w-3.5 h-3.5" /> Copiar
         </button>
       </div>
-      <pre className="p-3.5 text-[12px] mono text-ink whitespace-pre-wrap leading-relaxed overflow-auto max-h-80 bg-bg/60 rounded-b-xl">
+      <pre className="p-3.5 text-[12px] mono text-ink/80 whitespace-pre-wrap leading-relaxed overflow-auto max-h-80 bg-bg rounded-b-xl">
         {text}
       </pre>
     </div>

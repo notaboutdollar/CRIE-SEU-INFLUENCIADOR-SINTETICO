@@ -21,7 +21,7 @@ export function Slider({ value, onChange, leftLabel, rightLabel, className }: Pr
         onChange={(e) => onChange(Number(e.target.value))}
         className="w-full"
       />
-      <div className="flex justify-between text-[11px] text-muted mono uppercase tracking-wider">
+      <div className="flex justify-between text-[10px] text-ink-dim mono uppercase tracking-wider">
         <span>{leftLabel}</span>
         <span>{rightLabel}</span>
       </div>

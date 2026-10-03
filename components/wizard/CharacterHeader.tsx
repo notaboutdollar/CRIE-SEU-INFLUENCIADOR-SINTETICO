@@ -13,13 +13,13 @@ export function CharacterHeader({ character: c }: { character: Character }) {
       <div className="flex items-center gap-3 min-w-0">
         <Link
           href="/"
-          className="h-10 w-10 inline-flex items-center justify-center rounded-full border border-line-strong bg-paper hover:bg-bg text-ink shrink-0"
+          className="h-10 w-10 inline-flex items-center justify-center rounded-full border border-line-strong bg-panel hover:bg-card text-ink shrink-0 transition"
           aria-label="Voltar para a lista"
         >
           <ArrowLeft className="w-4 h-4" />
         </Link>
         <div className="min-w-0">
-          <h1 className="serif text-2xl sm:text-3xl truncate text-ink">{nome}</h1>
+          <h1 className="display text-2xl sm:text-3xl truncate text-ink uppercase">{nome}</h1>
           <div className="flex items-center gap-2 mt-1.5">
             <StatusBadge status={status(c)} />
             <span className="eyebrow">Salvamento automático</span>

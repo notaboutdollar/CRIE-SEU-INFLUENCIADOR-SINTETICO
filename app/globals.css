@@ -3,13 +3,13 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: light;
+  color-scheme: dark;
 }
 
 html,
 body {
-  background: #f4efe7;
-  color: #0f0f0f;
+  background: #0a0a0a;
+  color: #ffffff;
   min-height: 100vh;
   max-width: 100%;
   overflow-x: clip;
@@ -21,8 +21,8 @@ body {
 }
 
 ::selection {
-  background: #16a34a;
-  color: #fff;
+  background: #dfff2a;
+  color: #0a0a0a;
 }
 
 /* Scrollbars */
@@ -34,14 +34,14 @@ body {
   background: transparent;
 }
 *::-webkit-scrollbar-thumb {
-  background: #d9d1bf;
+  background: #2a2a2a;
   border-radius: 10px;
 }
 *::-webkit-scrollbar-thumb:hover {
-  background: #c9bfa9;
+  background: #3a3a3a;
 }
 
-/* Range slider — mesma estética do Treinadores de IA */
+/* Range slider */
 input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
@@ -50,80 +50,122 @@ input[type="range"] {
 }
 input[type="range"]::-webkit-slider-runnable-track {
   height: 4px;
-  background: #c9bfa9;
+  background: #2a2a2a;
   border-radius: 2px;
 }
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 20px;
-  height: 20px;
-  margin-top: -8px;
+  width: 18px;
+  height: 18px;
+  margin-top: -7px;
   border-radius: 50%;
-  background: #16a34a;
+  background: #dfff2a;
   cursor: pointer;
-  border: 3px solid #fff;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 0 0 3px #0a0a0a, 0 0 8px rgba(223, 255, 42, 0.6);
 }
 input[type="range"]::-moz-range-track {
   height: 4px;
-  background: #c9bfa9;
+  background: #2a2a2a;
   border-radius: 2px;
 }
 input[type="range"]::-moz-range-thumb {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
-  background: #16a34a;
+  background: #dfff2a;
   cursor: pointer;
-  border: 3px solid #fff;
+  border: 3px solid #0a0a0a;
 }
 
 :focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.3);
+  outline: 2px solid rgba(223, 255, 42, 0.7);
+  outline-offset: 2px;
   border-radius: 8px;
 }
 
+/* Autofill no Chrome: tira o fundo amarelo */
+input:-webkit-autofill,
+textarea:-webkit-autofill {
+  -webkit-text-fill-color: #ffffff;
+  -webkit-box-shadow: 0 0 0 100px #141414 inset;
+  caret-color: #ffffff;
+}
+
 @layer utilities {
-  .serif {
-    font-family: "Fraunces", Georgia, serif;
-    font-weight: 700;
-    letter-spacing: -0.015em;
+  .display {
+    font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
   }
   .mono {
     font-family: "JetBrains Mono", ui-monospace, monospace;
   }
   .eyebrow {
     font-family: "JetBrains Mono", ui-monospace, monospace;
-    font-size: 12px;
-    letter-spacing: 0.14em;
+    font-size: 11px;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: #6b6b6b;
+    color: #a3a3a3;
+    font-weight: 500;
   }
   .eyebrow-accent {
     font-family: "JetBrains Mono", ui-monospace, monospace;
-    font-size: 12px;
-    letter-spacing: 0.14em;
+    font-size: 11px;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: #16a34a;
+    color: #dfff2a;
     font-weight: 600;
   }
   .label-cap {
     font-family: "JetBrains Mono", ui-monospace, monospace;
-    font-size: 11px;
-    letter-spacing: 0.12em;
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: #6b6b6b;
+    color: #a3a3a3;
     font-weight: 600;
   }
   .card {
-    @apply bg-paper border border-line rounded-2xl shadow-card;
+    background: #141414;
+    border: 1px solid #272727;
+    border-radius: 18px;
   }
   .card-hover {
-    @apply hover:border-ink/60 hover:shadow-soft transition;
+    @apply transition;
+  }
+  .card-hover:hover {
+    border-color: #3a3a3a;
+    background: #181818;
   }
   .input-base {
-    @apply w-full bg-paper border border-line rounded-lg px-3.5 py-2.5 text-ink placeholder:text-[#a0a0a0] focus:border-accent focus:outline-none transition;
+    width: 100%;
+    background: #141414;
+    border: 1px solid #272727;
+    border-radius: 12px;
+    padding: 0.65rem 0.9rem;
+    color: #ffffff;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .input-base::placeholder {
+    color: #666666;
+  }
+  .input-base:focus {
+    border-color: #dfff2a;
+    outline: none;
+    background: #181818;
+  }
+  /* Chip "NEW" pink como no Higgsfield */
+  .chip-new {
+    display: inline-flex;
+    align-items: center;
+    padding: 1px 7px;
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-radius: 999px;
+    background: #ff2d7a;
+    color: #ffffff;
   }
 }

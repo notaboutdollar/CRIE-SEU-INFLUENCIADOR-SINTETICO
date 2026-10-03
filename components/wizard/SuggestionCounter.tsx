@@ -14,15 +14,15 @@ export function SuggestionCounter({ character }: { character: Character }) {
   if (pendentes === 0 && !temHistorico) return null;
 
   return (
-    <div className="mb-5 flex flex-wrap items-center gap-3 rounded-xl border border-accent/25 bg-accent-soft/40 px-4 py-3">
+    <div className="mb-5 flex flex-wrap items-center gap-3 rounded-xl border border-accent/25 bg-accent/5 px-4 py-3">
       {pendentes > 0 ? (
         <>
-          <Sparkles className="w-4 h-4 text-accent-strong" />
+          <Sparkles className="w-4 h-4 text-accent" />
           <div className="flex-1 min-w-0">
             <div className="font-semibold text-ink text-[15px]">
-              {pendentes} {pendentes === 1 ? "sugestão da IA" : "sugestões da IA"} para revisar
+              {pendentes} {pendentes === 1 ? "sugestão" : "sugestões"} para revisar
             </div>
-            <div className="text-[13px] text-muted">
+            <div className="text-[13px] text-ink-mute">
               Editar um campo com sugestão já conta como aceito; para aceitar sem editar, use "Confirmar".
             </div>
           </div>
@@ -38,8 +38,8 @@ export function SuggestionCounter({ character }: { character: Character }) {
       ) : null}
       {pendentes === 0 && temHistorico ? (
         <>
-          <History className="w-4 h-4 text-muted" />
-          <div className="flex-1 text-[14px] text-muted">
+          <History className="w-4 h-4 text-ink-mute" />
+          <div className="flex-1 text-[14px] text-ink-mute">
             Última geração: <strong className="text-ink">{character._history[0].label}</strong>
           </div>
         </>

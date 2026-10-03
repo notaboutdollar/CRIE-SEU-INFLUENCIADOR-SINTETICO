@@ -13,11 +13,6 @@ interface Props {
   className?: string;
 }
 
-/**
- * Botão compacto "Sugerir com IA" — pede uma sugestão para o campo específico
- * usando o resto da ficha como contexto, aplica no store e marca como sugestão
- * ("suposicao") para o usuário revisar.
- */
 export function SuggestFieldButton({ characterId, fieldId, descricao, className }: Props) {
   const update = useCharacters((s) => s.update);
   const character = useCharacters((s) => s.characters.find((c) => c.id === characterId));
@@ -58,7 +53,7 @@ export function SuggestFieldButton({ characterId, fieldId, descricao, className 
       disabled={loading}
       title={err ?? "Deixar a IA sugerir este campo"}
       className={cn(
-        "inline-flex items-center gap-1 text-[11px] mono uppercase font-bold text-accent-strong hover:text-ink transition disabled:opacity-50",
+        "inline-flex items-center gap-1 text-[11px] mono uppercase tracking-wider font-bold text-accent hover:text-white transition disabled:opacity-50",
         className
       )}
     >

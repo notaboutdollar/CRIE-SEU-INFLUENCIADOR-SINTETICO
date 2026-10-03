@@ -28,28 +28,26 @@ export function CharacterListItem({ character: c }: Props) {
   const emoji = c.identidade.forma ? formasEmoji[c.identidade.forma] : "✨";
 
   return (
-    <div className="card card-hover p-4 group relative">
+    <div className="group relative rounded-2xl overflow-hidden border border-line bg-panel hover:border-line-strong transition">
       <Link href={`/personagem/${c.id}`} className="block">
-        <div className="flex gap-3 items-start">
-          <div className="w-14 h-14 rounded-xl overflow-hidden bg-bg border border-line flex items-center justify-center shrink-0">
-            {avatar ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={avatar} alt="" className="w-full h-full object-cover" />
-            ) : (
-              <span className="text-2xl">{emoji}</span>
-            )}
+        <div className="relative aspect-[4/3] bg-bg border-b border-line flex items-center justify-center overflow-hidden">
+          {avatar ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={avatar} alt="" className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+          ) : (
+            <span className="text-6xl opacity-40">{emoji}</span>
+          )}
+          <div className="absolute top-3 left-3">
+            <StatusBadge status={status(c)} />
           </div>
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2">
-              <h3 className="serif text-lg truncate text-ink">{nome}</h3>
-              <StatusBadge status={status(c)} />
-            </div>
-            <p className="text-[14px] text-muted line-clamp-2 mt-0.5 leading-relaxed">
-              {c.identidade.bio || c.nicho.promessa || "Sem bio ainda."}
-            </p>
-            <div className="eyebrow mt-2">
-              Atualizado {relativo(c.updatedAt)}
-            </div>
+        </div>
+        <div className="p-4">
+          <h3 className="display text-base uppercase truncate text-ink">{nome}</h3>
+          <p className="text-[13px] text-ink-mute line-clamp-2 mt-1 leading-relaxed">
+            {c.identidade.bio || c.nicho.promessa || "Sem bio ainda."}
+          </p>
+          <div className="eyebrow mt-3">
+            Atualizado {relativo(c.updatedAt)}
           </div>
         </div>
       </Link>
@@ -57,22 +55,22 @@ export function CharacterListItem({ character: c }: Props) {
         <button
           type="button"
           onClick={() => duplicate(c.id)}
-          className="h-8 w-8 inline-flex items-center justify-center rounded-full bg-paper border border-line text-muted hover:text-ink hover:border-ink"
+          className="h-8 w-8 inline-flex items-center justify-center rounded-full bg-bg/80 backdrop-blur border border-line text-ink-mute hover:text-ink hover:border-ink transition"
           aria-label="Duplicar"
           title="Duplicar"
         >
-          <Copy className="w-4 h-4" />
+          <Copy className="w-3.5 h-3.5" />
         </button>
         <button
           type="button"
           onClick={() => {
             if (confirm(`Excluir "${nome}"? Esta ação não pode ser desfeita.`)) del(c.id);
           }}
-          className="h-8 w-8 inline-flex items-center justify-center rounded-full bg-paper border border-line text-muted hover:text-warn hover:border-warn/60"
+          className="h-8 w-8 inline-flex items-center justify-center rounded-full bg-bg/80 backdrop-blur border border-line text-ink-mute hover:text-pink hover:border-pink transition"
           aria-label="Excluir"
           title="Excluir"
         >
-          <Trash2 className="w-4 h-4" />
+          <Trash2 className="w-3.5 h-3.5" />
         </button>
       </div>
     </div>

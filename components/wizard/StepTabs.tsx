@@ -32,14 +32,14 @@ export function StepTabs({ current, character, onPick }: Props) {
             className={cn(
               "shrink-0 flex items-center gap-3 rounded-xl border px-3.5 py-2.5 text-left transition",
               active
-                ? "border-accent bg-paper shadow-focus"
-                : "border-line bg-paper hover:border-ink/40"
+                ? "border-accent bg-accent/5 shadow-glow"
+                : "border-line bg-panel hover:border-line-strong"
             )}
           >
             <span
               className={cn(
                 "h-9 w-9 inline-flex items-center justify-center rounded-full text-xs font-semibold shrink-0",
-                active ? "bg-accent text-white" : "bg-bg text-muted"
+                active ? "bg-accent text-bg" : "bg-card text-ink-mute"
               )}
             >
               <Icon className="w-4 h-4" />
@@ -51,11 +51,11 @@ export function StepTabs({ current, character, onPick }: Props) {
               <span className="block text-sm font-semibold text-ink whitespace-nowrap">
                 {step.title}
               </span>
-              <span className="block text-[12px] text-muted whitespace-nowrap">
+              <span className="block text-[12px] text-ink-mute whitespace-nowrap">
                 {step.subtitle}
               </span>
             </span>
-            <span className="ml-2 text-[11px] mono tabular-nums text-muted">{pct}%</span>
+            <span className={cn("ml-2 text-[11px] mono tabular-nums", active ? "text-accent" : "text-ink-dim")}>{pct}%</span>
           </button>
         );
       })}

@@ -95,7 +95,7 @@ export function VisualStep({ id }: { id: string }) {
           <button
             type="button"
             onClick={() => inputRef.current?.click()}
-            className="aspect-square rounded-xl border-2 border-dashed border-line-strong hover:border-accent hover:bg-accent-soft/40 transition flex flex-col items-center justify-center text-muted hover:text-accent-strong gap-2"
+            className="aspect-square rounded-xl border-2 border-dashed border-line-strong hover:border-accent hover:bg-accent/5 transition flex flex-col items-center justify-center text-ink-dim hover:text-accent gap-2"
           >
             <ImagePlus className="w-5 h-5" />
             <span className="text-xs">Adicionar</span>

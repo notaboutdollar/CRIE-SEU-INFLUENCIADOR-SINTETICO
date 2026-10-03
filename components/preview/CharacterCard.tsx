@@ -28,15 +28,15 @@ export function CharacterCard({ character: c }: { character: Character }) {
           // eslint-disable-next-line @next/next/no-img-element
           <img src={avatar} alt={`Referência de ${nome}`} className="w-full h-full object-cover" />
         ) : (
-          <div className="text-6xl opacity-60">{emoji}</div>
+          <div className="text-6xl opacity-50">{emoji}</div>
         )}
         <div className="absolute top-3 right-3">
           <StatusBadge status={status(c)} />
         </div>
       </div>
 
-      <h2 className="serif text-xl truncate text-ink">{nome}</h2>
-      <div className="flex flex-wrap gap-1.5 mt-1.5 text-[11px]">
+      <h2 className="display text-lg uppercase truncate text-ink">{nome}</h2>
+      <div className="flex flex-wrap gap-1.5 mt-2 text-[11px]">
         {c.identidade.genero ? <Tag>{labelGenero(c.identidade.genero)}</Tag> : null}
         {c.identidade.forma ? <Tag>{labelForma(c.identidade.forma)}</Tag> : null}
         {c.identidade.idadeAparente ? <Tag>{c.identidade.idadeAparente}</Tag> : null}
@@ -44,11 +44,11 @@ export function CharacterCard({ character: c }: { character: Character }) {
       </div>
 
       {c.identidade.bio ? (
-        <p className="mt-3 text-[14px] text-ink leading-relaxed line-clamp-3 italic">
+        <p className="mt-3 text-[14px] text-ink/80 leading-relaxed line-clamp-3 italic">
           “{c.identidade.bio}”
         </p>
       ) : (
-        <p className="mt-3 text-[13px] text-muted italic">
+        <p className="mt-3 text-[13px] text-ink-dim italic">
           A bio de 1 linha aparece aqui.
         </p>
       )}
@@ -60,7 +60,7 @@ export function CharacterCard({ character: c }: { character: Character }) {
             {c.soul.adjetivos.slice(0, 6).map((a) => (
               <span
                 key={a}
-                className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-accent-soft border border-accent/30 text-accent-strong"
+                className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-accent/15 border border-accent/40 text-accent"
               >
                 {a}
               </span>
@@ -75,7 +75,7 @@ export function CharacterCard({ character: c }: { character: Character }) {
           <div className="text-sm">
             <div className="font-semibold text-ink">{c.nicho.principal}</div>
             {c.nicho.promessa ? (
-              <div className="text-[13px] text-muted mt-0.5">{c.nicho.promessa}</div>
+              <div className="text-[13px] text-ink-mute mt-0.5">{c.nicho.promessa}</div>
             ) : null}
           </div>
         </div>
@@ -86,7 +86,7 @@ export function CharacterCard({ character: c }: { character: Character }) {
 
 function Tag({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-flex items-center px-2 py-0.5 rounded-full border border-line bg-bg text-muted font-medium">
+    <span className="inline-flex items-center px-2 py-0.5 rounded-full border border-line bg-panel text-ink-mute font-medium">
       {children}
     </span>
   );

@@ -7,18 +7,12 @@ export function StatusBadge({ status }: { status: Status }) {
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider px-2.5 py-0.5 rounded-full border mono",
+        "inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full mono",
         status === "completo"
-          ? "border-ok/30 bg-ok-soft text-ok"
-          : "border-line-strong bg-[#EEE7DB] text-[#7a6b52]"
+          ? "bg-ok text-bg"
+          : "bg-pink text-white"
       )}
     >
-      <span
-        className={cn(
-          "h-1.5 w-1.5 rounded-full",
-          status === "completo" ? "bg-ok" : "bg-[#7a6b52]"
-        )}
-      />
       {status === "completo" ? "Completo" : "Rascunho"}
     </span>
   );

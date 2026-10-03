@@ -14,9 +14,7 @@ interface FieldProps {
   optional?: boolean;
   htmlFor?: string;
   counter?: { value: number; max: number };
-  /** Caminho dot-notation (ex.: "identidade.bio"). Habilita badge "Sugestão da IA" e cadeado. */
   fieldId?: string;
-  /** Descrição curta para a IA quando o usuário clica em "Sugerir com IA". */
   aiDescricao?: string;
   children: ReactNode;
   className?: string;
@@ -55,7 +53,7 @@ export function Field({
         <label htmlFor={htmlFor} className="label-cap inline-flex items-center gap-2">
           {label}
           {optional ? (
-            <span className="text-muted/80 normal-case font-normal tracking-normal">
+            <span className="text-ink-dim normal-case font-normal tracking-normal">
               (opcional)
             </span>
           ) : null}
@@ -64,13 +62,13 @@ export function Field({
               className={cn(
                 "inline-flex items-center gap-1 rounded-full px-1.5 py-0.5 text-[10px] mono font-bold normal-case tracking-normal",
                 suggestion === "contexto"
-                  ? "bg-ok-soft text-ok border border-ok/30"
-                  : "bg-accent-soft text-accent-strong border border-accent/30"
+                  ? "bg-ok/15 text-ok border border-ok/30"
+                  : "bg-accent/15 text-accent border border-accent/30"
               )}
               title={
                 suggestion === "contexto"
-                  ? "A IA inferiu do seu contexto"
-                  : "A IA inventou — revise"
+                  ? "Veio do seu contexto"
+                  : "Sugestão — revise"
               }
             >
               <Sparkles className="w-2.5 h-2.5" />
@@ -79,13 +77,13 @@ export function Field({
           ) : null}
         </label>
         <div className="flex items-center gap-2">
-          {characterId && fieldId ? (
+          {AI_ENABLED && characterId && fieldId ? (
             <button
               type="button"
               onClick={() => toggleLock(characterId, fieldId)}
               className={cn(
                 "h-5 w-5 inline-flex items-center justify-center rounded-md transition",
-                locked ? "text-ink" : "text-muted hover:text-ink"
+                locked ? "text-accent" : "text-ink-dim hover:text-ink"
               )}
               aria-pressed={locked}
               title={locked ? "Travado — regeneração não altera" : "Travar campo"}
@@ -97,7 +95,7 @@ export function Field({
             <span
               className={cn(
                 "text-[11px] tabular-nums mono",
-                counter.value > counter.max ? "text-warn" : "text-muted/80"
+                counter.value > counter.max ? "text-pink" : "text-ink-dim"
               )}
             >
               {counter.value}/{counter.max}
@@ -107,14 +105,14 @@ export function Field({
       </div>
       <div
         className={cn(
-          showBadge && "rounded-xl ring-1 ring-dashed ring-accent/50 p-0.5 -m-0.5"
+          showBadge && "rounded-xl ring-1 ring-dashed ring-accent/60 p-0.5 -m-0.5"
         )}
       >
         {children}
       </div>
       <div className="flex items-center justify-between gap-3 min-h-[16px]">
         {hint ? (
-          <p className="text-[13px] text-muted leading-relaxed">{hint}</p>
+          <p className="text-[13px] text-ink-mute leading-relaxed">{hint}</p>
         ) : (
           <span />
         )}
@@ -130,7 +128,7 @@ export function Field({
             <button
               type="button"
               onClick={() => confirmSuggestion(characterId, fieldId)}
-              className="text-[11px] mono text-accent-strong hover:text-ink inline-flex items-center gap-1 font-bold uppercase"
+              className="text-[11px] mono text-accent hover:text-white inline-flex items-center gap-1 font-bold uppercase tracking-wider"
             >
               <Check className="w-3 h-3" />
               Confirmar

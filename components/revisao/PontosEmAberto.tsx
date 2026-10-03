@@ -19,7 +19,7 @@ export function PontosEmAberto({ character }: { character: Character }) {
           {character.pontosEmAberto.length === 1 ? "decisão" : "decisões"}
         </h3>
       </div>
-      <p className="text-[13px] text-muted mb-3 leading-relaxed">
+      <p className="text-[13px] text-ink-mute mb-3 leading-relaxed">
         A IA marcou essas decisões como importantes mas pulou pra você. Responder cada uma
         define melhor o personagem.
       </p>
@@ -27,13 +27,13 @@ export function PontosEmAberto({ character }: { character: Character }) {
         {character.pontosEmAberto.map((p, i) => (
           <li
             key={i}
-            className="rounded-xl border border-line bg-paper p-4 relative"
+            className="rounded-xl border border-line bg-panel p-4 relative"
           >
             <div className="flex items-start gap-2 mb-2">
-              <HelpCircle className="w-4 h-4 text-accent-strong mt-0.5 shrink-0" />
+              <HelpCircle className="w-4 h-4 text-accent mt-0.5 shrink-0" />
               <div className="flex-1 min-w-0">
                 <div className="font-semibold text-ink">{p.decisao}</div>
-                <div className="text-[13px] text-muted mt-0.5 leading-relaxed">
+                <div className="text-[13px] text-ink-mute mt-0.5 leading-relaxed">
                   {p.porQueImporta}
                 </div>
               </div>
@@ -44,7 +44,7 @@ export function PontosEmAberto({ character }: { character: Character }) {
                     c.pontosEmAberto = c.pontosEmAberto.filter((_, j) => j !== i);
                   })
                 }
-                className="h-7 w-7 inline-flex items-center justify-center rounded-full text-muted hover:text-warn transition"
+                className="h-7 w-7 inline-flex items-center justify-center rounded-full text-ink-dim hover:text-pink transition"
                 aria-label="Remover ponto"
                 title="Remover"
               >

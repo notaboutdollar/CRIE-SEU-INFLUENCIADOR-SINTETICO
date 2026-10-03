@@ -132,7 +132,7 @@ function trigger(blob: Blob, filename: string) {
 export async function downloadPng(node: HTMLElement, filename: string) {
   const html2canvas = (await import("html2canvas")).default;
   const canvas = await html2canvas(node, {
-    backgroundColor: "#0a0a0f",
+    backgroundColor: "#0a0a0a",
     scale: 2,
     useCORS: true,
   });
@@ -147,7 +147,7 @@ export async function downloadPdf(node: HTMLElement, filename: string) {
     import("jspdf"),
   ]);
   const canvas = await html2canvas(node, {
-    backgroundColor: "#0a0a0f",
+    backgroundColor: "#0a0a0a",
     scale: 2,
     useCORS: true,
   });

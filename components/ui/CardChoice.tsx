@@ -32,23 +32,23 @@ export function CardChoice({
       className={cn(
         "text-left rounded-xl border p-3.5 transition relative",
         selected
-          ? "border-accent bg-accent-soft/50 shadow-focus"
-          : "border-line bg-paper hover:border-ink/40",
+          ? "border-accent bg-accent/5 shadow-glow"
+          : "border-line bg-panel hover:border-line-strong hover:bg-card",
         disabled && "opacity-50 cursor-not-allowed",
         className
       )}
     >
       <div className="flex items-start gap-2.5">
-        {icon ? <div className="text-accent-strong shrink-0 mt-0.5">{icon}</div> : null}
+        {icon ? <div className={cn("shrink-0 mt-0.5", selected ? "text-accent" : "text-ink-mute")}>{icon}</div> : null}
         <div className="flex-1">
           <div className="font-semibold text-ink">{title}</div>
           {description ? (
-            <div className="text-[13px] text-muted mt-0.5 leading-relaxed">{description}</div>
+            <div className="text-[13px] text-ink-mute mt-0.5 leading-relaxed">{description}</div>
           ) : null}
         </div>
         {selected ? (
-          <span className="inline-flex items-center justify-center h-5 w-5 rounded-full bg-accent text-white">
-            <Check className="w-3.5 h-3.5" />
+          <span className="inline-flex items-center justify-center h-5 w-5 rounded-full bg-accent text-bg">
+            <Check className="w-3.5 h-3.5" strokeWidth={3} />
           </span>
         ) : null}
       </div>

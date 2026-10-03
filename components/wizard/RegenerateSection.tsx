@@ -7,7 +7,6 @@ import { Input } from "@/components/ui/Input";
 import { cn } from "@/lib/cn";
 import type { StepId } from "@/lib/types";
 
-/** Campos pertencentes a cada seção, para a rota regenerar-secao filtrar. */
 const CAMPOS_POR_STEP: Record<Exclude<StepId, "revisao">, string[]> = {
   identidade: ["nome", "handles", "ocupacao", "genero", "forma", "idadeAparente", "cidade", "idioma", "sotaque", "bio"],
   visual: ["traco", "cabelo", "pele", "olhos", "roupa", "acessorios", "tracosMarcantes", "paleta", "cenarios", "negativos"],
@@ -72,7 +71,7 @@ export function RegenerateSection({ characterId, stepId, stepTitulo }: Props) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="text-[12px] mono uppercase tracking-wider text-muted hover:text-accent-strong font-semibold inline-flex items-center gap-1.5"
+        className="text-[11px] mono uppercase tracking-wider text-ink-mute hover:text-accent font-bold inline-flex items-center gap-1.5"
       >
         <RefreshCw className="w-3.5 h-3.5" />
         Regenerar esta seção com IA
@@ -81,19 +80,19 @@ export function RegenerateSection({ characterId, stepId, stepTitulo }: Props) {
   }
 
   return (
-    <div className="rounded-xl border border-accent/30 bg-accent-soft/40 p-3.5">
+    <div className="rounded-xl border border-accent/30 bg-accent/5 p-3.5">
       <div className="flex items-center justify-between mb-2">
-        <span className="label-cap !text-accent-strong">Regenerar: {stepTitulo}</span>
+        <span className="label-cap !text-accent">Regenerar: {stepTitulo}</span>
         <button
           type="button"
           onClick={() => setOpen(false)}
-          className="h-6 w-6 inline-flex items-center justify-center rounded-full text-muted hover:text-ink"
+          className="h-6 w-6 inline-flex items-center justify-center rounded-full text-ink-mute hover:text-ink"
           aria-label="Fechar"
         >
           <X className="w-3.5 h-3.5" />
         </button>
       </div>
-      <p className="text-[13px] text-muted mb-2 leading-relaxed">
+      <p className="text-[13px] text-ink-mute mb-2 leading-relaxed">
         Campos travados ({character._locks.length}) não serão alterados. Instrução é opcional.
       </p>
       <Input
@@ -103,14 +102,14 @@ export function RegenerateSection({ characterId, stepId, stepTitulo }: Props) {
         disabled={loading}
       />
       {err ? (
-        <div className="mt-2 text-[13px] text-warn">{err}</div>
+        <div className="mt-2 text-[13px] text-pink">{err}</div>
       ) : null}
       <div className="mt-3 flex items-center justify-end gap-2">
         <button
           type="button"
           onClick={() => setOpen(false)}
           disabled={loading}
-          className="text-[13px] text-muted hover:text-ink font-semibold px-3 py-1.5"
+          className="text-[13px] text-ink-mute hover:text-ink font-semibold px-3 py-1.5"
         >
           Cancelar
         </button>
@@ -119,7 +118,7 @@ export function RegenerateSection({ characterId, stepId, stepTitulo }: Props) {
           onClick={onRegerar}
           disabled={loading}
           className={cn(
-            "inline-flex items-center gap-1.5 bg-accent hover:bg-accent-strong text-white font-bold text-[13px] px-4 py-1.5 rounded-full transition disabled:opacity-50"
+            "inline-flex items-center gap-1.5 bg-accent hover:bg-accent-strong text-bg font-bold text-[13px] px-4 py-1.5 rounded-full transition disabled:opacity-50"
           )}
         >
           <RefreshCw className={cn("w-3.5 h-3.5", loading && "animate-spin")} />

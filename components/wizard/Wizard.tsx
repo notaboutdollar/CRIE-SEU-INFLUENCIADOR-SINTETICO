@@ -33,8 +33,8 @@ export function Wizard({ id }: { id: string }) {
     return (
       <main className="mx-auto max-w-5xl px-4 py-10">
         <div className="card p-8 text-center">
-          <h2 className="serif text-xl">Personagem não encontrado</h2>
-          <p className="text-muted text-sm mt-2">
+          <h2 className="display text-xl uppercase">Personagem não encontrado</h2>
+          <p className="text-ink-mute text-sm mt-2">
             Pode ter sido excluído em outra aba.
           </p>
           <button
@@ -57,39 +57,39 @@ export function Wizard({ id }: { id: string }) {
           <StepTabs current={currentId} character={character} onPick={setCurrentId} />
         </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6">
-        <div className="min-w-0">
-          <section className="card p-5 sm:p-7">
-            <div className="mb-5">
-              <div className="eyebrow-accent mb-1">Etapa</div>
-              <h2 className="serif text-2xl sm:text-3xl text-ink">{current.title}</h2>
-              <p className="text-muted text-[15px] mt-1">{current.subtitle}</p>
-            </div>
-
-            <div className="mb-6">
-              <DicaBox>{current.dica}</DicaBox>
-            </div>
-
-            {renderStep(currentId, character.id)}
-
-            {AI_ENABLED && currentId !== "revisao" ? (
-              <div className="mt-6">
-                <RegenerateSection
-                  characterId={character.id}
-                  stepId={currentId}
-                  stepTitulo={current.title}
-                />
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6">
+          <div className="min-w-0">
+            <section className="card p-5 sm:p-7">
+              <div className="mb-5">
+                <div className="eyebrow-accent mb-1.5">Etapa</div>
+                <h2 className="display text-2xl sm:text-3xl text-ink uppercase">{current.title}</h2>
+                <p className="text-ink-mute text-[15px] mt-1">{current.subtitle}</p>
               </div>
-            ) : null}
 
-            <StepFooter current={currentId} onChange={setCurrentId} />
-          </section>
+              <div className="mb-6">
+                <DicaBox>{current.dica}</DicaBox>
+              </div>
+
+              {renderStep(currentId, character.id)}
+
+              {AI_ENABLED && currentId !== "revisao" ? (
+                <div className="mt-6">
+                  <RegenerateSection
+                    characterId={character.id}
+                    stepId={currentId}
+                    stepTitulo={current.title}
+                  />
+                </div>
+              ) : null}
+
+              <StepFooter current={currentId} onChange={setCurrentId} />
+            </section>
+          </div>
+
+          <aside className="min-w-0">
+            <CharacterCard character={character} />
+          </aside>
         </div>
-
-        <aside className="min-w-0">
-          <CharacterCard character={character} />
-        </aside>
-      </div>
       </main>
     </WizardProvider>
   );

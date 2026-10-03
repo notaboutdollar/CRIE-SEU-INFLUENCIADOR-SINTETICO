@@ -19,14 +19,21 @@ export const FichaPoster = forwardRef<HTMLDivElement, Props>(function FichaPoste
     <div
       ref={ref}
       className={cn(
-        "bg-bg text-ink p-12",
+        "p-12",
         vertical ? "w-[720px] min-h-[1020px]" : "w-[1180px] min-h-[720px]",
         className
       )}
-      style={{ fontFamily: "Inter, system-ui, sans-serif" }}
+      style={{
+        fontFamily: "Inter, system-ui, sans-serif",
+        background: "#0a0a0a",
+        color: "#ffffff",
+      }}
     >
       <header className="mb-10 flex items-start gap-6">
-        <div className="h-28 w-28 rounded-2xl overflow-hidden bg-paper border border-line shrink-0 shadow-card">
+        <div
+          className="h-28 w-28 rounded-2xl overflow-hidden shrink-0"
+          style={{ background: "#141414", border: "1px solid #272727" }}
+        >
           {c.visual.referencias[0]?.dataUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -39,17 +46,33 @@ export const FichaPoster = forwardRef<HTMLDivElement, Props>(function FichaPoste
           )}
         </div>
         <div className="min-w-0">
-          <div className="text-[11px] font-bold uppercase mono text-accent-strong" style={{ letterSpacing: "0.14em" }}>
+          <div
+            className="text-[11px] font-bold uppercase"
+            style={{
+              fontFamily: "'JetBrains Mono', monospace",
+              color: "#DFFF2A",
+              letterSpacing: "0.14em",
+            }}
+          >
             Ficha do Influenciador Sintético
           </div>
           <h1
-            className="text-5xl font-bold mt-1 leading-[1.05] tracking-tight text-ink"
-            style={{ fontFamily: "Fraunces, Georgia, serif", letterSpacing: "-0.02em" }}
+            className="text-6xl mt-2 uppercase"
+            style={{
+              fontFamily: "Inter, system-ui, sans-serif",
+              fontWeight: 800,
+              letterSpacing: "-0.03em",
+              lineHeight: 0.95,
+              color: "#ffffff",
+            }}
           >
             {c.identidade.nome || "Sem nome"}
           </h1>
           {c.identidade.bio ? (
-            <p className="text-[16px] text-[#3a3a3a] mt-3 leading-relaxed italic">
+            <p
+              className="text-[16px] mt-3 leading-relaxed italic"
+              style={{ color: "#A3A3A3" }}
+            >
               “{c.identidade.bio}”
             </p>
           ) : null}
@@ -135,8 +158,13 @@ export const FichaPoster = forwardRef<HTMLDivElement, Props>(function FichaPoste
       </div>
 
       <footer
-        className="mt-12 pt-6 border-t border-line text-[10px] font-bold text-muted uppercase mono"
-        style={{ letterSpacing: "0.14em" }}
+        className="mt-12 pt-6 text-[10px] font-bold uppercase"
+        style={{
+          fontFamily: "'JetBrains Mono', monospace",
+          color: "#666666",
+          letterSpacing: "0.14em",
+          borderTop: "1px solid #272727",
+        }}
       >
         Ficha gerada por Crie seu Influenciador Sintético
       </footer>
@@ -146,7 +174,14 @@ export const FichaPoster = forwardRef<HTMLDivElement, Props>(function FichaPoste
 
 function Tag({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full border border-line bg-paper text-muted capitalize font-medium">
+    <span
+      className="inline-flex items-center px-2.5 py-0.5 rounded-full capitalize font-medium"
+      style={{
+        background: "#141414",
+        border: "1px solid #272727",
+        color: "#A3A3A3",
+      }}
+    >
       {children}
     </span>
   );
@@ -154,10 +189,17 @@ function Tag({ children }: { children: React.ReactNode }) {
 
 function Block({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-2xl border border-line bg-paper p-5 shadow-card">
+    <section
+      className="rounded-2xl p-5"
+      style={{ background: "#141414", border: "1px solid #272727" }}
+    >
       <h3
-        className="text-[11px] font-bold text-accent-strong mb-3 uppercase mono"
-        style={{ letterSpacing: "0.14em" }}
+        className="text-[11px] font-bold mb-3 uppercase"
+        style={{
+          fontFamily: "'JetBrains Mono', monospace",
+          color: "#DFFF2A",
+          letterSpacing: "0.14em",
+        }}
       >
         {title}
       </h3>
@@ -171,12 +213,16 @@ function KV({ label, value }: { label: string; value?: string }) {
   return (
     <div>
       <div
-        className="text-[10px] uppercase mono text-muted font-semibold"
-        style={{ letterSpacing: "0.12em" }}
+        className="text-[10px] uppercase font-semibold"
+        style={{
+          fontFamily: "'JetBrains Mono', monospace",
+          color: "#666666",
+          letterSpacing: "0.12em",
+        }}
       >
         {label}
       </div>
-      <div className="text-ink mt-0.5">{value}</div>
+      <div className="mt-0.5" style={{ color: "#ffffff" }}>{value}</div>
     </div>
   );
 }

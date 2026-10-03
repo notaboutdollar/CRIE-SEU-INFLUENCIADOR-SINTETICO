@@ -47,13 +47,13 @@ export function ConsistenciaIA({ characterId }: { characterId: string }) {
       </div>
 
       {err ? (
-        <div className="rounded-xl border border-warn/40 bg-warn-soft px-3.5 py-2.5 text-sm text-warn">
+        <div className="rounded-xl border border-pink/40 bg-pink/10 px-3.5 py-2.5 text-sm text-pink">
           {err}
         </div>
       ) : null}
 
       {alertas && alertas.length === 0 ? (
-        <div className="rounded-xl border border-ok/25 bg-ok-soft p-4 text-sm text-ok">
+        <div className="rounded-xl border border-ok/30 bg-ok/10 p-4 text-sm text-ok">
           A IA não encontrou contradições, clichês ou campos genéricos.
         </div>
       ) : null}
@@ -66,24 +66,24 @@ export function ConsistenciaIA({ characterId }: { characterId: string }) {
               className={cn(
                 "rounded-xl border p-3 text-sm flex gap-3",
                 a.tipo === "contradicao"
-                  ? "border-warn/40 bg-warn-soft"
+                  ? "border-pink/40 bg-pink/5"
                   : a.tipo === "cliche"
-                  ? "border-accent/30 bg-accent-soft/40"
-                  : "border-line bg-paper"
+                  ? "border-accent/30 bg-accent/5"
+                  : "border-line bg-panel"
               )}
             >
               {a.tipo === "contradicao" ? (
-                <AlertTriangle className="w-4 h-4 text-warn mt-0.5 shrink-0" />
+                <AlertTriangle className="w-4 h-4 text-pink mt-0.5 shrink-0" />
               ) : (
-                <Info className="w-4 h-4 text-muted mt-0.5 shrink-0" />
+                <Info className="w-4 h-4 text-ink-mute mt-0.5 shrink-0" />
               )}
               <div>
                 <div className="font-semibold text-ink">{a.mensagem}</div>
-                <div className="text-[11px] mono text-muted mt-0.5">
+                <div className="text-[11px] mono text-ink-dim mt-0.5">
                   {a.tipo.toUpperCase()} · campo: {a.campo}
                 </div>
                 {a.correcaoSugerida ? (
-                  <div className="mt-1.5 text-[13px] text-muted border-l-2 border-accent/40 pl-2">
+                  <div className="mt-1.5 text-[13px] text-ink-mute border-l-2 border-accent/40 pl-2">
                     Sugestão: {a.correcaoSugerida}
                   </div>
                 ) : null}

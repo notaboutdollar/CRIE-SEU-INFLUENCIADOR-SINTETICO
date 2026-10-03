@@ -152,7 +152,7 @@ export function CreateDialog({ open, onClose }: Props) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink/50 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
       role="dialog"
       aria-modal="true"
       onClick={(e) => {
@@ -164,7 +164,7 @@ export function CreateDialog({ open, onClose }: Props) {
           <button
             type="button"
             onClick={onClose}
-            className="absolute top-4 right-4 h-9 w-9 inline-flex items-center justify-center rounded-full border border-line hover:border-ink text-muted hover:text-ink"
+            className="absolute top-4 right-4 h-9 w-9 inline-flex items-center justify-center rounded-full border border-line hover:border-ink text-ink-mute hover:text-ink"
             aria-label="Fechar"
           >
             <X className="w-4 h-4" />
@@ -174,10 +174,10 @@ export function CreateDialog({ open, onClose }: Props) {
         {mode === "pick" && (
           <div>
             <div className="eyebrow-accent mb-2">Como você quer começar?</div>
-            <h2 className="serif text-2xl sm:text-3xl text-ink leading-tight">
+            <h2 className="display text-2xl sm:text-3xl text-ink uppercase leading-tight">
               Vamos criar seu personagem.
             </h2>
-            <p className="text-muted mt-2 leading-relaxed">
+            <p className="text-ink-mute mt-3 leading-relaxed">
               Preencha campo a campo, ou, se ainda não tem a ideia fechada, pegue um prompt pronto
               para o Claude montar a ficha por você.
             </p>
@@ -219,7 +219,7 @@ export function CreateDialog({ open, onClose }: Props) {
               <ClipboardPaste className="w-3.5 h-3.5" />
               Gerar no Claude
             </div>
-            <h2 className="serif text-2xl sm:text-3xl text-ink leading-tight">
+            <h2 className="display text-2xl sm:text-3xl text-ink uppercase leading-tight">
               Pegue o prompt, rode no Claude e traga a resposta.
             </h2>
 
@@ -250,17 +250,17 @@ export function CreateDialog({ open, onClose }: Props) {
                     href="https://claude.ai/new"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2 font-bold rounded-full h-10 px-5 text-sm bg-transparent text-ink border border-line-strong hover:bg-paper transition"
+                    className="inline-flex items-center justify-center gap-2 font-bold rounded-full h-10 px-5 text-sm bg-transparent text-ink border border-line-strong hover:bg-panel transition"
                   >
                     <ExternalLink className="w-4 h-4" />
                     Abrir o Claude
                   </a>
                 </div>
                 <details className="mt-3 group">
-                  <summary className="text-[13px] text-muted hover:text-ink cursor-pointer font-semibold">
+                  <summary className="text-[13px] text-ink-mute hover:text-ink cursor-pointer font-semibold">
                     Ver o prompt
                   </summary>
-                  <pre className="mt-2 max-h-64 overflow-auto rounded-xl border border-line bg-bg/60 p-3.5 text-[12px] mono whitespace-pre-wrap leading-relaxed">
+                  <pre className="mt-2 max-h-64 overflow-auto rounded-xl border border-line bg-bg p-3.5 text-[12px] mono whitespace-pre-wrap leading-relaxed text-ink/90">
                     {prompt}
                   </pre>
                 </details>
@@ -283,7 +283,7 @@ export function CreateDialog({ open, onClose }: Props) {
                   />
                 </Field>
                 {erroImport ? (
-                  <div className="mt-3 rounded-xl border border-warn/40 bg-warn-soft px-3.5 py-2.5 text-sm text-warn">
+                  <div className="mt-3 rounded-xl border border-pink/40 bg-pink/10 px-3.5 py-2.5 text-sm text-pink">
                     {erroImport}
                   </div>
                 ) : null}
@@ -308,10 +308,10 @@ export function CreateDialog({ open, onClose }: Props) {
               <Sparkles className="w-3.5 h-3.5" />
               Expandir com IA
             </div>
-            <h2 className="serif text-2xl sm:text-3xl text-ink leading-tight">
+            <h2 className="display text-2xl sm:text-3xl text-ink uppercase leading-tight">
               Escreva um contexto curto.
             </h2>
-            <p className="text-muted mt-2 leading-relaxed">
+            <p className="text-ink-mute mt-3 leading-relaxed">
               Nome, nicho, público, tom, referências — o que vier à cabeça. Depois você edita tudo.
             </p>
 
@@ -331,7 +331,7 @@ export function CreateDialog({ open, onClose }: Props) {
               </Field>
 
               {erro ? (
-                <div className="mt-3 rounded-xl border border-warn/40 bg-warn-soft px-3.5 py-2.5 text-sm text-warn">
+                <div className="mt-3 rounded-xl border border-pink/40 bg-pink/10 px-3.5 py-2.5 text-sm text-pink">
                   {erro}
                 </div>
               ) : null}
@@ -351,11 +351,11 @@ export function CreateDialog({ open, onClose }: Props) {
 
         {mode === "loading" && (
           <div className="text-center py-6">
-            <div className="relative inline-flex items-center justify-center h-16 w-16 rounded-full bg-accent-soft border border-accent/30 mb-5">
-              <Sparkles className="w-7 h-7 text-accent-strong animate-pulse" />
+            <div className="relative inline-flex items-center justify-center h-16 w-16 rounded-full bg-accent/15 border border-accent/50 mb-5">
+              <Sparkles className="w-7 h-7 text-accent animate-pulse" />
             </div>
-            <h2 className="serif text-2xl text-ink">Montando o personagem…</h2>
-            <p className="text-muted mt-2">Isso leva uns 10–20 segundos.</p>
+            <h2 className="display text-2xl text-ink uppercase">Montando o personagem…</h2>
+            <p className="text-ink-mute mt-3">Isso leva uns 10–20 segundos.</p>
 
             <ul className="mt-6 text-left max-w-md mx-auto grid gap-2">
               {LOADING_STEPS.map((label, i) => {
@@ -367,20 +367,20 @@ export function CreateDialog({ open, onClose }: Props) {
                     className={cn(
                       "flex items-center gap-3 text-sm px-3.5 py-2 rounded-xl border",
                       active
-                        ? "border-accent bg-accent-soft/40 text-ink font-semibold"
+                        ? "border-accent bg-accent/5 text-ink font-semibold"
                         : done
-                        ? "border-line bg-paper text-muted line-through"
-                        : "border-line bg-paper text-muted"
+                        ? "border-line bg-panel text-ink-dim line-through"
+                        : "border-line bg-panel text-ink-mute"
                     )}
                   >
                     <span
                       className={cn(
                         "h-5 w-5 inline-flex items-center justify-center rounded-full text-[10px] mono font-bold",
                         active
-                          ? "bg-accent text-white"
+                          ? "bg-accent text-bg"
                           : done
-                          ? "bg-ok-soft text-ok"
-                          : "bg-bg text-muted"
+                          ? "bg-ok/20 text-ok"
+                          : "bg-card text-ink-dim"
                       )}
                     >
                       {done ? "✓" : String(i + 1).padStart(2, "0")}
@@ -409,7 +409,7 @@ function Step({
   return (
     <section>
       <div className="flex items-center gap-2.5 mb-3">
-        <span className="h-6 w-6 inline-flex items-center justify-center rounded-full bg-accent-soft text-accent-strong mono text-[12px] font-bold">
+        <span className="h-6 w-6 inline-flex items-center justify-center rounded-full bg-accent/15 text-accent mono text-[12px] font-bold">
           {n}
         </span>
         <h3 className="font-semibold text-ink">{titulo}</h3>
@@ -439,20 +439,20 @@ function Option({
       className={cn(
         "text-left rounded-2xl border p-5 transition group",
         accent
-          ? "border-accent bg-accent-soft/40 hover:bg-accent-soft/70"
-          : "border-line bg-paper hover:border-ink/40"
+          ? "border-accent bg-accent/5 hover:bg-accent/10 shadow-glow"
+          : "border-line bg-panel hover:border-line-strong hover:bg-card"
       )}
     >
       <div
         className={cn(
           "inline-flex items-center justify-center h-10 w-10 rounded-full mb-3",
-          accent ? "bg-accent text-white" : "bg-bg text-ink"
+          accent ? "bg-accent text-bg" : "bg-card text-ink"
         )}
       >
         {icon}
       </div>
-      <div className="serif text-lg text-ink">{title}</div>
-      <div className="text-[14px] text-muted mt-1 leading-relaxed">{description}</div>
+      <div className="display text-base uppercase text-ink tracking-tight">{title}</div>
+      <div className="text-[13px] text-ink-mute mt-1.5 leading-relaxed">{description}</div>
     </button>
   );
 }
