@@ -12,6 +12,7 @@ import { FichaPoster } from "@/components/export/FichaPoster";
 import { cn } from "@/lib/cn";
 import { PontosEmAberto } from "@/components/revisao/PontosEmAberto";
 import { ConsistenciaIA } from "@/components/revisao/ConsistenciaIA";
+import { GerarImagem } from "@/components/revisao/GerarImagem";
 import { AI_ENABLED } from "@/lib/ai/flag";
 
 type Orient = "vertical" | "horizontal";
@@ -206,6 +207,8 @@ export function RevisaoStep({ id }: { id: string }) {
           />
         </div>
       </section>
+
+      <GerarImagem character={c} />
 
       <section className="flex flex-wrap gap-2 items-center">
         <Button variant="accent" onClick={onCopyMaster}>

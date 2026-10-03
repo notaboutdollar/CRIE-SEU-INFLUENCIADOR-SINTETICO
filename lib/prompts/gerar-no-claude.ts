@@ -74,7 +74,7 @@ export type ImportOutcome =
   | { ok: false; error: string };
 
 export function parseRespostaClaude(raw: string): ImportOutcome {
-  if (!raw.trim()) return { ok: false, error: "Cole aqui a resposta que o Claude te devolveu." };
+  if (!raw.trim()) return { ok: false, error: "Cole aqui a resposta que a IA te devolveu." };
 
   let data: unknown;
   try {
@@ -83,7 +83,7 @@ export function parseRespostaClaude(raw: string): ImportOutcome {
     return {
       ok: false,
       error:
-        "Não consegui ler o JSON. Copie o bloco inteiro da resposta do Claude (do { ao }) e cole de novo.",
+        "Não consegui ler o JSON. Copie o bloco inteiro da resposta da IA (do { ao }) e cole de novo.",
     };
   }
   if (!data || typeof data !== "object" || Array.isArray(data)) {
