@@ -10,6 +10,7 @@ import { CardChoice } from "@/components/ui/CardChoice";
 import { tracos } from "@/data/choices";
 import type { ReferenciaImagem } from "@/lib/types";
 import { GerarImagem } from "@/components/revisao/GerarImagem";
+import { GerarIdentidadeDaImagem } from "@/components/visual/GerarIdentidadeDaImagem";
 
 const MAX_SIZE = 4 * 1024 * 1024; // 4MB
 
@@ -47,6 +48,7 @@ export function VisualStep({ id }: { id: string }) {
   return (
     <div className="grid grid-cols-1 gap-5">
       <GerarImagem character={character} />
+      <GerarIdentidadeDaImagem character={character} />
       <div className="border-t border-line" />
 
       <Field label="Traço / estilo" fieldId="visual.traco" hint="Cards são placeholders — na v2 vem pré-visualização com arte real.">

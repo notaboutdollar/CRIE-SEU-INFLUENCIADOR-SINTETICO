@@ -22,7 +22,7 @@ export function buildPromptClaude(ideia: string): string {
   return GERAR_NO_CLAUDE.replace(/\{\{(ideia|perguntas|esqueleto)\}\}/g, (_, k: string) => valores[k]);
 }
 
-function montarPerguntas(): string {
+export function montarPerguntas(): string {
   return SECOES.map((s, i) => {
     const linhas = s.perguntas.map((p) => `- ${p.id}: ${p.descricao}${sufixo(p)}`);
     return `${i + 1}. ${s.titulo.toUpperCase()}\n${linhas.join("\n")}`;
@@ -52,7 +52,7 @@ function placeholder(p: Pergunta): unknown {
   }
 }
 
-function montarEsqueleto(): string {
+export function montarEsqueleto(): string {
   const obj: Record<string, unknown> = {};
   for (const s of SECOES) for (const p of s.perguntas) writePath(obj, p.id, placeholder(p));
   obj.pontosEmAberto = [{ decisao: "...", porQueImporta: "..." }];
