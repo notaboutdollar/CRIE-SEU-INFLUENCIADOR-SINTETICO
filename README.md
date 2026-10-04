@@ -38,6 +38,30 @@ Ao clicar em **Criar personagem**, o site pergunta como começar:
 
 Tudo roda no navegador: nenhuma chave de API, nenhum custo para o site. O prompt e o importador são gerados a partir de [`data/perguntas.ts`](data/perguntas.ts); o texto-base fica em [`data/prompts/gerar-no-claude.ts`](data/prompts/gerar-no-claude.ts).
 
+## Ligar login + banco (opcional)
+
+Com Supabase configurado, aparece o botão **Entrar** na top-nav e cada pessoa tem seus próprios personagens salvos no banco, acessíveis de qualquer dispositivo. Sem Supabase, o app continua funcionando no modo anônimo (localStorage no navegador).
+
+Passo a passo:
+
+1. Criar projeto grátis em [supabase.com](https://supabase.com).
+2. Em **Project Settings → API**: copiar `URL` e `anon public key`.
+3. Em **Authentication → Providers → Google**: ativar e colar Client ID / Secret (gerados no [Google Cloud Console](https://console.cloud.google.com/) → OAuth client Web).
+4. Em **Authentication → Providers → Email**: deixar signups e magic link habilitados.
+5. No **SQL Editor**: rodar o conteúdo de [`supabase/migrations/0001_init.sql`](supabase/migrations/0001_init.sql) (cria a tabela `characters` com Row-Level Security).
+6. Em `.env.local` (local) e na Vercel (produção):
+
+```
+NEXT_PUBLIC_SUPABASE_URL=https://seuprojeto.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOi...
+```
+
+**Como funciona a sincronização:**
+- Sem login (anônimo): personagens só no `localStorage`.
+- Ao entrar: a conta começa com os personagens que a pessoa já tiver no banco (vazia na primeira vez). O que estava no `localStorage` fica guardado em memória e volta ao sair — não é apagado nem importado automaticamente.
+- Enquanto logado: toda criação, edição e exclusão é espelhada no Supabase.
+- Row-Level Security garante que cada conta só lê e escreve os próprios personagens.
+
 ## Ligar a IA (opcional)
 
 Por padrão, nenhum botão de IA aparece — assim nenhum request vai pra Anthropic e não tem custo. Para habilitar as features de IA:

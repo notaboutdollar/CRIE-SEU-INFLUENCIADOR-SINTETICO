@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { AuthProvider } from "@/components/auth/AuthProvider";
+import { CharactersSyncer } from "@/components/auth/CharactersSyncer";
 
 export const metadata: Metadata = {
   title: "Crie seu Influenciador Sintético",
@@ -22,7 +24,12 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="min-h-screen bg-bg text-ink antialiased">{children}</body>
+      <body className="min-h-screen bg-bg text-ink antialiased">
+        <AuthProvider>
+          <CharactersSyncer />
+          {children}
+        </AuthProvider>
+      </body>
     </html>
   );
 }

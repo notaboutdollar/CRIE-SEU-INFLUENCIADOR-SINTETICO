@@ -8,6 +8,7 @@ import { EmptyState } from "@/components/home/EmptyState";
 import { CharacterListItem } from "@/components/home/CharacterListItem";
 import { CreateDialog } from "@/components/home/CreateDialog";
 import { AI_ENABLED } from "@/lib/ai/flag";
+import { AccountMenu } from "@/components/auth/AccountMenu";
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -114,10 +115,13 @@ function TopNav({ onCreate }: { onCreate: () => void }) {
             Influenciador Sintético
           </span>
         </div>
-        <Button variant="accent" size="sm" onClick={onCreate}>
-          <Plus className="w-3.5 h-3.5" strokeWidth={3} />
-          Novo
-        </Button>
+        <div className="flex items-center gap-2">
+          <AccountMenu />
+          <Button variant="accent" size="sm" onClick={onCreate}>
+            <Plus className="w-3.5 h-3.5" strokeWidth={3} />
+            Novo
+          </Button>
+        </div>
       </div>
     </nav>
   );
