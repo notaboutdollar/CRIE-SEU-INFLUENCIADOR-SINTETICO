@@ -45,8 +45,6 @@ function placeholder(p: Pergunta): unknown {
       return (p.opcoes ?? []).join(" | ");
     case "numero":
       return 50;
-    case "pilares":
-      return [{ nome: "...", pct: 30 }];
     case "ideias":
       return [{ formato: "Reels", titulo: "...", descricao: "..." }];
   }
@@ -150,19 +148,6 @@ function coagir(p: Pergunta, v: unknown): Coercao {
       const n = typeof v === "number" ? v : Number(v);
       if (!Number.isFinite(n)) return { ok: false, motivo: "esperava um número" };
       return { ok: true, valor: Math.min(100, Math.max(0, Math.round(n))) };
-    }
-    case "pilares": {
-      if (!Array.isArray(v)) return { ok: false, motivo: "esperava uma lista de pilares" };
-      const out = v
-        .map((x) => {
-          const o = x as Record<string, unknown> | null;
-          const nome = typeof o?.nome === "string" ? o.nome.trim() : "";
-          const pct = Number(o?.pct);
-          return nome && Number.isFinite(pct) ? { nome, pct: Math.round(pct) } : null;
-        })
-        .filter((x): x is { nome: string; pct: number } => !!x)
-        .slice(0, 5);
-      return out.length ? { ok: true, valor: out } : { ok: false, motivo: "nenhum pilar válido" };
     }
     case "ideias": {
       if (!Array.isArray(v)) return { ok: false, motivo: "esperava uma lista de ideias" };

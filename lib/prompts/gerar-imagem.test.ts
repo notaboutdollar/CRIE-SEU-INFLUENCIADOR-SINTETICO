@@ -12,7 +12,6 @@ function sampleCharacter() {
   c.identidade.genero = "feminino";
   c.identidade.forma = "humano";
   c.identidade.idadeAparente = "28 anos";
-  c.visual.traco = "realista";
   c.visual.cabelo = "Cacheado cor cobre, altura dos ombros";
   c.visual.pele = "Pele quente com sardas no nariz";
   c.visual.olhos = "Castanhos, levemente puxados";
@@ -20,7 +19,6 @@ function sampleCharacter() {
   c.visual.acessorios = "Óculos redondo, anéis grandes";
   c.visual.tracosMarcantes = "Tatuagem floral no antebraço";
   c.visual.paleta = "Terracota, bege, verde-oliva";
-  c.visual.negativos = "logotipos, texto, cenário corporativo";
   c.soul.adjetivos = ["debochada", "generosa", "teimosa"];
   return c;
 }
@@ -73,11 +71,6 @@ describe("buildImagePrompt", () => {
       const p = buildImagePrompt(sampleCharacter(), f).toLowerCase();
       expect(p).toMatch(/safe (generic )?realism|generic model|stock-model|stock photo/);
     }
-  });
-
-  it("negativos extras da ficha entram no bloco Avoid/Negative", () => {
-    const p = buildImagePrompt(sampleCharacter(), "neutro");
-    expect(p).toContain("Also avoid: logotipos, texto, cenário corporativo");
   });
 
   it("não quebra quando a ficha está vazia", () => {

@@ -1,12 +1,10 @@
 "use client";
 
-import { Plus, Trash2 } from "lucide-react";
 import { useCharacter } from "@/lib/useCharacter";
 import { Field } from "@/components/ui/Field";
 import { Input, Textarea } from "@/components/ui/Input";
 import { TagInput } from "@/components/ui/TagInput";
 import { Chip } from "@/components/ui/Chip";
-import { Button } from "@/components/ui/Button";
 import { formatos, plataformas } from "@/data/choices";
 
 export function NichoStep({ id }: { id: string }) {
@@ -17,8 +15,6 @@ export function NichoStep({ id }: { id: string }) {
   function toggleList(list: string[], v: string) {
     return list.includes(v) ? list.filter((x) => x !== v) : [...list, v];
   }
-
-  const somaPilares = n.pilares.reduce((a, p) => a + (Number(p.pct) || 0), 0);
 
   return (
     <div className="grid grid-cols-1 gap-5">
@@ -146,50 +142,6 @@ export function NichoStep({ id }: { id: string }) {
         </div>
       </Field>
 
-      <Field
-        label="Pilares de conteúdo"
-        hint={`Entre 3 e 5 pilares, com % somando 100. Soma atual: ${somaPilares}%`}
-      >
-        <div className="grid gap-2">
-          {n.pilares.map((p, i) => (
-            <div key={i} className="flex gap-2 items-center">
-              <Input
-                className="flex-1"
-                placeholder="Ex.: Rotina"
-                value={p.nome}
-                onChange={(e) => set((c) => (c.nicho.pilares[i].nome = e.target.value))}
-              />
-              <Input
-                type="number"
-                min={0}
-                max={100}
-                className="w-24"
-                placeholder="%"
-                value={p.pct || ""}
-                onChange={(e) => set((c) => (c.nicho.pilares[i].pct = Number(e.target.value) || 0))}
-              />
-              <button
-                type="button"
-                className="h-10 w-10 inline-flex items-center justify-center rounded-full border border-line bg-panel text-ink-mute hover:text-pink hover:border-pink/60"
-                onClick={() => set((c) => { c.nicho.pilares.splice(i, 1); })}
-                aria-label="Remover pilar"
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
-            </div>
-          ))}
-          {n.pilares.length < 5 ? (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="self-start"
-              onClick={() => set((c) => { c.nicho.pilares.push({ nome: "", pct: 0 }); })}
-            >
-              <Plus className="w-4 h-4" /> Adicionar pilar
-            </Button>
-          ) : null}
-        </div>
-      </Field>
     </div>
   );
 }

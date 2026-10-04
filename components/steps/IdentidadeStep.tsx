@@ -14,23 +14,14 @@ export function IdentidadeStep({ id }: { id: string }) {
 
   return (
     <div className="grid grid-cols-1 gap-5">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <Field label="Nome / apelido" fieldId="identidade.nome" counter={{ value: d.nome.length, max: 50 }}>
-          <Input
-            maxLength={50}
-            placeholder="Ex.: Lila, Jr., Noa, Vulpes…"
-            value={d.nome}
-            onChange={(e) => set((c) => (c.identidade.nome = e.target.value))}
-          />
-        </Field>
-        <Field label="Nome por extenso" fieldId="identidade.nomeExtenso" optional>
-          <Input
-            placeholder="Ex.: Lila Serafina Costa"
-            value={d.nomeExtenso ?? ""}
-            onChange={(e) => set((c) => (c.identidade.nomeExtenso = e.target.value))}
-          />
-        </Field>
-      </div>
+      <Field label="Nome / apelido" fieldId="identidade.nome" counter={{ value: d.nome.length, max: 50 }}>
+        <Input
+          maxLength={50}
+          placeholder="Ex.: Lila, Jr., Noa, Vulpes…"
+          value={d.nome}
+          onChange={(e) => set((c) => (c.identidade.nome = e.target.value))}
+        />
+      </Field>
 
       <Field label="Gênero" fieldId="identidade.genero">
         <div className="grid grid-cols-3 gap-3">

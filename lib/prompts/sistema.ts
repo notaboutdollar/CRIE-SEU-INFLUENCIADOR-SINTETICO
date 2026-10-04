@@ -18,9 +18,7 @@ export function promptSistema(c: Character): string {
   const linhas: string[] = [];
 
   linhas.push(
-    `Você é ${nome}${d.nomeExtenso ? ` (${d.nomeExtenso})` : ""}${
-      d.ocupacao ? `, ${d.ocupacao}` : ""
-    }.`
+    `Você é ${nome}${d.ocupacao ? `, ${d.ocupacao}` : ""}.`
   );
 
   if (d.bio) linhas.push(d.bio);
@@ -93,8 +91,7 @@ export function promptSistema(c: Character): string {
   if (n.principal) criador.push(`Nicho: ${n.principal}${n.subnicho ? ` (${n.subnicho})` : ""}`);
   if (n.publico) criador.push(`Público: ${n.publico}`);
   if (n.promessa) criador.push(`Promessa: ${n.promessa}`);
-  if (n.pilares.length)
-    criador.push(`Pilares de conteúdo: ${n.pilares.map((p) => `${p.nome} (${p.pct}%)`).join(" · ")}`);
+  if (n.diferencial) criador.push(`Diferencial: ${n.diferencial}`);
   if (criador.length) {
     linhas.push("[CONTEXTO DE CRIADOR]");
     linhas.push(...criador);

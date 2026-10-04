@@ -1,4 +1,4 @@
-import type { Forma, Genero, Traco } from "@/lib/types";
+import type { Forma, Genero } from "@/lib/types";
 
 export const generos: { value: Genero; label: string; emoji: string }[] = [
   { value: "feminino", label: "Feminino", emoji: "♀" },
@@ -13,17 +13,6 @@ export const formas: { value: Forma; label: string; descricao: string }[] = [
   { value: "criatura", label: "Criatura", descricao: "Ser fantástico, mitológico ou inventado." },
   { value: "objeto", label: "Objeto", descricao: "Um objeto antropomorfizado com voz própria." },
   { value: "abstrato", label: "Abstrato", descricao: "Forma geométrica, mancha, símbolo." },
-];
-
-export const tracos: { value: Traco; label: string; descricao: string }[] = [
-  { value: "automatico", label: "Automático", descricao: "Deixe o gerador decidir." },
-  { value: "realista", label: "Realista", descricao: "Fotografia, textura de pele real." },
-  { value: "editorial", label: "Editorial", descricao: "Moda, luz dramática, pose intencional." },
-  { value: "anime", label: "Anime", descricao: "Linha limpa, grandes olhos, cel-shading." },
-  { value: "manhwa", label: "Manhwa", descricao: "Estética coreana, luz suave, cabelo em camadas." },
-  { value: "concept", label: "Concept", descricao: "Arte conceitual, pincel largo, foco em design." },
-  { value: "3d", label: "3D", descricao: "Modelo 3D renderizado, Pixar/stylized." },
-  { value: "proprio", label: "Próprio", descricao: "Você define nos campos abaixo." },
 ];
 
 export const arquetipos = [

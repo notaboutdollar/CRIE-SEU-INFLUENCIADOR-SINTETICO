@@ -1,15 +1,13 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { nanoid } from "nanoid";
-import { ImagePlus, X } from "lucide-react";
+import { Image as ImageIcon, ImagePlus, Sparkles, X } from "lucide-react";
 import { useCharacter } from "@/lib/useCharacter";
 import { Field } from "@/components/ui/Field";
 import { Input, Textarea } from "@/components/ui/Input";
-import { CardChoice } from "@/components/ui/CardChoice";
-import { tracos } from "@/data/choices";
 import type { ReferenciaImagem } from "@/lib/types";
-import { GerarImagem } from "@/components/revisao/GerarImagem";
+import { GerarImagemModal } from "@/components/visual/GerarImagemModal";
 import { GerarIdentidadeDaImagem } from "@/components/visual/GerarIdentidadeDaImagem";
 
 const MAX_SIZE = 4 * 1024 * 1024; // 4MB
@@ -17,6 +15,7 @@ const MAX_SIZE = 4 * 1024 * 1024; // 4MB
 export function VisualStep({ id }: { id: string }) {
   const { character, set } = useCharacter(id);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [modalOpen, setModalOpen] = useState(false);
   if (!character) return null;
   const v = character.visual;
 
@@ -47,23 +46,24 @@ export function VisualStep({ id }: { id: string }) {
 
   return (
     <div className="grid grid-cols-1 gap-5">
-      <GerarImagem character={character} />
-      <GerarIdentidadeDaImagem character={character} />
-      <div className="border-t border-line" />
+      <div className="flex flex-wrap items-center gap-2">
+        <button
+          type="button"
+          onClick={() => setModalOpen(true)}
+          className="inline-flex items-center justify-center gap-2 font-bold rounded-full h-10 px-5 text-sm bg-accent text-bg hover:bg-accent-strong shadow-glow transition active:translate-y-px"
+        >
+          <ImageIcon className="w-4 h-4" strokeWidth={2.5} />
+          Gerar imagem com IA
+          <Sparkles className="w-3.5 h-3.5" />
+        </button>
+        <span className="text-[12px] text-ink-dim">
+          Abre um modal com o prompt pronto pra qualquer IA.
+        </span>
+      </div>
 
-      <Field label="Traço / estilo" fieldId="visual.traco" hint="Cards são placeholders — na v2 vem pré-visualização com arte real.">
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          {tracos.map((t) => (
-            <CardChoice
-              key={t.value}
-              title={t.label}
-              description={t.descricao}
-              selected={v.traco === t.value}
-              onClick={() => set((c) => (c.visual.traco = t.value))}
-            />
-          ))}
-        </div>
-      </Field>
+      <GerarIdentidadeDaImagem character={character} />
+
+      <div className="border-t border-line" />
 
       <Field
         label="Imagens de referência"
@@ -176,18 +176,11 @@ export function VisualStep({ id }: { id: string }) {
         />
       </Field>
 
-      <Field
-        label="O que NUNCA deve aparecer na imagem"
-        fieldId="visual.negativos"
-        hint="Negative prompt. Entre com elementos a evitar."
-      >
-        <Textarea
-          rows={3}
-          placeholder="Ex.: logotipos, marcas d'água, texto, mãos extras, cenários corporativos"
-          value={v.negativos ?? ""}
-          onChange={(e) => set((c) => (c.visual.negativos = e.target.value))}
-        />
-      </Field>
+      <GerarImagemModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        character={character}
+      />
     </div>
   );
 }

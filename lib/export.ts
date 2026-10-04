@@ -16,7 +16,6 @@ export function toMarkdown(c: Character): string {
   if (d.bio) out.push(`\n> ${d.bio}\n`);
 
   out.push(`\n## Identidade`);
-  out.push(line("Nome por extenso", d.nomeExtenso));
   out.push(line("Gênero", d.genero));
   out.push(line("Forma", d.forma));
   out.push(line("Idade aparente", d.idadeAparente));
@@ -25,7 +24,6 @@ export function toMarkdown(c: Character): string {
   out.push(line("Sotaque", d.sotaque));
 
   out.push(`\n## Visual`);
-  out.push(line("Traço", c.visual.traco));
   out.push(line("Cabelo", c.visual.cabelo));
   out.push(line("Pele", c.visual.pele));
   out.push(line("Olhos", c.visual.olhos));
@@ -33,7 +31,6 @@ export function toMarkdown(c: Character): string {
   out.push(line("Acessórios", c.visual.acessorios));
   out.push(line("Traços marcantes", c.visual.tracosMarcantes));
   out.push(line("Paleta", c.visual.paleta));
-  out.push(line("Negativos", c.visual.negativos));
   out.push(line("Referências", `${c.visual.referencias.length} imagem(ns)`));
 
   out.push(`\n## Personalidade`);
@@ -68,8 +65,6 @@ export function toMarkdown(c: Character): string {
   out.push(line("Diferencial", n.diferencial));
   if (n.plataformas.length) out.push(line("Plataformas", n.plataformas.join(", ")));
   if (n.performaFormatos.length) out.push(line("Formatos", n.performaFormatos.join(", ")));
-  if (n.pilares.length)
-    out.push(line("Pilares", n.pilares.map((p) => `${p.nome} (${p.pct}%)`).join(", ")));
   if (n.concorrentes.length) out.push(line("Referências", n.concorrentes.join(", ")));
 
   out.push(`\n## Voz e Linguagem`);

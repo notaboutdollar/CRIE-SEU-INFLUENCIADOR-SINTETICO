@@ -20,7 +20,7 @@ export function promptVideo(c: Character): string {
   if (look.length) linhas.push(`Aparência: ${look.join(", ")}.`);
 
   if (v.paleta) linhas.push(`Paleta: ${v.paleta}.`);
-  if (v.traco && v.traco !== "automatico") linhas.push(`Estética: ${v.traco}.`);
+  if (v.cenarios) linhas.push(`Cenários: ${v.cenarios}.`);
 
   const formato = n.performaFormatos[0] ?? "Reels vertical 9:16";
   const dur = n.performaDuracao ?? "30–45s";
@@ -39,7 +39,6 @@ export function promptVideo(c: Character): string {
   linhas.push("Direção:");
   linhas.push("- Primeiros 2s: gancho visual + fala curta.");
   linhas.push("- Corte dinâmico, legendas grandes, ritmo do nicho.");
-  if (v.negativos) linhas.push(`- Nunca mostrar: ${v.negativos}.`);
 
   return linhas.join("\n");
 }

@@ -39,7 +39,7 @@ describe("buildPromptClaude", () => {
 describe("parseRespostaClaude", () => {
   const exemplo = {
     identidade: { nome: "Lila", genero: "Feminino", forma: "humano", bio: "Arquiteta ácida" },
-    visual: { traco: "realista", cabelo: "cacheado" },
+    visual: { cabelo: "cacheado" },
     soul: {
       adjetivos: ["debochada", "generosa"],
       gostos: { comidas: ["pastel de feira"] },
@@ -47,7 +47,6 @@ describe("parseRespostaClaude", () => {
     },
     nicho: {
       plataformas: ["instagram", "TikTok", "Orkut"],
-      pilares: [{ nome: "Rotina", pct: 60 }, { nome: "Erros", pct: 40 }],
       ideiasConteudo: [{ formato: "Reels", titulo: "3 erros", descricao: "x" }],
     },
     voz: { tomHumor: 130, emoji: "Pouco", tamanhoFrase: "Médias" },
@@ -82,10 +81,6 @@ describe("parseRespostaClaude", () => {
     const get = (id: string) => r.suggestions.find((s) => s.fieldId === id)?.valor;
     expect(get("voz.tomHumor")).toBe(100);
     expect(get("soul.gostos.comidas")).toEqual(["pastel de feira"]);
-    expect(get("nicho.pilares")).toEqual([
-      { nome: "Rotina", pct: 60 },
-      { nome: "Erros", pct: 40 },
-    ]);
   });
 
   it("lê os pontos em aberto", () => {

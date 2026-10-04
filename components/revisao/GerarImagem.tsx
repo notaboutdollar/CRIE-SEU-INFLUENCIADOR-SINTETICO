@@ -16,6 +16,8 @@ import { Textarea } from "@/components/ui/Input";
 
 interface Props {
   character: Character;
+  /** "imagem" (padrão, modal da Visual) | "card" (card de posicionamentos na Revisão). */
+  variant?: "imagem" | "card";
 }
 
 const PLACEHOLDER_IDEIA =
@@ -33,13 +35,14 @@ const QUICK_LINKS: Record<FormatoImagem, Array<{ label: string; href: string }>>
   ],
 };
 
-export function GerarImagem({ character }: Props) {
+export function GerarImagem({ character, variant = "imagem" }: Props) {
   const update = useCharacters((s) => s.update);
   const prompts = useMemo(() => buildAllImagePrompts(character), [character]);
   const [atual, setAtual] = useState<FormatoImagem>("neutro");
   const [copiado, setCopiado] = useState(false);
 
   const ideia = character.visual.ideiaLivre ?? "";
+  const isCard = variant === "card";
 
   const sel = prompts.find((p) => p.formato === atual) ?? prompts[0];
 
@@ -56,7 +59,7 @@ export function GerarImagem({ character }: Props) {
       <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
         <h3 className="label-cap inline-flex items-center gap-2">
           <ImageIcon className="w-3.5 h-3.5" />
-          Gerar imagem com IA
+          {isCard ? "Gerar card com posicionamentos" : "Gerar imagem com IA"}
         </h3>
         <span className="text-[11px] text-ink-dim">
           Character reference sheet · 5 views + closes
@@ -64,10 +67,9 @@ export function GerarImagem({ character }: Props) {
       </div>
 
       <p className="text-[13px] text-ink-mute mb-4 leading-relaxed">
-        Prompt pronto para gerar uma folha de referência do personagem no estilo editorial surreal
-        (think Loewe por Juergen Teller, Comme des Garçons, Diane Arbus): 5 views do corpo em cima,
-        closes de rosto embaixo, fundo cinza de estúdio, pose neutra, traço marcante exagerado.
-        Cole em qualquer gerador de imagem.
+        {isCard
+          ? "Card de posicionamentos do personagem: 5 views do corpo (frente, ¾, perfil, ¾ costas, costas) + 3-4 closes de rosto, no estilo editorial surreal (Loewe por Juergen Teller, Comme des Garçons, Diane Arbus). Cole em qualquer gerador de imagem."
+          : "Prompt pronto para gerar uma folha de referência do personagem no estilo editorial surreal (think Loewe por Juergen Teller, Comme des Garçons, Diane Arbus): 5 views do corpo em cima, closes de rosto embaixo, fundo cinza de estúdio, pose neutra, traço marcante exagerado. Cole em qualquer gerador de imagem."}
       </p>
 
       <div className="mb-4">

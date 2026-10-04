@@ -1,15 +1,5 @@
 export type Genero = "feminino" | "masculino" | "nao-binario";
 export type Forma = "humano" | "humanoide" | "animal" | "criatura" | "objeto" | "abstrato";
-export type Traco =
-  | "automatico"
-  | "realista"
-  | "editorial"
-  | "anime"
-  | "manhwa"
-  | "concept"
-  | "3d"
-  | "proprio";
-
 export type EmojiUso = "nenhum" | "pouco" | "muito";
 
 export interface ReferenciaImagem {
@@ -21,7 +11,6 @@ export interface ReferenciaImagem {
 
 export interface Identidade {
   nome: string;
-  nomeExtenso?: string;
   handles?: string[];
   ocupacao?: string;
   genero?: Genero;
@@ -34,7 +23,6 @@ export interface Identidade {
 }
 
 export interface Visual {
-  traco?: Traco;
   referencias: ReferenciaImagem[];
   cabelo?: string;
   pele?: string;
@@ -44,7 +32,6 @@ export interface Visual {
   tracosMarcantes?: string;
   paleta?: string;
   cenarios?: string;
-  negativos?: string;
   /** Ideia visual em texto livre; vai pro topo do prompt de imagem, antes dos campos. */
   ideiaLivre?: string;
 }
@@ -81,11 +68,6 @@ export interface Soul {
   regrasConsistencia: string[];
 }
 
-export interface Pilar {
-  nome: string;
-  pct: number;
-}
-
 export interface IdeiaConteudo {
   formato: string;
   titulo: string;
@@ -106,7 +88,6 @@ export interface Nicho {
   concorrentes: string[];
   diferencial?: string;
   plataformas: string[];
-  pilares: Pilar[];
   ideiasConteudo: IdeiaConteudo[];
 }
 

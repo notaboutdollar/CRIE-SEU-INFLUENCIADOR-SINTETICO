@@ -27,7 +27,6 @@ export function emptyCharacter(): Character {
       performaFormatos: [],
       concorrentes: [],
       plataformas: [],
-      pilares: [],
       ideiasConteudo: [],
     },
     voz: {

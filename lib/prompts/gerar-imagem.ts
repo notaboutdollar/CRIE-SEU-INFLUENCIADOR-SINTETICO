@@ -98,9 +98,6 @@ export function extractDescricaoVisual(c: Character, formato: FormatoImagem): st
   if (c.soul.adjetivos.length) {
     partes.push(`vibe: ${c.soul.adjetivos.slice(0, 5).join(", ")}`);
   }
-  if (c.visual.traco && c.visual.traco !== "automatico") {
-    partes.push(`drawing style note: ${labelTraco(c.visual.traco)}`);
-  }
 
   // Combinação ideia-livre + ficha
   const sep = formato === "midjourney" ? ", " : ". ";
@@ -117,28 +114,14 @@ export function extractDescricaoVisual(c: Character, formato: FormatoImagem): st
   return "no visual details provided yet";
 }
 
-function extractNegativos(c: Character, formato: FormatoImagem): string {
-  const extra = c.visual.negativos?.trim();
-  if (!extra) return "";
-  if (formato === "midjourney") return `, ${extra}`;
-  if (formato === "flux") return `, ${extra}`;
-  return `\nAlso avoid: ${extra}`;
+function extractNegativos(_c: Character, _formato: FormatoImagem): string {
+  // Campo "negativos" foi removido do modelo; mantido como no-op para preservar
+  // o esqueleto do template (que ainda tem {{negativos}} ao fim do negative list).
+  return "";
 }
 
 function labelGenero(g: string): string {
   if (g === "feminino") return "woman";
   if (g === "masculino") return "man";
   return "non-binary person";
-}
-function labelTraco(t: string): string {
-  const map: Record<string, string> = {
-    realista: "fully photorealistic, no stylization",
-    editorial: "editorial fashion photography feel",
-    anime: "anime-inspired features but photoreal rendering",
-    manhwa: "manhwa-inspired features but photoreal rendering",
-    concept: "concept art influence but photoreal rendering",
-    "3d": "stylized 3D character, Pixar/AAA game polish",
-    proprio: "custom style defined by the user fields",
-  };
-  return map[t] ?? t;
 }

@@ -88,14 +88,13 @@ export const FichaPoster = forwardRef<HTMLDivElement, Props>(function FichaPoste
 
       <div className={cn("grid gap-5", vertical ? "grid-cols-2" : "grid-cols-3")}>
         <Block title="Visual">
-          <KV label="Traço" value={c.visual.traco} />
           <KV label="Cabelo" value={c.visual.cabelo} />
           <KV label="Pele" value={c.visual.pele} />
           <KV label="Olhos" value={c.visual.olhos} />
           <KV label="Roupa" value={c.visual.roupa} />
           <KV label="Acessórios" value={c.visual.acessorios} />
           <KV label="Paleta" value={c.visual.paleta} />
-          <KV label="Nunca mostrar" value={c.visual.negativos} />
+          <KV label="Cenários" value={c.visual.cenarios} />
         </Block>
 
         <Block title="Personalidade">
@@ -117,12 +116,6 @@ export const FichaPoster = forwardRef<HTMLDivElement, Props>(function FichaPoste
           <KV label="Diferencial" value={c.nicho.diferencial} />
           {c.nicho.plataformas.length ? (
             <KV label="Plataformas" value={c.nicho.plataformas.join(" · ")} />
-          ) : null}
-          {c.nicho.pilares.length ? (
-            <KV
-              label="Pilares"
-              value={c.nicho.pilares.map((p) => `${p.nome || "—"} ${p.pct}%`).join(" · ")}
-            />
           ) : null}
         </Block>
 

@@ -13,6 +13,7 @@ import { cn } from "@/lib/cn";
 import { PontosEmAberto } from "@/components/revisao/PontosEmAberto";
 import { ConsistenciaIA } from "@/components/revisao/ConsistenciaIA";
 import { GerarImagem } from "@/components/revisao/GerarImagem";
+import { SubstituirVideo } from "@/components/revisao/SubstituirVideo";
 import { AI_ENABLED } from "@/lib/ai/flag";
 
 type Orient = "vertical" | "horizontal";
@@ -208,7 +209,9 @@ export function RevisaoStep({ id }: { id: string }) {
         </div>
       </section>
 
-      <GerarImagem character={c} />
+      <GerarImagem character={c} variant="card" />
+
+      <SubstituirVideo character={c} />
 
       <section className="flex flex-wrap gap-2 items-center">
         <Button variant="accent" onClick={onCopyMaster}>

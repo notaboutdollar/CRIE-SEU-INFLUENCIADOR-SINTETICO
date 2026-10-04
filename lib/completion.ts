@@ -23,11 +23,11 @@ export function stepCompletion(c: Character): Record<StepId, number> {
       !!c.identidade.idioma?.trim(),
     ]),
     visual: pct([
-      !!c.visual.traco,
       c.visual.referencias.length > 0,
       !!c.visual.cabelo?.trim(),
       !!c.visual.pele?.trim(),
       !!c.visual.roupa?.trim(),
+      !!c.visual.paleta?.trim(),
     ]),
     soul: pct([
       !!c.soul.arquetipo?.trim(),
@@ -41,7 +41,7 @@ export function stepCompletion(c: Character): Record<StepId, number> {
       !!c.nicho.publico?.trim(),
       !!c.nicho.promessa?.trim(),
       c.nicho.plataformas.length > 0,
-      c.nicho.pilares.length >= 3,
+      !!c.nicho.diferencial?.trim(),
     ]),
     voz: pct([
       c.voz.girias.length + c.voz.bordoes.length > 0,
@@ -108,16 +108,6 @@ export function checarConsistencia(c: Character): Inconsistencia[] {
       campo: "soul.adjetivos",
       mensagem: "Adjetivos conflitantes: 'sério' + 'debochado'. Combine ou escolha um.",
     });
-
-  if (c.nicho.pilares.length > 0) {
-    const soma = c.nicho.pilares.reduce((a, p) => a + (p.pct || 0), 0);
-    if (soma !== 100)
-      out.push({
-        tipo: "sugestao",
-        campo: "nicho.pilares",
-        mensagem: `A soma dos pilares de conteúdo está em ${soma}% (ideal: 100%).`,
-      });
-  }
 
   return out;
 }

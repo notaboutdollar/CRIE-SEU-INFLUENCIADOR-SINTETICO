@@ -33,18 +33,11 @@ export function promptImagem(c: Character): string {
 
   if (v.paleta) partes.push(`paleta: ${v.paleta}`);
 
-  if (v.traco && v.traco !== "automatico") {
-    partes.push(`estilo visual: ${labelTraco(v.traco)}`);
-  }
-
   // Composição padrão útil para quase todos os geradores
   partes.push("enquadramento meio-corpo, luz suave, foco nítido no rosto, fundo coerente com a estética");
 
   let out = partes.join(". ");
 
-  if (v.negativos && v.negativos.trim()) {
-    out += `\n\nNegative prompt: ${v.negativos.trim()}`;
-  }
   if (c.soul.adjetivos.length) {
     out += `\n\nVibe: ${c.soul.adjetivos.join(", ")}.`;
   }
@@ -55,16 +48,4 @@ function labelGenero(g: string) {
   if (g === "feminino") return "mulher";
   if (g === "masculino") return "homem";
   return "pessoa não-binária";
-}
-function labelTraco(t: string) {
-  const map: Record<string, string> = {
-    realista: "fotorrealista, textura de pele natural, lente 50mm",
-    editorial: "editorial de moda, luz dramática, pose intencional",
-    anime: "anime, cel-shading, linha limpa",
-    manhwa: "manhwa coreano, luz suave, cabelo em camadas",
-    concept: "concept art, pincel largo, foco em design",
-    "3d": "render 3D stylized, iluminação cinemática",
-    proprio: "estilo próprio",
-  };
-  return map[t] ?? t;
 }

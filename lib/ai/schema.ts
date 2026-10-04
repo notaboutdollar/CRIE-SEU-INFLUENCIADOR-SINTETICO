@@ -29,21 +29,9 @@ const formaSchema = z.enum([
   "objeto",
   "abstrato",
 ]);
-const tracoSchema = z.enum([
-  "automatico",
-  "realista",
-  "editorial",
-  "anime",
-  "manhwa",
-  "concept",
-  "3d",
-  "proprio",
-]);
-
 const identidadeSchema = z
   .object({
     nome: str.optional(),
-    nomeExtenso: str.optional(),
     handles: strArr.optional(),
     ocupacao: str.optional(),
     idadeAparente: str.optional(),
@@ -59,7 +47,6 @@ const identidadeSchema = z
 
 const visualSchema = z
   .object({
-    traco: envelope(tracoSchema).optional(),
     cabelo: str.optional(),
     pele: str.optional(),
     olhos: str.optional(),
@@ -68,7 +55,6 @@ const visualSchema = z
     tracosMarcantes: str.optional(),
     paleta: str.optional(),
     cenarios: str.optional(),
-    negativos: str.optional(),
   })
   .partial()
   .passthrough();
@@ -118,7 +104,6 @@ const soulSchema = z
   .partial()
   .passthrough();
 
-const pilarSchema = z.object({ nome: z.string(), pct: z.number() });
 const ideiaSchema = z.object({
   formato: z.string(),
   titulo: z.string(),
@@ -140,7 +125,6 @@ const nichoSchema = z
     concorrentes: strArr.optional(),
     diferencial: str.optional(),
     plataformas: strArr.optional(),
-    pilares: envelope(z.array(pilarSchema)).optional(),
     ideiasConteudo: envelope(z.array(ideiaSchema)).optional(),
   })
   .partial()

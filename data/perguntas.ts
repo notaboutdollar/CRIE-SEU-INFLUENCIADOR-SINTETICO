@@ -7,7 +7,6 @@ import {
   modelosNegocio,
   plataformas,
   tamanhoFraseOpcoes,
-  tracos,
 } from "./choices";
 
 /**
@@ -20,7 +19,7 @@ import {
  * `id` é o mesmo fieldId usado nos <Field> (dot-notation em Character).
  */
 
-export type TipoPergunta = "texto" | "lista" | "opcao" | "numero" | "pilares" | "ideias";
+export type TipoPergunta = "texto" | "lista" | "opcao" | "numero" | "ideias";
 
 export interface Pergunta {
   id: string;
@@ -46,7 +45,6 @@ export const SECOES: SecaoPerguntas[] = [
     titulo: "Identidade",
     perguntas: [
       { id: "identidade.nome", tipo: "texto", max: 50, descricao: "nome ou apelido do personagem (máx. 50 caracteres)" },
-      { id: "identidade.nomeExtenso", tipo: "texto", descricao: "nome por extenso" },
       { id: "identidade.handles", tipo: "lista", max: 3, descricao: "3 sugestões de @ para as redes" },
       { id: "identidade.ocupacao", tipo: "texto", descricao: "o que ele faz na vida real além de criar conteúdo" },
       { id: "identidade.genero", tipo: "opcao", opcoes: generos.map((g) => g.value), descricao: "gênero" },
@@ -62,7 +60,6 @@ export const SECOES: SecaoPerguntas[] = [
     id: "visual",
     titulo: "Visual",
     perguntas: [
-      { id: "visual.traco", tipo: "opcao", opcoes: tracos.map((t) => t.value), descricao: "traço/estilo da imagem" },
       { id: "visual.cabelo", tipo: "texto", descricao: "cabelo (cor, comprimento, textura)" },
       { id: "visual.pele", tipo: "texto", descricao: "pele" },
       { id: "visual.olhos", tipo: "texto", descricao: "olhos" },
@@ -71,7 +68,6 @@ export const SECOES: SecaoPerguntas[] = [
       { id: "visual.tracosMarcantes", tipo: "texto", descricao: "traços marcantes (tatuagem, sardas, piercing...)" },
       { id: "visual.paleta", tipo: "texto", descricao: "paleta de cores" },
       { id: "visual.cenarios", tipo: "texto", descricao: "cenários recorrentes onde aparece" },
-      { id: "visual.negativos", tipo: "texto", descricao: "o que NUNCA deve aparecer nas imagens (negative prompt)" },
     ],
   },
   {
@@ -120,7 +116,6 @@ export const SECOES: SecaoPerguntas[] = [
       { id: "nicho.concorrentes", tipo: "lista", max: 5, descricao: "3 a 5 concorrentes/referências no nicho" },
       { id: "nicho.diferencial", tipo: "texto", descricao: "o que ele faz de diferente dos concorrentes" },
       { id: "nicho.plataformas", tipo: "lista", opcoes: plataformas, soOpcoes: true, descricao: "plataformas prioritárias" },
-      { id: "nicho.pilares", tipo: "pilares", descricao: "3 a 5 pilares de conteúdo com % de distribuição somando 100" },
       { id: "nicho.ideiasConteudo", tipo: "ideias", descricao: "10 ideias de posts/vídeos" },
     ],
   },
