@@ -46,6 +46,9 @@ export function VisualStep({ id }: { id: string }) {
 
   return (
     <div className="grid grid-cols-1 gap-5">
+      <GerarImagem character={character} />
+      <div className="border-t border-line" />
+
       <Field label="Traço / estilo" fieldId="visual.traco" hint="Cards são placeholders — na v2 vem pré-visualização com arte real.">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {tracos.map((t) => (
@@ -183,9 +186,6 @@ export function VisualStep({ id }: { id: string }) {
           onChange={(e) => set((c) => (c.visual.negativos = e.target.value))}
         />
       </Field>
-
-      <div className="pt-2 border-t border-line" />
-      <GerarImagem character={character} />
     </div>
   );
 }
