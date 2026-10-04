@@ -19,7 +19,7 @@ interface Props {
 }
 
 const PLACEHOLDER_IDEIA =
-  "Ex.: Mulher 28, cabelo cacheado cor cobre nos ombros, roupa oversize vintage colorida, óculos redondo, paleta terrosa com verde-oliva. Vibe editorial calma com um quê de ateliê.";
+  "Ex.: Homem de bigode gigante em espiral tipo Dalí, cabelo prateado afro alto como torre, blazer de veludo marrom-escuro, calça xadrez verde-musgo e pink, bota de bico fino. Vibe editorial surreal, Comme des Garçons meets Loewe.";
 
 const QUICK_LINKS: Record<FormatoImagem, Array<{ label: string; href: string }>> = {
   neutro: [
@@ -64,9 +64,10 @@ export function GerarImagem({ character }: Props) {
       </div>
 
       <p className="text-[13px] text-ink-mute mb-4 leading-relaxed">
-        Prompt pronto para gerar uma folha de referência do personagem — 5 views do corpo em cima
-        e closes de rosto embaixo, estilo fotorreal com polimento 3D, fundo cinza de estúdio. Cole
-        em qualquer gerador de imagem.
+        Prompt pronto para gerar uma folha de referência do personagem no estilo editorial surreal
+        (think Loewe por Juergen Teller, Comme des Garçons, Diane Arbus): 5 views do corpo em cima,
+        closes de rosto embaixo, fundo cinza de estúdio, pose neutra, traço marcante exagerado.
+        Cole em qualquer gerador de imagem.
       </p>
 
       <div className="mb-4">

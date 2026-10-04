@@ -62,6 +62,19 @@ describe("buildImagePrompt", () => {
     expect(p).toContain("Negative:");
   });
 
+  it("neutro empurra para o lado bizarro/editorial e tem SIGNATURE EXAGGERATED TRAIT", () => {
+    const p = buildImagePrompt(sampleCharacter(), "neutro");
+    expect(p).toContain("SIGNATURE EXAGGERATED TRAIT");
+    expect(p).toMatch(/high-fashion editorial/i);
+  });
+
+  it("todos os formatos listam 'safe realism' ou 'generic model' no negativo", () => {
+    for (const f of ["neutro", "midjourney", "flux"] as const) {
+      const p = buildImagePrompt(sampleCharacter(), f).toLowerCase();
+      expect(p).toMatch(/safe (generic )?realism|generic model|stock-model|stock photo/);
+    }
+  });
+
   it("negativos extras da ficha entram no bloco Avoid/Negative", () => {
     const p = buildImagePrompt(sampleCharacter(), "neutro");
     expect(p).toContain("Also avoid: logotipos, texto, cenário corporativo");

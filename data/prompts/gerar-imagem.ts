@@ -1,20 +1,28 @@
 /**
  * Templates do prompt "Gerar imagem com IA".
  *
- * O "esqueleto fixo" captura a vibe das referências: character reference sheet
- * fotorrealista com polimento 3D (Unreal Engine 5), fundo cinza de estúdio,
- * pose neutra, luz difusa, 5 views de corpo em cima + 3-4 closes embaixo.
+ * A vibe-alvo é "surreal character portrait meets high-fashion editorial":
+ * personagens com traços intencionalmente bizarros (cabelo esculpido como
+ * estrutura, proporções exageradas, acessórios teatrais, figurino absurdo)
+ * MAS renderizados com fidelidade fotográfica total. Referências mentais:
+ * Loewe por Juergen Teller, Comme des Garçons runway, Diane Arbus.
  *
- * Placeholders em cada template:
- *   {{nome}}
- *   {{descricao}}   descrição do personagem montada a partir da ficha
- *   {{negativos}}   negativos extras vindos da ficha (visual.negativos)
+ * O template ativa isso em três lugares:
+ *   1. Headline do prompt menciona a estética
+ *   2. Seção SIGNATURE EXAGGERATED TRAIT, obrigatória, com instrução pro
+ *      modelo inventar um traço marcante se o usuário não disse qual
+ *   3. AVOID lista "safe realism" e "generic model look" explicitamente
  *
- * Edite livremente. Qualquer campo novo em data/perguntas.ts que faça parte do
- * visual pode ser incluído em extractDescricaoVisual (lib/prompts/gerar-imagem.ts).
+ * Placeholders:
+ *   {{nome}}       nome do personagem (ou "the character")
+ *   {{descricao}}  descrição vinda da ficha + ideia-livre do usuário
+ *   {{negativos}}  negativos extras da ficha (visual.negativos)
+ *
+ * Editar livremente; qualquer campo novo em data/perguntas.ts que seja
+ * visual pode entrar em extractDescricaoVisual (lib/prompts/gerar-imagem.ts).
  */
 
-export const IMAGEM_NEUTRO = `Character reference sheet of {{nome}}, hyperrealistic 3D photoreal rendering.
+export const IMAGEM_NEUTRO = `Character reference sheet of {{nome}}, hyperrealistic character portrait in the style of high-fashion editorial meets surreal character design. Think Loewe campaign by Juergen Teller, Comme des Garçons runway, Diane Arbus editorial — intentionally striking, never generic.
 
 LAYOUT
 Top row — 5 full-body views in a horizontal strip, left to right:
@@ -31,46 +39,49 @@ Bottom row — 3 to 4 head-and-shoulders closeups at varied angles:
 front, three-quarter, profile, and one subtle expression closeup.
 
 STUDIO
-Flat neutral grey backdrop (#B5B5B5 to #CCCCCC).
+Flat neutral backdrop (soft grey #B5B5B5 to #CCCCCC, or soft white with gentle vignette — editorial studio portrait feel).
 Soft diffused key light with subtle fill, even catalog-style illumination.
-No harsh shadows, minimal soft contact shadow on floor.
-50-85mm equivalent lens, minimal depth of field.
+No harsh shadows, minimal soft contact shadow on floor. 50-85mm equivalent lens, minimal depth of field.
 
 POSE
 Neutral stance, arms relaxed at the sides, straight posture.
-Neutral or slightly serious expression.
-Consistent character identity across every panel — same body, same face,
-same clothes, same props.
+Neutral or slightly serious expression. No smiling, no acting, no dynamic action poses.
+Consistent character identity across every panel — same body, same face, same clothes, same props.
 
 CHARACTER
 {{descricao}}
 
+SIGNATURE EXAGGERATED TRAIT (NON-NEGOTIABLE)
+This is NOT a safe, generic, or stock-photo look. The character MUST carry at least one striking, unforgettable visual trait that pushes well beyond everyday realism. Examples: an impossible hair sculpture (towering, geometric, or structural), surreal body proportions (elongated neck, oversized hands, extreme height ratio), a theatrical accessory (giant moustache, oversized hat, ear-protectors, bejeweled collar), an elaborate anachronistic or editorial costume (velvet, brocade, high-fashion runway piece), or an extreme pattern/colour combination.
+- If the CHARACTER description above already names such a trait, amplify it to the extreme and make it the focal point of every panel.
+- If no bizarre trait is named, INVENT one that fits the character's vibe and commit fully. Never default to a normal-looking person.
+Intentionally bizarre styling is the point; what keeps it believable is the rendering, not the restraint.
+
 STYLE
-Photoreal with AAA game-character polish (Unreal Engine 5 quality).
-Detailed skin texture with natural micro-pores and subtle imperfections.
-Realistic fabric with proper weight and drape.
-Idealized but believable features. Any exaggerated or caricatural traits of
-the character must be preserved and rendered with photographic fidelity.
+Photoreal with AAA high-fashion editorial polish.
+Detailed skin texture with natural micro-pores and visible imperfections.
+Realistic fabric with proper weight, drape, and material-specific detail (velvet, wool, brocade, latex, feather, denim).
+Hyperreal rendering throughout — the character design can be absurd, the rendering is 100% photographic.
 
 AVOID
-No text or logos (unless explicitly on the clothing), no watermark,
-no extra limbs, no extra fingers, no inconsistent character between panels,
-no cartoon or anime styling, no blur, no low-res artifacts.
+No safe generic realism, no stock-model look, no beauty-shot sameness, no smiling, no acting pose. No text or logos (unless explicitly on the clothing), no watermark, no extra limbs, no extra fingers, no inconsistent character between panels, no cartoon or anime styling, no painterly rendering, no blur, no low-res artifacts, no mannequin-blank faces.
 {{negativos}}
 `;
 
-export const IMAGEM_MIDJOURNEY = `character reference sheet of {{nome}}, {{descricao}}, turnaround model sheet, top row five full body views (front, three-quarter front, side profile, three-quarter back, back view) at same scale and eye-level, thin black divider, bottom row three to four head-and-shoulders closeups at varied angles, neutral grey studio backdrop, soft diffused catalog lighting, hyperrealistic 3D photoreal, Unreal Engine 5 character polish, detailed skin texture, realistic fabric, neutral stance arms at sides, consistent character identity, 50-85mm lens --ar 1:1 --style raw --v 6.1 --no text, logos, watermark, extra limbs, extra fingers, cartoon, anime, blur, low-res{{negativos}}
+export const IMAGEM_MIDJOURNEY = `character reference sheet of {{nome}}, {{descricao}}, surreal character portrait meets high-fashion editorial, signature exaggerated trait (impossible hair sculpture or theatrical accessory or elaborate anachronistic costume or surreal proportions — if not specified, invent one and commit fully), intentionally bizarre styling but 100% photographic rendering, think Loewe campaign by Juergen Teller or Comme des Garcons runway or Diane Arbus editorial, turnaround model sheet, top row five full body views (front, three-quarter front, side profile, three-quarter back, back view) at same scale and eye-level, thin black divider, bottom row three to four head-and-shoulders closeups at varied angles, neutral grey or soft white studio backdrop with gentle vignette, soft diffused catalog lighting, hyperrealistic photoreal, detailed skin texture with pores and imperfections, realistic fabric with material detail, neutral stance arms at sides, no smiling, consistent character identity across every panel, 50-85mm lens --ar 1:1 --style raw --v 6.1 --no safe realism, generic model, stock photo, beauty shot, smiling, acting pose, text, logos, watermark, extra limbs, extra fingers, cartoon, anime, painterly, blur, low-res, mannequin face{{negativos}}
 `;
 
 export const IMAGEM_FLUX = `Positive:
-character reference sheet of {{nome}}. Top row: 5 full-body views (front, 3/4 front, side profile, 3/4 back, back) aligned at same eye-level and scale. Bottom row: 3-4 head-and-shoulders closeups in varied angles. Thin horizontal black divider between rows. Neutral grey studio backdrop (#B5B5B5–#CCCCCC). Soft diffused key light + fill, catalog-style illumination, minimal contact shadow. 50-85mm lens, minimal DOF.
+character reference sheet of {{nome}}, in the vein of high-fashion editorial x surreal character portrait (Loewe by Juergen Teller, Comme des Garcons runway, Diane Arbus). Top row: 5 full-body views (front, 3/4 front, side profile, 3/4 back, back) aligned at same eye-level and scale. Bottom row: 3-4 head-and-shoulders closeups in varied angles. Thin horizontal black divider between rows. Neutral grey or soft white studio backdrop with gentle vignette. Soft diffused key light + fill, catalog-style illumination, minimal contact shadow. 50-85mm lens, minimal DOF.
 
-Pose: neutral stance, arms relaxed at sides, straight posture, neutral expression. Consistent character identity in every panel: same body, same face, same clothes.
+Pose: neutral stance, arms relaxed at sides, straight posture, neutral or slightly serious expression. No smiling, no acting. Consistent character identity in every panel: same body, same face, same clothes.
 
 Character: {{descricao}}
 
-Style: photoreal with AAA game-character polish (Unreal Engine 5), detailed skin micro-pores, realistic fabric weight, idealized but believable, caricatural traits preserved with photographic fidelity.
+Signature exaggerated trait (required): the character must carry at least one striking, intentionally bizarre visual element — impossible hair sculpture, theatrical accessory, elaborate anachronistic costume, surreal body proportion, or extreme pattern/colour. If the description already names one, amplify it to the extreme. If not, invent one and commit fully. Never default to a generic/stock look.
+
+Style: photoreal with AAA high-fashion editorial polish, detailed skin micro-pores and visible imperfections, realistic fabric with material-specific detail (velvet, brocade, feather, latex, denim). Design can be absurd; rendering is 100% photographic.
 
 Negative:
-text, logos (unless on clothing), watermark, extra limbs, extra fingers, inconsistent character between panels, cartoon, anime, concept-art styling, painterly, blurry, low-res, artifacts, deformed anatomy{{negativos}}
+safe generic realism, stock-model look, beauty-shot sameness, smiling, acting pose, text, logos (unless on clothing), watermark, extra limbs, extra fingers, inconsistent character between panels, cartoon, anime, concept-art styling, painterly, blurry, low-res, artifacts, deformed anatomy, mannequin blank face{{negativos}}
 `;
