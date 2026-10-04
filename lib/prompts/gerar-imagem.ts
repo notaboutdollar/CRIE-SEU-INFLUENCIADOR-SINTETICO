@@ -71,9 +71,11 @@ export function buildAllImagePrompts(c: Character): PromptImagem[] {
  * prosa mais rica).
  */
 export function extractDescricaoVisual(c: Character, formato: FormatoImagem): string {
+  const ideia = c.visual.ideiaLivre?.trim();
+
+  // Partes vindas dos campos da ficha
   const partes: string[] = [];
 
-  // Básicos
   const basicos: string[] = [];
   if (c.identidade.genero) basicos.push(labelGenero(c.identidade.genero));
   if (c.identidade.idadeAparente) basicos.push(c.identidade.idadeAparente);
@@ -82,38 +84,37 @@ export function extractDescricaoVisual(c: Character, formato: FormatoImagem): st
   }
   if (basicos.length) partes.push(basicos.join(", "));
 
-  // Aparência
   if (c.visual.cabelo) partes.push(`hair: ${c.visual.cabelo}`);
   if (c.visual.pele) partes.push(`skin: ${c.visual.pele}`);
   if (c.visual.olhos) partes.push(`eyes: ${c.visual.olhos}`);
   if (c.visual.tracosMarcantes) partes.push(`distinctive features: ${c.visual.tracosMarcantes}`);
 
-  // Roupa
   const roupa: string[] = [];
   if (c.visual.roupa) roupa.push(c.visual.roupa);
   if (c.visual.acessorios) roupa.push(`accessories: ${c.visual.acessorios}`);
   if (roupa.length) partes.push(`wearing: ${roupa.join("; ")}`);
 
-  // Paleta
   if (c.visual.paleta) partes.push(`color palette: ${c.visual.paleta}`);
-
-  // Vibe
   if (c.soul.adjetivos.length) {
     partes.push(`vibe: ${c.soul.adjetivos.slice(0, 5).join(", ")}`);
   }
-
-  // Traço autoral (se não for "automatico")
   if (c.visual.traco && c.visual.traco !== "automatico") {
     partes.push(`drawing style note: ${labelTraco(c.visual.traco)}`);
   }
 
-  if (partes.length === 0) return "no visual details provided yet";
+  // Combinação ideia-livre + ficha
+  const sep = formato === "midjourney" ? ", " : ". ";
+  const camposStr = partes.join(sep);
+  const camposFinal = camposStr && formato !== "midjourney" ? camposStr + "." : camposStr;
 
-  // Midjourney gosta de tudo em linha; neutro/flux podem quebrar em frases
-  if (formato === "midjourney") {
-    return partes.join(", ");
+  if (ideia && camposFinal) {
+    // Ideia primeiro, campos como complemento
+    if (formato === "midjourney") return `${ideia}, additional details: ${camposFinal}`;
+    return `${ideia}\n\nAdditional details: ${camposFinal}`;
   }
-  return partes.join(". ") + ".";
+  if (ideia) return ideia;
+  if (camposFinal) return camposFinal;
+  return "no visual details provided yet";
 }
 
 function extractNegativos(c: Character, formato: FormatoImagem): string {

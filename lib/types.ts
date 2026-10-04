@@ -45,6 +45,8 @@ export interface Visual {
   paleta?: string;
   cenarios?: string;
   negativos?: string;
+  /** Ideia visual em texto livre; vai pro topo do prompt de imagem, antes dos campos. */
+  ideiaLivre?: string;
 }
 
 export interface Soul {

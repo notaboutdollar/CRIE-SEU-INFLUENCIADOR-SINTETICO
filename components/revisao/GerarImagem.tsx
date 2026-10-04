@@ -10,10 +10,16 @@ import {
 } from "@/lib/prompts/gerar-imagem";
 import { copyToClipboard } from "@/lib/export";
 import { cn } from "@/lib/cn";
+import { useCharacters } from "@/lib/store";
+import { Field } from "@/components/ui/Field";
+import { Textarea } from "@/components/ui/Input";
 
 interface Props {
   character: Character;
 }
+
+const PLACEHOLDER_IDEIA =
+  "Ex.: Mulher 28, cabelo cacheado cor cobre nos ombros, roupa oversize vintage colorida, óculos redondo, paleta terrosa com verde-oliva. Vibe editorial calma com um quê de ateliê.";
 
 const QUICK_LINKS: Record<FormatoImagem, Array<{ label: string; href: string }>> = {
   neutro: [
@@ -28,9 +34,12 @@ const QUICK_LINKS: Record<FormatoImagem, Array<{ label: string; href: string }>>
 };
 
 export function GerarImagem({ character }: Props) {
+  const update = useCharacters((s) => s.update);
   const prompts = useMemo(() => buildAllImagePrompts(character), [character]);
   const [atual, setAtual] = useState<FormatoImagem>("neutro");
   const [copiado, setCopiado] = useState(false);
+
+  const ideia = character.visual.ideiaLivre ?? "";
 
   const sel = prompts.find((p) => p.formato === atual) ?? prompts[0];
 
@@ -54,11 +63,31 @@ export function GerarImagem({ character }: Props) {
         </span>
       </div>
 
-      <p className="text-[13px] text-ink-mute mb-3 leading-relaxed">
+      <p className="text-[13px] text-ink-mute mb-4 leading-relaxed">
         Prompt pronto para gerar uma folha de referência do personagem — 5 views do corpo em cima
         e closes de rosto embaixo, estilo fotorreal com polimento 3D, fundo cinza de estúdio. Cole
         em qualquer gerador de imagem.
       </p>
+
+      <div className="mb-4">
+        <Field
+          label="Ideia visual (opcional)"
+          hint="Descreva a aparência do personagem em texto livre. Já é suficiente — não precisa preencher os campos abaixo. Se tiver as duas coisas, essa ideia vem primeiro e os campos entram como complemento."
+          counter={{ value: ideia.length, max: 1500 }}
+        >
+          <Textarea
+            rows={3}
+            maxLength={1500}
+            placeholder={PLACEHOLDER_IDEIA}
+            value={ideia}
+            onChange={(e) =>
+              update(character.id, (c) => {
+                c.visual.ideiaLivre = e.target.value;
+              })
+            }
+          />
+        </Field>
+      </div>
 
       {/* Abas */}
       <div className="flex gap-1 border border-line rounded-full p-1 bg-panel w-fit mb-3">

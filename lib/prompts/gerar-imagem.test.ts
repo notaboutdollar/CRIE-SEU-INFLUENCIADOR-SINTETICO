@@ -75,6 +75,34 @@ describe("buildImagePrompt", () => {
     expect(p).not.toMatch(/\{\{.*?\}\}/);
   });
 
+  it("ficha vazia + ideia livre: usa só a ideia", () => {
+    const c = emptyCharacter();
+    c.visual.ideiaLivre = "Jovem skatista com pisante punk e cabelo platinado";
+    const p = buildImagePrompt(c, "neutro");
+    expect(p).toContain("skatista com pisante punk");
+    expect(p).not.toContain("no visual details provided yet");
+    expect(p).not.toContain("Additional details");
+  });
+
+  it("ideia + ficha: ideia primeiro, campos como Additional details", () => {
+    const c = sampleCharacter();
+    c.visual.ideiaLivre = "Vibe editorial calma com um quê de ateliê";
+    const p = buildImagePrompt(c, "neutro");
+    const idxIdeia = p.indexOf("Vibe editorial calma");
+    const idxAdd = p.indexOf("Additional details");
+    const idxCabelo = p.indexOf("Cacheado cor cobre");
+    expect(idxIdeia).toBeGreaterThan(0);
+    expect(idxAdd).toBeGreaterThan(idxIdeia);
+    expect(idxCabelo).toBeGreaterThan(idxAdd);
+  });
+
+  it("Midjourney concatena ideia + campos em linha única", () => {
+    const c = sampleCharacter();
+    c.visual.ideiaLivre = "editorial fashion vibe";
+    const p = buildImagePrompt(c, "midjourney");
+    expect(p).toContain("editorial fashion vibe, additional details:");
+  });
+
   it("forma != humano aparece explicitamente", () => {
     const c = emptyCharacter();
     c.identidade.nome = "Vulpes";
