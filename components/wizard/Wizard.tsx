@@ -58,14 +58,33 @@ export function Wizard({ id }: { id: string }) {
 
   return (
     <WizardProvider characterId={character.id}>
-      <main className="mx-auto max-w-7xl px-4 sm:px-6 py-6 sm:py-10">
+      <main className="mx-auto max-w-[1400px] px-4 sm:px-6 py-6 sm:py-10">
         <CharacterHeader character={character} />
         <SuggestionCounter character={character} />
-        <div className="mb-6">
-          <StepTabs current={currentId} character={character} onPick={setCurrentId} />
+
+        {/* Mobile/tablet: nav horizontal rolável acima do form */}
+        <div className="mb-6 lg:hidden">
+          <StepTabs
+            current={currentId}
+            character={character}
+            onPick={setCurrentId}
+            orientation="horizontal"
+          />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-[220px_1fr_300px] gap-5">
+          {/* Desktop: nav vertical sticky */}
+          <aside className="hidden lg:block min-w-0">
+            <div className="sticky top-6">
+              <StepTabs
+                current={currentId}
+                character={character}
+                onPick={setCurrentId}
+                orientation="vertical"
+              />
+            </div>
+          </aside>
+
           <div className="min-w-0">
             <section className="card p-5 sm:p-7">
               <div className="mb-5">
