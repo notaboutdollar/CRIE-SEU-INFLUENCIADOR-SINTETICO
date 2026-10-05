@@ -10,19 +10,6 @@ import {
 } from "@/lib/sync/supabaseSync";
 import type { Character } from "@/lib/types";
 
-/**
- * Mantém o store Zustand em sync com Supabase enquanto o usuário está
- * logado.
- *
- * Comportamento combinado com o user:
- *  - Ao logar: a conta começa com os personagens que ela já tem no banco.
- *    Os personagens que estavam no localStorage SOMEM da visão de "Seus
- *    Personagens" (o store é substituído pelo que veio do banco). Eles
- *    continuam fisicamente no localStorage pra quando sair.
- *  - Ao sair: volta o estado anônimo que estava no localStorage antes
- *    do login.
- *  - Ao editar/criar/excluir enquanto logado: espelha no Supabase.
- */
 export function CharactersSyncer() {
   const { user } = useAuth();
   const characters = useCharacters((s) => s.characters);
@@ -31,7 +18,6 @@ export function CharactersSyncer() {
   const hydrating = useRef(false);
   const lastSerialized = useRef<string>("");
 
-  // Fase 1: hidrata/limpa o store nas transições anônimo <-> logado.
   useEffect(() => {
     const currentId = user?.id ?? null;
     if (currentId === previousUser.current) return;
@@ -39,16 +25,21 @@ export function CharactersSyncer() {
     const store = useCharacters.getState();
 
     if (currentId && !previousUser.current) {
-      // Login: guarda o estado anônimo e carrega remoto.
       anonSnapshot.current = store.characters;
       hydrating.current = true;
       void listRemote().then((remote) => {
-        useCharacters.setState({ characters: remote });
-        lastSerialized.current = JSON.stringify(remote);
+        const local = useCharacters.getState().characters;
+        const remoteIds = new Set(remote.map((c) => c.id));
+        const newLocal = local.filter((c) => !remoteIds.has(c.id) && !anonSnapshot.current?.some((a) => a.id === c.id));
+        const merged = [...newLocal, ...remote];
+        useCharacters.setState({ characters: merged });
+        lastSerialized.current = JSON.stringify(merged);
         hydrating.current = false;
+        if (newLocal.length > 0) {
+          void upsertRemote(newLocal);
+        }
       });
     } else if (!currentId && previousUser.current) {
-      // Logout: devolve o estado anônimo que estava antes do login.
       hydrating.current = true;
       useCharacters.setState({ characters: anonSnapshot.current ?? [] });
       lastSerialized.current = JSON.stringify(anonSnapshot.current ?? []);
@@ -59,7 +50,6 @@ export function CharactersSyncer() {
     previousUser.current = currentId;
   }, [user]);
 
-  // Fase 2: escreve mudanças no Supabase quando logado.
   useEffect(() => {
     if (!user?.id) {
       lastSerialized.current = JSON.stringify(characters);
@@ -70,7 +60,6 @@ export function CharactersSyncer() {
     const serialized = JSON.stringify(characters);
     if (serialized === lastSerialized.current) return;
 
-    // Diff mínimo: compara ids anteriores vs atuais para detectar exclusões.
     let prevIds: string[] = [];
     try {
       prevIds = (JSON.parse(lastSerialized.current || "[]") as Character[])
