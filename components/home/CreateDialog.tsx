@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { Check, ClipboardPaste, Copy, ExternalLink, ImageIcon, Sparkles, User, UserPlus, Wand2, X } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Check, ClipboardPaste, Copy, ExternalLink, ImageIcon, ImagePlus, Sparkles, User, UserPlus, Wand2, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Textarea } from "@/components/ui/Input";
 import { Field } from "@/components/ui/Field";
@@ -13,6 +13,7 @@ import { buildPromptClaude, parseRespostaClaude } from "@/lib/prompts/gerar-no-c
 import { copyToClipboard } from "@/lib/export";
 import { GerarImagem } from "@/components/revisao/GerarImagem";
 import type { TipoImagem } from "@/lib/prompts/gerar-imagem";
+import { nanoid } from "nanoid";
 
 type Mode = "pick" | "claude" | "imagem" | "expand" | "loading";
 
@@ -46,6 +47,8 @@ export function CreateDialog({ open, onClose }: Props) {
   const [copiado, setCopiado] = useState(false);
   const [imagemTipo, setImagemTipo] = useState<TipoImagem>("retrato");
   const [imagemCharId, setImagemCharId] = useState<string | null>(null);
+
+  const imagemInputRef = useRef<HTMLInputElement>(null);
 
   const create = useCharacters((s) => s.createCharacter);
   const deleteChar = useCharacters((s) => s.deleteCharacter);
@@ -118,7 +121,7 @@ export function CreateDialog({ open, onClose }: Props) {
     const id = imagemCharId;
     setImagemCharId(null);
     onClose();
-    if (id) router.push(`/personagem/${id}?step=visual`);
+    if (id) router.push(`/personagem/${id}`);
   }
 
   function onVoltarDoImagem() {
@@ -127,6 +130,33 @@ export function CreateDialog({ open, onClose }: Props) {
       setImagemCharId(null);
     }
     setMode("pick");
+  }
+
+  async function onImagemFiles(files: FileList | null) {
+    if (!files || !imagemCharId) return;
+    for (const f of Array.from(files)) {
+      if (!f.type.startsWith("image/")) continue;
+      if (f.size > 4 * 1024 * 1024) {
+        alert(`${f.name}: maior que 4 MB.`);
+        continue;
+      }
+      const dataUrl = await new Promise<string>((resolve, reject) => {
+        const r = new FileReader();
+        r.onload = () => resolve(r.result as string);
+        r.onerror = reject;
+        r.readAsDataURL(f);
+      });
+      updateChar(imagemCharId, (c) => {
+        c.visual.referencias.push({ id: nanoid(8), name: f.name, dataUrl, size: f.size });
+      });
+    }
+  }
+
+  function removerImagemRef(refId: string) {
+    if (!imagemCharId) return;
+    updateChar(imagemCharId, (c) => {
+      c.visual.referencias = c.visual.referencias.filter((r) => r.id !== refId);
+    });
   }
 
   async function onCopiarPrompt() {
@@ -242,7 +272,7 @@ export function CreateDialog({ open, onClose }: Props) {
               <Option
                 icon={<ImageIcon className="w-5 h-5" />}
                 title="Começar pela imagem"
-                description="Abre direto na etapa Visual. Preencha a aparência, gere a imagem numa IA, depois complete o resto."
+                description="Gere o prompt de imagem aqui mesmo, adicione a imagem e vá direto para a ficha."
                 onClick={onComecarPelaImagem}
               />
               {AI_ENABLED ? (
@@ -386,13 +416,61 @@ export function CreateDialog({ open, onClose }: Props) {
               <GerarImagem character={imagemChar} tipo={imagemTipo} />
             </div>
 
+            <div className="mt-6 border-t border-line pt-5">
+              <div className="label-cap mb-2 inline-flex items-center gap-2">
+                <ImagePlus className="w-3.5 h-3.5" />
+                Adicionar imagem gerada
+              </div>
+              <p className="text-[13px] text-ink-mute mb-3 leading-relaxed">
+                Gerou a imagem na IA? Adicione aqui para salvar no personagem.
+              </p>
+              <input
+                ref={imagemInputRef}
+                type="file"
+                accept="image/*"
+                multiple
+                className="sr-only"
+                onChange={(e) => {
+                  onImagemFiles(e.target.files);
+                  e.target.value = "";
+                }}
+              />
+              <div className="flex gap-3 items-center flex-wrap">
+                {imagemChar.visual.referencias.map((r) => (
+                  <div
+                    key={r.id}
+                    className="relative w-20 h-20 rounded-xl overflow-hidden border border-line bg-bg group"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={r.dataUrl} alt={r.name} className="w-full h-full object-cover" />
+                    <button
+                      type="button"
+                      onClick={() => removerImagemRef(r.id)}
+                      className="absolute top-1 right-1 h-6 w-6 inline-flex items-center justify-center rounded-lg bg-black/60 text-white opacity-0 group-hover:opacity-100 transition"
+                      aria-label={`Remover ${r.name}`}
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => imagemInputRef.current?.click()}
+                  className="w-20 h-20 rounded-xl border-2 border-dashed border-line-strong hover:border-accent hover:bg-accent/5 transition flex flex-col items-center justify-center text-ink-dim hover:text-accent gap-1"
+                >
+                  <ImagePlus className="w-5 h-5" />
+                  <span className="text-[10px]">Adicionar</span>
+                </button>
+              </div>
+            </div>
+
             <div className="flex justify-between items-center mt-6 gap-3 flex-wrap">
               <Button variant="ghost" onClick={onVoltarDoImagem}>
                 Voltar
               </Button>
               <Button variant="accent" onClick={onCriarDoImagem}>
-                <UserPlus className="w-4 h-4" />
-                Criar personagem
+                <Sparkles className="w-4 h-4" />
+                Ir para o Step 1
               </Button>
             </div>
           </div>
