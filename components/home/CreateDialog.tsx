@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Check, ClipboardPaste, Copy, ExternalLink, ImageIcon, Sparkles, UserPlus, Wand2, X } from "lucide-react";
+import { Check, ClipboardPaste, Copy, ExternalLink, ImageIcon, Sparkles, User, UserPlus, Wand2, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Textarea } from "@/components/ui/Input";
 import { Field } from "@/components/ui/Field";
@@ -11,8 +11,10 @@ import { cn } from "@/lib/cn";
 import { AI_ENABLED } from "@/lib/ai/flag";
 import { buildPromptClaude, parseRespostaClaude } from "@/lib/prompts/gerar-no-claude";
 import { copyToClipboard } from "@/lib/export";
+import { GerarImagem } from "@/components/revisao/GerarImagem";
+import type { TipoImagem } from "@/lib/prompts/gerar-imagem";
 
-type Mode = "pick" | "claude" | "expand" | "loading";
+type Mode = "pick" | "claude" | "imagem" | "expand" | "loading";
 
 const LOADING_STEPS = [
   "Lendo o contexto",
@@ -42,10 +44,17 @@ export function CreateDialog({ open, onClose }: Props) {
   const [resposta, setResposta] = useState("");
   const [erroImport, setErroImport] = useState<string | null>(null);
   const [copiado, setCopiado] = useState(false);
+  const [imagemTipo, setImagemTipo] = useState<TipoImagem>("retrato");
+  const [imagemCharId, setImagemCharId] = useState<string | null>(null);
 
   const create = useCharacters((s) => s.createCharacter);
+  const deleteChar = useCharacters((s) => s.deleteCharacter);
   const applySuggestions = useCharacters((s) => s.applySuggestions);
   const updateChar = useCharacters((s) => s.update);
+
+  const imagemChar = useCharacters((s) =>
+    imagemCharId ? s.characters.find((c) => c.id === imagemCharId) : undefined
+  );
 
   const prompt = useMemo(() => buildPromptClaude(ideia), [ideia]);
 
@@ -59,6 +68,11 @@ export function CreateDialog({ open, onClose }: Props) {
     setResposta("");
     setErroImport(null);
     setCopiado(false);
+    setImagemTipo("retrato");
+    setImagemCharId((prev) => {
+      if (prev) deleteChar(prev);
+      return null;
+    });
   }, [open]);
 
   useEffect(() => {
@@ -80,16 +94,39 @@ export function CreateDialog({ open, onClose }: Props) {
 
   if (!open) return null;
 
+  function handleClose() {
+    if (imagemCharId) {
+      deleteChar(imagemCharId);
+      setImagemCharId(null);
+    }
+    onClose();
+  }
+
   function onCriarDoZero() {
     const id = create();
-    onClose();
+    handleClose();
     router.push(`/personagem/${id}`);
   }
 
   function onComecarPelaImagem() {
     const id = create();
+    setImagemCharId(id);
+    setMode("imagem");
+  }
+
+  function onCriarDoImagem() {
+    const id = imagemCharId;
+    setImagemCharId(null);
     onClose();
-    router.push(`/personagem/${id}?step=visual`);
+    if (id) router.push(`/personagem/${id}?step=visual`);
+  }
+
+  function onVoltarDoImagem() {
+    if (imagemCharId) {
+      deleteChar(imagemCharId);
+      setImagemCharId(null);
+    }
+    setMode("pick");
   }
 
   async function onCopiarPrompt() {
@@ -162,14 +199,14 @@ export function CreateDialog({ open, onClose }: Props) {
       role="dialog"
       aria-modal="true"
       onClick={(e) => {
-        if (e.target === e.currentTarget && mode !== "loading") onClose();
+        if (e.target === e.currentTarget && mode !== "loading") handleClose();
       }}
     >
       <div className="card max-w-2xl w-full p-6 sm:p-8 relative max-h-[90vh] overflow-y-auto">
         {mode !== "loading" && (
           <button
             type="button"
-            onClick={onClose}
+            onClick={handleClose}
             className="absolute top-4 right-4 h-9 w-9 inline-flex items-center justify-center rounded-full border border-line hover:border-ink text-ink-mute hover:text-ink"
             aria-label="Fechar"
           >
@@ -297,6 +334,64 @@ export function CreateDialog({ open, onClose }: Props) {
               </Button>
               <Button variant="accent" onClick={onImportar} disabled={!resposta.trim()}>
                 <Sparkles className="w-4 h-4" />
+                Criar personagem
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {mode === "imagem" && imagemChar && (
+          <div>
+            <div className="eyebrow-accent mb-2 inline-flex items-center gap-2">
+              <ImageIcon className="w-3.5 h-3.5" />
+              Começar pela imagem
+            </div>
+            <h2 className="display text-2xl sm:text-3xl text-ink uppercase leading-tight">
+              Gere a imagem do seu personagem.
+            </h2>
+            <p className="text-ink-mute mt-3 leading-relaxed">
+              Descreva a aparência, copie o prompt e cole no gerador. Depois crie o personagem e complete a ficha.
+            </p>
+
+            <div className="mt-6 grid gap-5">
+              <div className="flex gap-2 flex-wrap">
+                <button
+                  type="button"
+                  onClick={() => setImagemTipo("retrato")}
+                  className={cn(
+                    "inline-flex items-center gap-2 rounded-full h-10 px-5 text-sm font-bold transition active:translate-y-px",
+                    imagemTipo === "retrato"
+                      ? "bg-accent text-bg shadow-glow"
+                      : "bg-panel border border-line text-ink-mute hover:text-ink hover:border-line-strong"
+                  )}
+                >
+                  <User className="w-4 h-4" strokeWidth={2.5} />
+                  Imagem de frente
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setImagemTipo("referencia")}
+                  className={cn(
+                    "inline-flex items-center gap-2 rounded-full h-10 px-5 text-sm font-bold transition active:translate-y-px",
+                    imagemTipo === "referencia"
+                      ? "bg-accent text-bg shadow-glow"
+                      : "bg-panel border border-line text-ink-mute hover:text-ink hover:border-line-strong"
+                  )}
+                >
+                  <ImageIcon className="w-4 h-4" strokeWidth={2.5} />
+                  Card de referência
+                </button>
+              </div>
+
+              <GerarImagem character={imagemChar} tipo={imagemTipo} />
+            </div>
+
+            <div className="flex justify-between items-center mt-6 gap-3 flex-wrap">
+              <Button variant="ghost" onClick={onVoltarDoImagem}>
+                Voltar
+              </Button>
+              <Button variant="accent" onClick={onCriarDoImagem}>
+                <UserPlus className="w-4 h-4" />
                 Criar personagem
               </Button>
             </div>

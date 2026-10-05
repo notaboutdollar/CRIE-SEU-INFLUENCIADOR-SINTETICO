@@ -15,6 +15,8 @@ export function IdentidadeStep({ id }: { id: string }) {
 
   return (
     <div className="grid grid-cols-1 gap-5">
+      <GerarIdentidadeDaImagem character={character} />
+
       <Field label="Nome / apelido" fieldId="identidade.nome" counter={{ value: d.nome.length, max: 50 }}>
         <Input
           maxLength={50}
@@ -116,8 +118,6 @@ export function IdentidadeStep({ id }: { id: string }) {
           onChange={(e) => set((c) => (c.identidade.bio = e.target.value))}
         />
       </Field>
-
-      <GerarIdentidadeDaImagem character={character} />
     </div>
   );
 }

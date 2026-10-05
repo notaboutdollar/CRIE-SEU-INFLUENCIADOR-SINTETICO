@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import { nanoid } from "nanoid";
-import { Image as ImageIcon, ImagePlus, User, X } from "lucide-react";
+import { ChevronDown, Image as ImageIcon, ImagePlus, User, X } from "lucide-react";
 import { useCharacter } from "@/lib/useCharacter";
 import { Field } from "@/components/ui/Field";
 import { Input, Textarea } from "@/components/ui/Input";
@@ -17,6 +17,7 @@ export function VisualStep({ id }: { id: string }) {
   const { character, set } = useCharacter(id);
   const inputRef = useRef<HTMLInputElement>(null);
   const [tipoImagem, setTipoImagem] = useState<TipoImagem>("retrato");
+  const [gerarOpen, setGerarOpen] = useState(false);
   if (!character) return null;
   const v = character.visual;
 
@@ -47,40 +48,65 @@ export function VisualStep({ id }: { id: string }) {
 
   return (
     <div className="grid grid-cols-1 gap-5">
-      {/* Seletor de modo: Retrato de frente / Card de referência */}
-      <div className="flex gap-2 flex-wrap">
+      <section className="rounded-xl border border-accent/25 bg-accent/5">
         <button
           type="button"
-          onClick={() => setTipoImagem("retrato")}
-          className={cn(
-            "inline-flex items-center gap-2 rounded-full h-10 px-5 text-sm font-bold transition active:translate-y-px",
-            tipoImagem === "retrato"
-              ? "bg-accent text-bg shadow-glow"
-              : "bg-panel border border-line text-ink-mute hover:text-ink hover:border-line-strong"
-          )}
+          onClick={() => setGerarOpen((v) => !v)}
+          className="w-full flex items-start gap-3 p-4 text-left"
+          aria-expanded={gerarOpen}
         >
-          <User className="w-4 h-4" strokeWidth={2.5} />
-          Imagem de frente
+          <div className="h-9 w-9 inline-flex items-center justify-center rounded-full bg-accent/15 text-accent shrink-0">
+            <ImageIcon className="w-4 h-4" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <span className="label-cap !text-accent">Gerar imagem com IA</span>
+            <p className="text-[13px] text-ink-mute mt-1 leading-relaxed">
+              Gere um prompt de imagem e cole no gerador de sua preferência (Midjourney, ChatGPT, Flux…).
+            </p>
+          </div>
+          <ChevronDown
+            className={cn(
+              "w-4 h-4 text-ink-mute shrink-0 mt-2 transition",
+              gerarOpen && "rotate-180"
+            )}
+          />
         </button>
-        <button
-          type="button"
-          onClick={() => setTipoImagem("referencia")}
-          className={cn(
-            "inline-flex items-center gap-2 rounded-full h-10 px-5 text-sm font-bold transition active:translate-y-px",
-            tipoImagem === "referencia"
-              ? "bg-accent text-bg shadow-glow"
-              : "bg-panel border border-line text-ink-mute hover:text-ink hover:border-line-strong"
-          )}
-        >
-          <ImageIcon className="w-4 h-4" strokeWidth={2.5} />
-          Card de referência
-        </button>
-      </div>
 
-      {/* Prompt inline */}
-      <GerarImagem character={character} tipo={tipoImagem} />
+        {gerarOpen && (
+          <div className="px-4 pb-4 grid gap-4">
+            <div className="flex gap-2 flex-wrap">
+              <button
+                type="button"
+                onClick={() => setTipoImagem("retrato")}
+                className={cn(
+                  "inline-flex items-center gap-2 rounded-full h-10 px-5 text-sm font-bold transition active:translate-y-px",
+                  tipoImagem === "retrato"
+                    ? "bg-accent text-bg shadow-glow"
+                    : "bg-panel border border-line text-ink-mute hover:text-ink hover:border-line-strong"
+                )}
+              >
+                <User className="w-4 h-4" strokeWidth={2.5} />
+                Imagem de frente
+              </button>
+              <button
+                type="button"
+                onClick={() => setTipoImagem("referencia")}
+                className={cn(
+                  "inline-flex items-center gap-2 rounded-full h-10 px-5 text-sm font-bold transition active:translate-y-px",
+                  tipoImagem === "referencia"
+                    ? "bg-accent text-bg shadow-glow"
+                    : "bg-panel border border-line text-ink-mute hover:text-ink hover:border-line-strong"
+                )}
+              >
+                <ImageIcon className="w-4 h-4" strokeWidth={2.5} />
+                Card de referência
+              </button>
+            </div>
 
-      <div className="border-t border-line" />
+            <GerarImagem character={character} tipo={tipoImagem} />
+          </div>
+        )}
+      </section>
 
       <Field
         label="Imagens de referência"
