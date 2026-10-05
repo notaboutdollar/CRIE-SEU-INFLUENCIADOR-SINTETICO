@@ -1,7 +1,9 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useState } from "react";
 import "./landing.css";
+import { useAuth } from "@/components/auth/AuthProvider";
+import { AUTH_ENABLED } from "@/lib/supabase/env";
 
 export function LandingPage() {
   return (
@@ -94,7 +96,7 @@ export function LandingPage() {
           </nav>
           <div style={{ display: "flex", justifyContent: "flex-end" }}>
             <a
-              href="#waitlist"
+              href="#comecar"
               style={{
                 display: "inline-flex",
                 alignItems: "center",
@@ -111,7 +113,7 @@ export function LandingPage() {
               }}
             >
               <span style={{ width: 6, height: 6, background: "#050505", borderRadius: "50%", animation: "landing-pulse-ring 2s infinite" }} />
-              Waitlist
+              Entrar
             </a>
           </div>
         </div>
@@ -170,7 +172,7 @@ export function LandingPage() {
 
             <div style={{ marginTop: 48, display: "flex", alignItems: "center", gap: 20, flexWrap: "wrap" }}>
               <a
-                href="#waitlist"
+                href="#comecar"
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
@@ -187,7 +189,7 @@ export function LandingPage() {
                   boxShadow: "0 0 0 1px rgba(199,255,46,0.25), 0 0 48px rgba(199,255,46,0.35)",
                 }}
               >
-                <span>Entrar na waitlist</span>
+                <span>Começar agora</span>
                 <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
                   <path d="M1 6H15M15 6L10 1M15 6L10 11" stroke="currentColor" strokeWidth="1.6" />
                 </svg>
@@ -1915,8 +1917,8 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* ================= WAITLIST ================= */}
-      <WaitlistSection />
+      {/* ================= COMEÇAR ================= */}
+      <GetStartedSection />
 
       {/* ================= FOOTER ================= */}
       <footer id="nido" style={{ position: "relative", padding: "80px 32px 48px", borderTop: "1px solid rgba(255,255,255,0.08)", background: "#050505" }}>
@@ -1942,7 +1944,7 @@ export function LandingPage() {
                 <a href="#produto" style={{ opacity: 0.75 }}>Como funciona</a>
                 <a href="#creators" style={{ opacity: 0.75 }}>Creators</a>
                 <a href="#engineer" style={{ opacity: 0.75 }}>Influencer Engineer</a>
-                <a href="#waitlist" style={{ opacity: 0.75 }}>Waitlist</a>
+                <a href="#comecar" style={{ opacity: 0.75 }}>Entrar</a>
               </div>
             </div>
             <div>
@@ -1992,22 +1994,46 @@ export function LandingPage() {
   );
 }
 
-function WaitlistSection() {
-  const [submitted, setSubmitted] = useState(false);
+function GetStartedSection() {
+  const { user, disabled, signInWithGoogle, signInWithEmail } = useAuth();
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState<"google" | "email" | null>(null);
+  const [sent, setSent] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const form = e.currentTarget;
-    const name = (form.elements.namedItem("name") as HTMLInputElement)?.value.trim();
-    const email = (form.elements.namedItem("email") as HTMLInputElement)?.value.trim();
-    if (name && email) {
-      setSubmitted(true);
+  const showRealLogin = AUTH_ENABLED && !disabled;
+  const isLoggedIn = showRealLogin && !!user;
+
+  async function onGoogle() {
+    setLoading("google");
+    setErr(null);
+    try {
+      await signInWithGoogle();
+    } finally {
+      setLoading(null);
+    }
+  }
+
+  async function onEmail() {
+    const trimmed = email.trim();
+    if (!trimmed.includes("@")) {
+      setErr("Digite um email válido.");
+      return;
+    }
+    setLoading("email");
+    setErr(null);
+    try {
+      const r = await signInWithEmail(trimmed);
+      if (r.ok) setSent(true);
+      else setErr(r.error ?? "Falha ao enviar o link.");
+    } finally {
+      setLoading(null);
     }
   }
 
   return (
     <section
-      id="waitlist"
+      id="comecar"
       style={{ position: "relative", padding: "160px 32px 100px", background: "linear-gradient(180deg, #050505 0%, #0a0a0a 100%)", overflow: "hidden" }}
     >
       <div
@@ -2026,7 +2052,7 @@ function WaitlistSection() {
 
       <div style={{ maxWidth: 1600, margin: "0 auto", position: "relative" }}>
         <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, letterSpacing: "0.22em", textTransform: "uppercase", opacity: 0.5, marginBottom: 36 }}>
-          [ 13 ] &nbsp;·&nbsp; waitlist
+          [ 13 ] &nbsp;·&nbsp; comece agora
         </div>
 
         <h2
@@ -2052,7 +2078,7 @@ function WaitlistSection() {
               Entre na primeira geração de <span style={{ color: "#C7FF2E" }}>Influencer Engineers</span> — operadores de creators sintéticos.
             </p>
             <div style={{ marginTop: 40, display: "grid", gap: 14, fontFamily: "'IBM Plex Mono', monospace", fontSize: 13, letterSpacing: "0.1em" }}>
-              {["Primeiro creator grátis", "Acesso ao private alpha", "Templates dos primeiros creators do NIDO", "Comunidade de Influencer Engineers"].map((item) => (
+              {["Primeiro creator grátis", "Acesso ao private alpha", "Seus personagens salvos na sua conta", "Acesse de qualquer dispositivo"].map((item) => (
                 <div key={item} style={{ display: "flex", gap: 12, alignItems: "center" }}>
                   <span style={{ color: "#C7FF2E" }}>▸</span> {item}
                 </div>
@@ -2060,7 +2086,7 @@ function WaitlistSection() {
             </div>
           </div>
 
-          {/* Form */}
+          {/* Card */}
           <div style={{ border: "1px solid rgba(199,255,46,0.3)", background: "rgba(5,5,5,0.6)", backdropFilter: "blur(10px)", padding: 40, position: "relative" }}>
             <div style={{ position: "absolute", top: 10, left: 10, width: 20, height: 20, borderTop: "1px solid #C7FF2E", borderLeft: "1px solid #C7FF2E" }} />
             <div style={{ position: "absolute", top: 10, right: 10, width: 20, height: 20, borderTop: "1px solid #C7FF2E", borderRight: "1px solid #C7FF2E" }} />
@@ -2071,60 +2097,182 @@ function WaitlistSection() {
               ● creator os · private alpha
             </div>
 
-            <form onSubmit={handleSubmit} style={{ display: "grid", gap: 24 }}>
-              <div>
-                <label style={{ display: "block", fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", opacity: 0.6, marginBottom: 10 }}>
-                  01 · Nome
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  placeholder="Como você quer ser chamado"
-                  style={{ width: "100%", padding: "16px 18px", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.14)", color: "#F5F5F2", fontFamily: "'IBM Plex Mono', monospace", fontSize: 15, outline: "none" }}
-                />
+            {isLoggedIn ? (
+              <div style={{ display: "grid", gap: 20 }}>
+                <p style={{ margin: 0, fontFamily: "'IBM Plex Mono', monospace", fontSize: 14, lineHeight: 1.6, color: "rgba(245,245,242,0.8)" }}>
+                  Você já está logado. Bora criar seu creator.
+                </p>
+                <a
+                  href="/app"
+                  style={{
+                    padding: "22px 28px",
+                    background: "#C7FF2E",
+                    color: "#050505",
+                    fontFamily: "'IBM Plex Mono', monospace",
+                    fontSize: 13,
+                    letterSpacing: "0.2em",
+                    textTransform: "uppercase",
+                    fontWeight: 700,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    width: "100%",
+                    boxShadow: "0 0 48px rgba(199,255,46,0.25)",
+                  }}
+                >
+                  <span>Ir para o app</span>
+                  <svg width="18" height="12" viewBox="0 0 18 12" fill="none">
+                    <path d="M1 6H17M17 6L12 1M17 6L12 11" stroke="currentColor" strokeWidth="1.8" />
+                  </svg>
+                </a>
               </div>
-              <div>
-                <label style={{ display: "block", fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", opacity: 0.6, marginBottom: 10 }}>
-                  02 · Email
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="voce@internet.com"
-                  style={{ width: "100%", padding: "16px 18px", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.14)", color: "#F5F5F2", fontFamily: "'IBM Plex Mono', monospace", fontSize: 15, outline: "none" }}
-                />
+            ) : !showRealLogin ? (
+              <div style={{ display: "grid", gap: 20 }}>
+                <p style={{ margin: 0, fontFamily: "'IBM Plex Mono', monospace", fontSize: 14, lineHeight: 1.6, color: "rgba(245,245,242,0.8)" }}>
+                  Comece agora, direto no navegador.
+                </p>
+                <a
+                  href="/app"
+                  style={{
+                    padding: "22px 28px",
+                    background: "#C7FF2E",
+                    color: "#050505",
+                    fontFamily: "'IBM Plex Mono', monospace",
+                    fontSize: 13,
+                    letterSpacing: "0.2em",
+                    textTransform: "uppercase",
+                    fontWeight: 700,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    width: "100%",
+                    boxShadow: "0 0 48px rgba(199,255,46,0.25)",
+                  }}
+                >
+                  <span>Começar agora</span>
+                  <svg width="18" height="12" viewBox="0 0 18 12" fill="none">
+                    <path d="M1 6H17M17 6L12 1M17 6L12 11" stroke="currentColor" strokeWidth="1.8" />
+                  </svg>
+                </a>
               </div>
-              <button
-                type="submit"
-                style={{
-                  marginTop: 8,
-                  padding: "22px 28px",
-                  background: submitted ? "#F5F5F2" : "#C7FF2E",
-                  color: "#050505",
-                  fontFamily: "'IBM Plex Mono', monospace",
-                  fontSize: 13,
-                  letterSpacing: "0.2em",
-                  textTransform: "uppercase",
-                  fontWeight: 700,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  width: "100%",
-                  boxShadow: "0 0 48px rgba(199,255,46,0.25)",
-                }}
-              >
-                <span>{submitted ? "Você está na waitlist ✓" : "Entrar na waitlist"}</span>
-                <svg width="18" height="12" viewBox="0 0 18 12" fill="none">
-                  <path d="M1 6H17M17 6L12 1M17 6L12 11" stroke="currentColor" strokeWidth="1.8" />
-                </svg>
-              </button>
-              <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, letterSpacing: "0.14em", opacity: 0.5, textAlign: "center" }}>
-                Seu primeiro creator será <span style={{ color: "#C7FF2E", opacity: 1 }}>grátis</span>.
+            ) : (
+              <div style={{ display: "grid", gap: 24 }}>
+                <button
+                  type="button"
+                  onClick={onGoogle}
+                  disabled={!!loading}
+                  style={{
+                    padding: "18px 24px",
+                    background: "#F5F5F2",
+                    color: "#050505",
+                    fontFamily: "'IBM Plex Mono', monospace",
+                    fontSize: 13,
+                    letterSpacing: "0.14em",
+                    textTransform: "uppercase",
+                    fontWeight: 700,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 10,
+                    width: "100%",
+                    opacity: loading ? 0.7 : 1,
+                  }}
+                >
+                  <GoogleIcon />
+                  {loading === "google" ? "Abrindo…" : "Entrar com Google"}
+                </button>
+
+                <div style={{ display: "flex", alignItems: "center", gap: 12, fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, letterSpacing: "0.18em", textTransform: "uppercase", opacity: 0.4 }}>
+                  <div style={{ flex: 1, height: 1, background: "rgba(255,255,255,0.14)" }} />
+                  ou
+                  <div style={{ flex: 1, height: 1, background: "rgba(255,255,255,0.14)" }} />
+                </div>
+
+                {sent ? (
+                  <div style={{ padding: "16px 18px", border: "1px solid rgba(199,255,46,0.3)", background: "rgba(199,255,46,0.06)", fontFamily: "'IBM Plex Mono', monospace", fontSize: 13, lineHeight: 1.6, color: "#C7FF2E" }}>
+                    Link enviado. Confira seu email ({email}) e clique para entrar.
+                  </div>
+                ) : (
+                  <>
+                    <div>
+                      <label style={{ display: "block", fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", opacity: 0.6, marginBottom: 10 }}>
+                        Email
+                      </label>
+                      <input
+                        type="email"
+                        placeholder="voce@internet.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        disabled={loading === "email"}
+                        style={{ width: "100%", padding: "16px 18px", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.14)", color: "#F5F5F2", fontFamily: "'IBM Plex Mono', monospace", fontSize: 15, outline: "none" }}
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={onEmail}
+                      disabled={!email.trim() || !!loading}
+                      style={{
+                        padding: "22px 28px",
+                        background: "#C7FF2E",
+                        color: "#050505",
+                        fontFamily: "'IBM Plex Mono', monospace",
+                        fontSize: 13,
+                        letterSpacing: "0.2em",
+                        textTransform: "uppercase",
+                        fontWeight: 700,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        width: "100%",
+                        boxShadow: "0 0 48px rgba(199,255,46,0.25)",
+                        opacity: !email.trim() || loading ? 0.6 : 1,
+                      }}
+                    >
+                      <span>{loading === "email" ? "Enviando…" : "Enviar link mágico"}</span>
+                      <svg width="18" height="12" viewBox="0 0 18 12" fill="none">
+                        <path d="M1 6H17M17 6L12 1M17 6L12 11" stroke="currentColor" strokeWidth="1.8" />
+                      </svg>
+                    </button>
+                  </>
+                )}
+
+                {err ? (
+                  <div style={{ padding: "12px 14px", border: "1px solid rgba(240,55,154,0.4)", background: "rgba(240,55,154,0.08)", fontFamily: "'IBM Plex Mono', monospace", fontSize: 12, color: "#F0379A" }}>
+                    {err}
+                  </div>
+                ) : null}
+
+                <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, letterSpacing: "0.14em", opacity: 0.5, textAlign: "center" }}>
+                  Seu primeiro creator será <span style={{ color: "#C7FF2E", opacity: 1 }}>grátis</span>.
+                </div>
               </div>
-            </form>
+            )}
           </div>
         </div>
       </div>
     </section>
+  );
+}
+
+function GoogleIcon() {
+  return (
+    <svg viewBox="0 0 48 48" width="16" height="16" aria-hidden="true">
+      <path
+        fill="#FFC107"
+        d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"
+      />
+      <path
+        fill="#FF3D00"
+        d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"
+      />
+      <path
+        fill="#4CAF50"
+        d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0 1 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"
+      />
+      <path
+        fill="#1976D2"
+        d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.571l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"
+      />
+    </svg>
   );
 }
