@@ -29,7 +29,7 @@ export function CharacterListItem({ character: c }: Props) {
 
   return (
     <div className="group relative rounded-2xl overflow-hidden border border-line bg-panel hover:border-line-strong transition">
-      <Link href={`/personagem/${c.id}`} className="block">
+      <Link href={`/app/personagem/${c.id}`} className="block">
         <div className="relative aspect-[4/3] bg-bg border-b border-line flex items-center justify-center overflow-hidden">
           {avatar ? (
             // eslint-disable-next-line @next/next/no-img-element

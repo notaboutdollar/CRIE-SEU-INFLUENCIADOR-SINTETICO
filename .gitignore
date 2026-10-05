@@ -12,3 +12,7 @@ tsconfig.tsbuildinfo
 
 # Local Claude Code launch config (per-machine)
 .claude/
+
+# Design source export (assets already copied into public/landing)
+Creator AI Landing Design/
+Creator AI Landing Design.zip

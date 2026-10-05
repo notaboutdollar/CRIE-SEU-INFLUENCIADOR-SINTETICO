@@ -108,7 +108,7 @@ export function CreateDialog({ open, onClose }: Props) {
   function onCriarDoZero() {
     const id = create();
     handleClose();
-    router.push(`/personagem/${id}`);
+    router.push(`/app/personagem/${id}`);
   }
 
   function onComecarPelaImagem() {
@@ -121,7 +121,7 @@ export function CreateDialog({ open, onClose }: Props) {
     const id = imagemCharId;
     setImagemCharId(null);
     onClose();
-    if (id) router.push(`/personagem/${id}`);
+    if (id) router.push(`/app/personagem/${id}`);
   }
 
   function onVoltarDoImagem() {
@@ -184,7 +184,7 @@ export function CreateDialog({ open, onClose }: Props) {
       });
     }
     onClose();
-    router.push(`/personagem/${id}`);
+    router.push(`/app/personagem/${id}`);
   }
 
   async function onGerar() {
@@ -216,7 +216,7 @@ export function CreateDialog({ open, onClose }: Props) {
         });
       }
       onClose();
-      router.push(`/personagem/${id}`);
+      router.push(`/app/personagem/${id}`);
     } catch (e) {
       setMode("expand");
       setErro((e as Error)?.message ?? "Falha de rede. Tente de novo.");

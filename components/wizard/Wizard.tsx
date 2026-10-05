@@ -46,7 +46,7 @@ export function Wizard({ id }: { id: string }) {
             Pode ter sido excluído em outra aba.
           </p>
           <button
-            onClick={() => router.push("/")}
+            onClick={() => router.push("/app")}
             className="mt-4 text-accent hover:underline font-semibold"
           >
             Voltar para a lista
@@ -109,7 +109,7 @@ export function Wizard({ id }: { id: string }) {
                 </div>
               ) : null}
 
-              <StepFooter current={currentId} onChange={setCurrentId} onFinish={() => router.push("/")} />
+              <StepFooter current={currentId} onChange={setCurrentId} onFinish={() => router.push("/app")} />
             </section>
           </div>
 

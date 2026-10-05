@@ -59,7 +59,7 @@ function LoginInner() {
           <code className="mono text-accent ml-1">NEXT_PUBLIC_SUPABASE_ANON_KEY</code>.
         </p>
         <Link
-          href="/"
+          href="/app"
           className="mt-5 inline-flex items-center gap-1.5 text-accent font-semibold hover:underline"
         >
           <ArrowLeft className="w-4 h-4" /> Voltar
@@ -73,7 +73,7 @@ function LoginInner() {
       <div className="absolute -top-24 -right-24 w-80 h-80 bg-accent/10 blur-[80px] rounded-full pointer-events-none" />
       <div className="relative">
         <Link
-          href="/"
+          href="/app"
           className="inline-flex items-center gap-1.5 text-ink-mute hover:text-ink text-sm mb-6"
         >
           <ArrowLeft className="w-4 h-4" /> Voltar
