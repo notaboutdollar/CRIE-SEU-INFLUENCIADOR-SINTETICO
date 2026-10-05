@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Plus, Sparkles } from "lucide-react";
 import { useCharacters } from "@/lib/store";
 import { Button } from "@/components/ui/Button";
@@ -9,16 +10,32 @@ import { CharacterListItem } from "@/components/home/CharacterListItem";
 import { CreateDialog } from "@/components/home/CreateDialog";
 import { AI_ENABLED } from "@/lib/ai/flag";
 import { AccountMenu } from "@/components/auth/AccountMenu";
+import { useAuth } from "@/components/auth/AuthProvider";
+import { AUTH_ENABLED } from "@/lib/supabase/env";
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState(false);
   const characters = useCharacters((s) => s.characters);
+  const { user } = useAuth();
+  const router = useRouter();
+
+  const authLoading = AUTH_ENABLED && user === null;
+  const requiresLogin = AUTH_ENABLED && user === undefined;
+
+  function handleCreateClick() {
+    if (authLoading) return;
+    if (requiresLogin) {
+      router.push("/auth/login");
+      return;
+    }
+    setOpen(true);
+  }
 
   return (
     <main className="min-h-screen">
       {/* Nav */}
-      <TopNav onCreate={() => setOpen(true)} />
+      <TopNav onCreate={handleCreateClick} />
 
       {/* Hero */}
       <section className="relative overflow-hidden border-b border-line">
@@ -40,7 +57,7 @@ export default function Home() {
             pronto e deixe uma IA montar a ficha.
           </p>
           <div className="mt-9 flex items-center justify-center gap-3 flex-wrap">
-            <Button variant="accent" size="lg" onClick={() => setOpen(true)}>
+            <Button variant="accent" size="lg" onClick={handleCreateClick}>
               <Plus className="w-4 h-4" strokeWidth={3} />
               Criar personagem
             </Button>
@@ -61,7 +78,7 @@ export default function Home() {
             <h2 className="display text-3xl uppercase">Seus Personagens</h2>
           </div>
           {mounted && characters.length > 0 ? (
-            <Button variant="accent" onClick={() => setOpen(true)}>
+            <Button variant="accent" onClick={handleCreateClick}>
               <Plus className="w-4 h-4" strokeWidth={3} />
               Novo
             </Button>
@@ -71,7 +88,7 @@ export default function Home() {
         {!mounted ? (
           <div className="card p-16 text-center text-ink-dim">Carregando…</div>
         ) : characters.length === 0 ? (
-          <EmptyState onCreate={() => setOpen(true)} />
+          <EmptyState onCreate={handleCreateClick} />
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {characters.map((c) => (
