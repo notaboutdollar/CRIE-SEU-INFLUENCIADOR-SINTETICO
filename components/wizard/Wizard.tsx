@@ -109,7 +109,7 @@ export function Wizard({ id }: { id: string }) {
                 </div>
               ) : null}
 
-              <StepFooter current={currentId} onChange={setCurrentId} />
+              <StepFooter current={currentId} onChange={setCurrentId} onFinish={() => router.push("/")} />
             </section>
           </div>
 

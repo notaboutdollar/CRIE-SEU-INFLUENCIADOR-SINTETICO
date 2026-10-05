@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, ArrowRight, Check } from "lucide-react";
+import { ArrowLeft, ArrowRight, Save } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { STEPS, stepIndex } from "@/data/steps";
 import type { StepId } from "@/lib/types";
@@ -8,12 +8,14 @@ import type { StepId } from "@/lib/types";
 interface Props {
   current: StepId;
   onChange: (id: StepId) => void;
+  onFinish?: () => void;
 }
 
-export function StepFooter({ current, onChange }: Props) {
+export function StepFooter({ current, onChange, onFinish }: Props) {
   const i = stepIndex(current);
   const prev = i > 0 ? STEPS[i - 1] : null;
   const next = i < STEPS.length - 1 ? STEPS[i + 1] : null;
+  const isLast = !next;
 
   return (
     <div className="flex items-center justify-between mt-8 pt-6 border-t border-line">
@@ -28,16 +30,19 @@ export function StepFooter({ current, onChange }: Props) {
       <div className="eyebrow">
         Etapa {String(i + 1).padStart(2, "0")} / {String(STEPS.length).padStart(2, "0")}
       </div>
-      <Button variant="accent" onClick={() => next && onChange(next.id)} disabled={!next}>
-        {next ? (
+      <Button
+        variant="accent"
+        onClick={() => (isLast ? onFinish?.() : onChange(next.id))}
+      >
+        {isLast ? (
           <>
-            Avançar
-            <ArrowRight className="w-4 h-4" />
+            Salvar personagem
+            <Save className="w-4 h-4" />
           </>
         ) : (
           <>
-            Concluído
-            <Check className="w-4 h-4" />
+            Avançar
+            <ArrowRight className="w-4 h-4" />
           </>
         )}
       </Button>
