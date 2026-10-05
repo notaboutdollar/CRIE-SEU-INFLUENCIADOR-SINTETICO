@@ -1,7 +1,15 @@
 import type { Character } from "@/lib/types";
-import { IMAGEM_FLUX, IMAGEM_MIDJOURNEY, IMAGEM_NEUTRO } from "@/data/prompts/gerar-imagem";
+import {
+  IMAGEM_FLUX,
+  IMAGEM_MIDJOURNEY,
+  IMAGEM_NEUTRO,
+  RETRATO_FLUX,
+  RETRATO_MIDJOURNEY,
+  RETRATO_NEUTRO,
+} from "@/data/prompts/gerar-imagem";
 
 export type FormatoImagem = "neutro" | "midjourney" | "flux";
+export type TipoImagem = "retrato" | "referencia";
 
 export interface PromptImagem {
   formato: FormatoImagem;
@@ -15,13 +23,23 @@ export interface PromptImagem {
  * Monta o prompt de imagem no formato pedido, usando os campos visuais da
  * ficha. Qualquer campo vazio é omitido naturalmente.
  */
-export function buildImagePrompt(c: Character, formato: FormatoImagem): string {
+export function buildImagePrompt(
+  c: Character,
+  formato: FormatoImagem,
+  tipo: TipoImagem = "referencia",
+): string {
   const nome = c.identidade.nome?.trim() || "the character";
   const descricao = extractDescricaoVisual(c, formato);
   const negativos = extractNegativos(c, formato);
 
   const template =
-    formato === "midjourney"
+    tipo === "retrato"
+      ? formato === "midjourney"
+        ? RETRATO_MIDJOURNEY
+        : formato === "flux"
+        ? RETRATO_FLUX
+        : RETRATO_NEUTRO
+      : formato === "midjourney"
       ? IMAGEM_MIDJOURNEY
       : formato === "flux"
       ? IMAGEM_FLUX
@@ -33,28 +51,31 @@ export function buildImagePrompt(c: Character, formato: FormatoImagem): string {
     .replace(/\{\{negativos\}\}/g, negativos);
 }
 
-export function buildAllImagePrompts(c: Character): PromptImagem[] {
+export function buildAllImagePrompts(
+  c: Character,
+  tipo: TipoImagem = "referencia",
+): PromptImagem[] {
   return [
     {
       formato: "neutro",
       nome: "Neutro",
       descricaoCurta: "Para ChatGPT, Nano Banana, Gemini — linguagem natural rica em detalhes.",
       gerador: "ChatGPT · Gemini · Nano Banana",
-      prompt: buildImagePrompt(c, "neutro"),
+      prompt: buildImagePrompt(c, "neutro", tipo),
     },
     {
       formato: "midjourney",
       nome: "Midjourney",
       descricaoCurta: "Compacto, com --ar, --style raw, --v 6.1 e --no.",
       gerador: "Midjourney v6+",
-      prompt: buildImagePrompt(c, "midjourney"),
+      prompt: buildImagePrompt(c, "midjourney", tipo),
     },
     {
       formato: "flux",
       nome: "Flux / SD",
       descricaoCurta: "Positive + Negative separados, para Flux, Stable Diffusion, DALL·E.",
       gerador: "Flux · Stable Diffusion · DALL·E",
-      prompt: buildImagePrompt(c, "flux"),
+      prompt: buildImagePrompt(c, "flux", tipo),
     },
   ];
 }

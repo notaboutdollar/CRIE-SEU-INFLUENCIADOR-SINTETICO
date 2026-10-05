@@ -7,6 +7,7 @@ import {
   buildAllImagePrompts,
   type FormatoImagem,
   type PromptImagem,
+  type TipoImagem,
 } from "@/lib/prompts/gerar-imagem";
 import { copyToClipboard } from "@/lib/export";
 import { cn } from "@/lib/cn";
@@ -18,6 +19,8 @@ interface Props {
   character: Character;
   /** "imagem" (padrão, modal da Visual) | "card" (card de posicionamentos na Revisão). */
   variant?: "imagem" | "card";
+  /** Tipo de imagem a gerar. "retrato" = frente só. "referencia" = card 5 views + closes. */
+  tipo?: TipoImagem;
 }
 
 const PLACEHOLDER_IDEIA =
@@ -35,9 +38,9 @@ const QUICK_LINKS: Record<FormatoImagem, Array<{ label: string; href: string }>>
   ],
 };
 
-export function GerarImagem({ character, variant = "imagem" }: Props) {
+export function GerarImagem({ character, variant = "imagem", tipo = "referencia" }: Props) {
   const update = useCharacters((s) => s.update);
-  const prompts = useMemo(() => buildAllImagePrompts(character), [character]);
+  const prompts = useMemo(() => buildAllImagePrompts(character, tipo), [character, tipo]);
   const [atual, setAtual] = useState<FormatoImagem>("neutro");
   const [copiado, setCopiado] = useState(false);
 
@@ -59,17 +62,25 @@ export function GerarImagem({ character, variant = "imagem" }: Props) {
       <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
         <h3 className="label-cap inline-flex items-center gap-2">
           <ImageIcon className="w-3.5 h-3.5" />
-          {isCard ? "Gerar card com posicionamentos" : "Gerar imagem com IA"}
+          {isCard
+            ? "Gerar card com posicionamentos"
+            : tipo === "retrato"
+            ? "Gerar imagem de frente"
+            : "Gerar card de referência"}
         </h3>
         <span className="text-[11px] text-ink-dim">
-          Character reference sheet · 5 views + closes
+          {tipo === "retrato"
+            ? "Retrato frontal · corpo inteiro"
+            : "Character reference sheet · 5 views + closes"}
         </span>
       </div>
 
       <p className="text-[13px] text-ink-mute mb-4 leading-relaxed">
         {isCard
           ? "Card de posicionamentos do personagem: 5 views do corpo (frente, ¾, perfil, ¾ costas, costas) + 3-4 closes de rosto, no estilo editorial surreal (Loewe por Juergen Teller, Comme des Garçons, Diane Arbus). Cole em qualquer gerador de imagem."
-          : "Prompt pronto para gerar uma folha de referência do personagem no estilo editorial surreal (think Loewe por Juergen Teller, Comme des Garçons, Diane Arbus): 5 views do corpo em cima, closes de rosto embaixo, fundo cinza de estúdio, pose neutra, traço marcante exagerado. Cole em qualquer gerador de imagem."}
+          : tipo === "retrato"
+          ? "Prompt para gerar um retrato de frente do personagem no estilo editorial surreal (think Loewe por Juergen Teller, Comme des Garçons, Diane Arbus): corpo inteiro, vista frontal, fundo cinza de estúdio, pose neutra, traço marcante exagerado. Cole em qualquer gerador de imagem."
+          : "Prompt para gerar uma folha de referência do personagem no estilo editorial surreal (think Loewe por Juergen Teller, Comme des Garçons, Diane Arbus): 5 views do corpo em cima, closes de rosto embaixo, fundo cinza de estúdio, pose neutra, traço marcante exagerado. Cole em qualquer gerador de imagem."}
       </p>
 
       <div className="mb-4">

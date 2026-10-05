@@ -6,6 +6,7 @@ import { Input, Textarea } from "@/components/ui/Input";
 import { CardChoice } from "@/components/ui/CardChoice";
 import { TagInput } from "@/components/ui/TagInput";
 import { formas, generos } from "@/data/choices";
+import { GerarIdentidadeDaImagem } from "@/components/visual/GerarIdentidadeDaImagem";
 
 export function IdentidadeStep({ id }: { id: string }) {
   const { character, set } = useCharacter(id);
@@ -115,6 +116,8 @@ export function IdentidadeStep({ id }: { id: string }) {
           onChange={(e) => set((c) => (c.identidade.bio = e.target.value))}
         />
       </Field>
+
+      <GerarIdentidadeDaImagem character={character} />
     </div>
   );
 }

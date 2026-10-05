@@ -2,20 +2,21 @@
 
 import { useRef, useState } from "react";
 import { nanoid } from "nanoid";
-import { Image as ImageIcon, ImagePlus, Sparkles, X } from "lucide-react";
+import { Image as ImageIcon, ImagePlus, User, X } from "lucide-react";
 import { useCharacter } from "@/lib/useCharacter";
 import { Field } from "@/components/ui/Field";
 import { Input, Textarea } from "@/components/ui/Input";
 import type { ReferenciaImagem } from "@/lib/types";
-import { GerarImagemModal } from "@/components/visual/GerarImagemModal";
-import { GerarIdentidadeDaImagem } from "@/components/visual/GerarIdentidadeDaImagem";
+import { GerarImagem } from "@/components/revisao/GerarImagem";
+import { cn } from "@/lib/cn";
+import type { TipoImagem } from "@/lib/prompts/gerar-imagem";
 
 const MAX_SIZE = 4 * 1024 * 1024; // 4MB
 
 export function VisualStep({ id }: { id: string }) {
   const { character, set } = useCharacter(id);
   const inputRef = useRef<HTMLInputElement>(null);
-  const [modalOpen, setModalOpen] = useState(false);
+  const [tipoImagem, setTipoImagem] = useState<TipoImagem>("retrato");
   if (!character) return null;
   const v = character.visual;
 
@@ -46,22 +47,38 @@ export function VisualStep({ id }: { id: string }) {
 
   return (
     <div className="grid grid-cols-1 gap-5">
-      <div className="flex flex-wrap items-center gap-2">
+      {/* Seletor de modo: Retrato de frente / Card de referência */}
+      <div className="flex gap-2 flex-wrap">
         <button
           type="button"
-          onClick={() => setModalOpen(true)}
-          className="inline-flex items-center justify-center gap-2 font-bold rounded-full h-10 px-5 text-sm bg-accent text-bg hover:bg-accent-strong shadow-glow transition active:translate-y-px"
+          onClick={() => setTipoImagem("retrato")}
+          className={cn(
+            "inline-flex items-center gap-2 rounded-full h-10 px-5 text-sm font-bold transition active:translate-y-px",
+            tipoImagem === "retrato"
+              ? "bg-accent text-bg shadow-glow"
+              : "bg-panel border border-line text-ink-mute hover:text-ink hover:border-line-strong"
+          )}
+        >
+          <User className="w-4 h-4" strokeWidth={2.5} />
+          Imagem de frente
+        </button>
+        <button
+          type="button"
+          onClick={() => setTipoImagem("referencia")}
+          className={cn(
+            "inline-flex items-center gap-2 rounded-full h-10 px-5 text-sm font-bold transition active:translate-y-px",
+            tipoImagem === "referencia"
+              ? "bg-accent text-bg shadow-glow"
+              : "bg-panel border border-line text-ink-mute hover:text-ink hover:border-line-strong"
+          )}
         >
           <ImageIcon className="w-4 h-4" strokeWidth={2.5} />
-          Gerar imagem com IA
-          <Sparkles className="w-3.5 h-3.5" />
+          Card de referência
         </button>
-        <span className="text-[12px] text-ink-dim">
-          Abre um modal com o prompt pronto pra qualquer IA.
-        </span>
       </div>
 
-      <GerarIdentidadeDaImagem character={character} />
+      {/* Prompt inline */}
+      <GerarImagem character={character} tipo={tipoImagem} />
 
       <div className="border-t border-line" />
 
@@ -176,11 +193,6 @@ export function VisualStep({ id }: { id: string }) {
         />
       </Field>
 
-      <GerarImagemModal
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
-        character={character}
-      />
     </div>
   );
 }
