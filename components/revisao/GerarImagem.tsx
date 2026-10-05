@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Check, Copy, ExternalLink, ImageIcon } from "lucide-react";
+import { Check, ChevronDown, Copy, ExternalLink, ImageIcon } from "lucide-react";
 import type { Character } from "@/lib/types";
 import {
   buildAllImagePrompts,
@@ -43,6 +43,7 @@ export function GerarImagem({ character, variant = "imagem", tipo = "referencia"
   const prompts = useMemo(() => buildAllImagePrompts(character, tipo), [character, tipo]);
   const [atual, setAtual] = useState<FormatoImagem>("neutro");
   const [copiado, setCopiado] = useState(false);
+  const [open, setOpen] = useState(false);
 
   const ideia = character.visual.ideiaLivre ?? "";
   const isCard = variant === "card";
@@ -57,31 +58,25 @@ export function GerarImagem({ character, variant = "imagem", tipo = "referencia"
     }
   }
 
-  return (
-    <section>
-      <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
-        <h3 className="label-cap inline-flex items-center gap-2">
-          <ImageIcon className="w-3.5 h-3.5" />
-          {isCard
-            ? "Gerar card com posicionamentos"
-            : tipo === "retrato"
-            ? "Gerar imagem de frente"
-            : "Gerar card de referência"}
-        </h3>
-        <span className="text-[11px] text-ink-dim">
-          {tipo === "retrato"
-            ? "Retrato frontal · corpo inteiro"
-            : "Character reference sheet · 5 views + closes"}
-        </span>
-      </div>
+  const title = isCard
+    ? "Gerar card com posicionamentos"
+    : tipo === "retrato"
+    ? "Gerar imagem de frente"
+    : "Gerar card de referência";
 
-      <p className="text-[13px] text-ink-mute mb-4 leading-relaxed">
-        {isCard
-          ? "Card de posicionamentos do personagem: 5 views do corpo (frente, ¾, perfil, ¾ costas, costas) + 3-4 closes de rosto, no estilo editorial surreal (Loewe por Juergen Teller, Comme des Garçons, Diane Arbus). Cole em qualquer gerador de imagem."
-          : tipo === "retrato"
-          ? "Prompt para gerar um retrato de frente do personagem no estilo editorial surreal (think Loewe por Juergen Teller, Comme des Garçons, Diane Arbus): corpo inteiro, vista frontal, fundo cinza de estúdio, pose neutra, traço marcante exagerado. Cole em qualquer gerador de imagem."
-          : "Prompt para gerar uma folha de referência do personagem no estilo editorial surreal (think Loewe por Juergen Teller, Comme des Garçons, Diane Arbus): 5 views do corpo em cima, closes de rosto embaixo, fundo cinza de estúdio, pose neutra, traço marcante exagerado. Cole em qualquer gerador de imagem."}
-      </p>
+  const subtitle = tipo === "retrato"
+    ? "Retrato frontal · corpo inteiro"
+    : "Character reference sheet · 5 views + closes";
+
+  const description = isCard
+    ? "Card de posicionamentos do personagem: 5 views do corpo (frente, ¾, perfil, ¾ costas, costas) + 3-4 closes de rosto, no estilo editorial surreal (Loewe por Juergen Teller, Comme des Garçons, Diane Arbus). Cole em qualquer gerador de imagem."
+    : tipo === "retrato"
+    ? "Prompt para gerar um retrato de frente do personagem no estilo editorial surreal (think Loewe por Juergen Teller, Comme des Garçons, Diane Arbus): corpo inteiro, vista frontal, fundo cinza de estúdio, pose neutra, traço marcante exagerado. Cole em qualquer gerador de imagem."
+    : "Prompt para gerar uma folha de referência do personagem no estilo editorial surreal (think Loewe por Juergen Teller, Comme des Garçons, Diane Arbus): 5 views do corpo em cima, closes de rosto embaixo, fundo cinza de estúdio, pose neutra, traço marcante exagerado. Cole em qualquer gerador de imagem.";
+
+  const content = (
+    <>
+      <p className="text-[13px] text-ink-mute mb-4 leading-relaxed">{description}</p>
 
       <div className="mb-4">
         <Field
@@ -123,6 +118,47 @@ export function GerarImagem({ character, variant = "imagem", tipo = "referencia"
       </div>
 
       <PromptPanel sel={sel} copiado={copiado} onCopy={onCopy} />
+    </>
+  );
+
+  if (isCard) {
+    return (
+      <section className="rounded-xl border border-accent/25 bg-accent/5">
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          className="w-full flex items-start gap-3 p-4 text-left"
+          aria-expanded={open}
+        >
+          <div className="h-9 w-9 inline-flex items-center justify-center rounded-full bg-accent/15 text-accent shrink-0">
+            <ImageIcon className="w-4 h-4" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <span className="label-cap !text-accent">{title}</span>
+            <p className="text-[13px] text-ink-mute mt-1 leading-relaxed">{subtitle}</p>
+          </div>
+          <ChevronDown
+            className={cn(
+              "w-4 h-4 text-ink-mute shrink-0 mt-2 transition",
+              open && "rotate-180"
+            )}
+          />
+        </button>
+        {open && <div className="px-4 pb-4">{content}</div>}
+      </section>
+    );
+  }
+
+  return (
+    <section>
+      <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+        <h3 className="label-cap inline-flex items-center gap-2">
+          <ImageIcon className="w-3.5 h-3.5" />
+          {title}
+        </h3>
+        <span className="text-[11px] text-ink-dim">{subtitle}</span>
+      </div>
+      {content}
     </section>
   );
 }
