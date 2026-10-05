@@ -58,98 +58,81 @@ function LoginInner() {
           e
           <code className="mono text-accent ml-1">NEXT_PUBLIC_SUPABASE_ANON_KEY</code>.
         </p>
-        <Link
-          href="/app"
-          className="mt-5 inline-flex items-center gap-1.5 text-accent font-semibold hover:underline"
-        >
-          <ArrowLeft className="w-4 h-4" /> Voltar
-        </Link>
       </div>
     );
   }
 
   return (
-    <div className="card p-8 sm:p-10 relative overflow-hidden">
-      <div className="absolute -top-24 -right-24 w-80 h-80 bg-accent/10 blur-[80px] rounded-full pointer-events-none" />
-      <div className="relative">
-        <Link
-          href="/app"
-          className="inline-flex items-center gap-1.5 text-ink-mute hover:text-ink text-sm mb-6"
+    <div className="w-full max-w-sm">
+      <div className="eyebrow-accent mb-2 inline-flex items-center gap-1.5">
+        <Sparkles className="w-3 h-3" />
+        Entrar
+      </div>
+      <h1 className="display text-2xl sm:text-3xl text-ink uppercase leading-tight">
+        Seus personagens,<br />na sua conta.
+      </h1>
+      <p className="text-ink-mute text-[15px] mt-3 leading-relaxed">
+        Com login, cada personagem fica salvo na sua conta e pode ser aberto
+        de qualquer dispositivo.
+      </p>
+
+      <div className="mt-7 grid gap-4">
+        <Button
+          variant="primary"
+          size="lg"
+          onClick={onGoogle}
+          disabled={!!loading}
+          className="w-full"
         >
-          <ArrowLeft className="w-4 h-4" /> Voltar
-        </Link>
+          <GoogleIcon />
+          {loading === "google" ? "Abrindo…" : "Continuar com Google"}
+        </Button>
 
-        <div className="eyebrow-accent mb-2 inline-flex items-center gap-1.5">
-          <Sparkles className="w-3 h-3" />
-          Entrar
+        <div className="flex items-center gap-3 text-[11px] mono uppercase tracking-wider text-ink-dim">
+          <div className="flex-1 h-px bg-line" />
+          ou
+          <div className="flex-1 h-px bg-line" />
         </div>
-        <h1 className="display text-2xl sm:text-3xl text-ink uppercase leading-tight">
-          Seus personagens, na sua conta.
-        </h1>
-        <p className="text-ink-mute text-[15px] mt-3 leading-relaxed">
-          Com login, cada personagem fica salvo na sua conta e pode ser aberto
-          de qualquer dispositivo. Sem login, o app continua funcionando — os
-          personagens ficam só neste navegador.
-        </p>
 
-        <div className="mt-7 grid gap-4">
-          <Button
-            variant="primary"
-            size="lg"
-            onClick={onGoogle}
-            disabled={!!loading}
-            className="w-full"
-          >
-            <GoogleIcon />
-            {loading === "google" ? "Abrindo…" : "Entrar com Google"}
-          </Button>
-
-          <div className="flex items-center gap-3 text-[11px] mono uppercase tracking-wider text-ink-dim">
-            <div className="flex-1 h-px bg-line" />
-            ou
-            <div className="flex-1 h-px bg-line" />
+        {enviado ? (
+          <div className="rounded-xl border border-ok/30 bg-ok/10 p-4 text-sm text-ok flex items-start gap-2">
+            <Check className="w-4 h-4 shrink-0 mt-0.5" />
+            <div>
+              Link enviado. Abra seu email ({email}) e clique no link mágico
+              pra entrar.
+            </div>
           </div>
+        ) : (
+          <>
+            <Field
+              label="Email"
+              hint="A gente manda um link. Clica nele e tá dentro — sem senha."
+            >
+              <Input
+                type="email"
+                placeholder="voce@email.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={loading === "email"}
+              />
+            </Field>
+            <Button
+              variant="accent"
+              size="lg"
+              onClick={onEmail}
+              disabled={!email.trim() || !!loading}
+            >
+              <Mail className="w-4 h-4" />
+              {loading === "email" ? "Enviando…" : "Enviar link mágico"}
+            </Button>
+          </>
+        )}
 
-          {enviado ? (
-            <div className="rounded-xl border border-ok/30 bg-ok/10 p-4 text-sm text-ok flex items-start gap-2">
-              <Check className="w-4 h-4 shrink-0 mt-0.5" />
-              <div>
-                Link enviado. Abra seu email ({email}) e clique no link mágico
-                pra entrar.
-              </div>
-            </div>
-          ) : (
-            <>
-              <Field
-                label="Email"
-                hint="A gente manda um link. Clica nele e tá dentro — sem senha."
-              >
-                <Input
-                  type="email"
-                  placeholder="voce@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  disabled={loading === "email"}
-                />
-              </Field>
-              <Button
-                variant="accent"
-                size="lg"
-                onClick={onEmail}
-                disabled={!email.trim() || !!loading}
-              >
-                <Mail className="w-4 h-4" />
-                {loading === "email" ? "Enviando…" : "Enviar link mágico"}
-              </Button>
-            </>
-          )}
-
-          {err ? (
-            <div className="rounded-xl border border-pink/40 bg-pink/10 px-3.5 py-2.5 text-sm text-pink">
-              {err}
-            </div>
-          ) : null}
-        </div>
+        {err ? (
+          <div className="rounded-xl border border-pink/40 bg-pink/10 px-3.5 py-2.5 text-sm text-pink">
+            {err}
+          </div>
+        ) : null}
       </div>
     </div>
   );
@@ -157,11 +140,65 @@ function LoginInner() {
 
 export default function LoginPage() {
   return (
-    <main className="mx-auto max-w-lg px-4 sm:px-6 py-10 sm:py-20">
-      <Suspense fallback={null}>
-        <LoginInner />
-      </Suspense>
-    </main>
+    <div className="grid grid-cols-1 md:grid-cols-2 min-h-screen">
+      {/* LEFT: brand / promo panel */}
+      <div className="hidden md:flex flex-col justify-between bg-bg relative overflow-hidden p-10 lg:p-14 border-r border-line">
+        <div
+          aria-hidden="true"
+          className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[500px] bg-accent/10 blur-[120px] rounded-full pointer-events-none"
+        />
+
+        <div className="relative flex items-center gap-2">
+          <div className="h-7 w-7 rounded bg-accent flex items-center justify-center">
+            <Sparkles className="w-4 h-4 text-bg" strokeWidth={3} />
+          </div>
+          <span className="font-bold text-sm uppercase tracking-wider">
+            Influenciador Sintético
+          </span>
+        </div>
+
+        <div className="relative">
+          <h2 className="display text-4xl lg:text-5xl text-ink uppercase leading-[0.95]">
+            Construa um<br />
+            influenciador <span className="text-accent">AI</span><br />
+            a partir da sua<br />
+            criatividade.
+          </h2>
+          <p className="text-ink-mute text-[15px] mt-5 max-w-sm leading-relaxed">
+            Identidade, visual, voz e estratégia — tudo numa ficha completa,
+            salva na sua conta.
+          </p>
+
+          <div className="mt-8 flex flex-wrap gap-2">
+            {["Identidade completa", "Sem aparecer", "Múltiplos creators"].map((chip) => (
+              <span
+                key={chip}
+                className="label-cap !text-ink-mute border border-line-strong rounded-full px-3 py-1.5"
+              >
+                {chip}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <div className="relative eyebrow">Persistência local · Login opcional</div>
+      </div>
+
+      {/* RIGHT: auth card */}
+      <div className="flex items-center justify-center p-6 sm:p-10 bg-bg">
+        <div className="w-full max-w-sm">
+          <Link
+            href="/app"
+            className="inline-flex items-center gap-1.5 text-ink-mute hover:text-ink text-sm mb-6"
+          >
+            <ArrowLeft className="w-4 h-4" /> Voltar
+          </Link>
+          <Suspense fallback={null}>
+            <LoginInner />
+          </Suspense>
+        </div>
+      </div>
+    </div>
   );
 }
 

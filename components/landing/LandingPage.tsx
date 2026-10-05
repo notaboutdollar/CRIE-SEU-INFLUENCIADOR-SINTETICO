@@ -96,7 +96,7 @@ export function LandingPage() {
           </nav>
           <div style={{ display: "flex", justifyContent: "flex-end" }}>
             <a
-              href="#comecar"
+              href="/auth/login"
               style={{
                 display: "inline-flex",
                 alignItems: "center",
@@ -1944,7 +1944,7 @@ export function LandingPage() {
                 <a href="#produto" style={{ opacity: 0.75 }}>Como funciona</a>
                 <a href="#creators" style={{ opacity: 0.75 }}>Creators</a>
                 <a href="#engineer" style={{ opacity: 0.75 }}>Influencer Engineer</a>
-                <a href="#comecar" style={{ opacity: 0.75 }}>Entrar</a>
+                <a href="/auth/login" style={{ opacity: 0.75 }}>Entrar</a>
               </div>
             </div>
             <div>
