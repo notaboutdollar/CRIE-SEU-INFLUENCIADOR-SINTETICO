@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ChevronDown, LogOut } from "lucide-react";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { AUTH_ENABLED } from "@/lib/supabase/env";
@@ -9,6 +10,7 @@ import { cn } from "@/lib/cn";
 
 export function AccountMenu() {
   const { user, disabled, signOut } = useAuth();
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -75,6 +77,7 @@ export function AccountMenu() {
             onClick={async () => {
               setOpen(false);
               await signOut();
+              router.push("/");
             }}
             className="w-full flex items-center gap-2 px-3.5 py-2.5 text-sm text-ink-mute hover:text-pink hover:bg-pink/10 transition"
           >
