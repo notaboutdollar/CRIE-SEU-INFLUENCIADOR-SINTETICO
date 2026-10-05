@@ -5,6 +5,7 @@ import { persist } from "zustand/middleware";
 import type { Character } from "./types";
 import { duplicateCharacter, emptyCharacter, hydrate } from "./defaults";
 import { readPath, writePath } from "./paths";
+import { deleteImageData, loadManyImages, saveImageData } from "./image-db";
 
 type Updater = (c: Character) => void;
 
@@ -70,6 +71,56 @@ function mutateWithAutoConfirm(
     }
     return next;
   });
+}
+
+function rehydrateImages(state: State) {
+  const ids = state.characters.flatMap((c) =>
+    c.visual.referencias.map((r) => r.id)
+  );
+  if (ids.length === 0) return;
+  loadManyImages(ids).then((map) => {
+    if (map.size === 0) return;
+    useCharacters.setState((prev) => ({
+      characters: prev.characters.map((c) => {
+        const touched = c.visual.referencias.some((r) => map.has(r.id) && !r.dataUrl);
+        if (!touched) return c;
+        return {
+          ...c,
+          visual: {
+            ...c.visual,
+            referencias: c.visual.referencias.map((r) =>
+              map.has(r.id) ? { ...r, dataUrl: map.get(r.id)! } : r
+            ),
+          },
+        };
+      }),
+    }));
+  });
+}
+
+function syncImagesToDb(prev: Character[], next: Character[]) {
+  for (const nc of next) {
+    const pc = prev.find((c) => c.id === nc.id);
+    for (const ref of nc.visual.referencias) {
+      if (ref.dataUrl && (!pc || !pc.visual.referencias.some((r) => r.id === ref.id))) {
+        saveImageData(ref.id, ref.dataUrl);
+      }
+    }
+    if (pc) {
+      for (const pr of pc.visual.referencias) {
+        if (!nc.visual.referencias.some((r) => r.id === pr.id)) {
+          deleteImageData(pr.id);
+        }
+      }
+    }
+  }
+  for (const pc of prev) {
+    if (!next.some((c) => c.id === pc.id)) {
+      for (const ref of pc.visual.referencias) {
+        deleteImageData(ref.id);
+      }
+    }
+  }
 }
 
 export const useCharacters = create<State>()(
@@ -174,7 +225,38 @@ export const useCharacters = create<State>()(
       onRehydrateStorage: () => (state) => {
         if (!state) return;
         state.characters = state.characters.map((c) => hydrate(c));
+        rehydrateImages(state);
       },
+      partialize: (state) => ({
+        ...state,
+        characters: state.characters.map((c) => ({
+          ...c,
+          visual: {
+            ...c.visual,
+            referencias: c.visual.referencias.map(({ dataUrl: _, ...rest }) => rest),
+          },
+          _history: c._history.map((h) => ({
+            ...h,
+            snapshot: {
+              ...h.snapshot,
+              visual: {
+                ...h.snapshot.visual,
+                referencias: h.snapshot.visual.referencias.map(
+                  ({ dataUrl: _, ...rest }) => rest
+                ),
+              },
+            },
+          })),
+        })),
+      }) as unknown as State,
     }
   )
+);
+
+useCharacters.subscribe(
+  (state, prev) => {
+    if (state.characters !== prev.characters) {
+      syncImagesToDb(prev.characters, state.characters);
+    }
+  }
 );
