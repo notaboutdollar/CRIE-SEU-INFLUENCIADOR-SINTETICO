@@ -45,7 +45,7 @@ export function CreateDialog({ open, onClose }: Props) {
   const [resposta, setResposta] = useState("");
   const [erroImport, setErroImport] = useState<string | null>(null);
   const [copiado, setCopiado] = useState(false);
-  const [imagemTipo, setImagemTipo] = useState<TipoImagem>("retrato");
+  const [imagemTipo, setImagemTipo] = useState<TipoImagem>("referencia");
   const [imagemCharId, setImagemCharId] = useState<string | null>(null);
 
   const imagemInputRef = useRef<HTMLInputElement>(null);
@@ -387,19 +387,6 @@ export function CreateDialog({ open, onClose }: Props) {
               <div className="flex gap-2 flex-wrap">
                 <button
                   type="button"
-                  onClick={() => setImagemTipo("retrato")}
-                  className={cn(
-                    "inline-flex items-center gap-2 rounded-full h-10 px-5 text-sm font-bold transition active:translate-y-px",
-                    imagemTipo === "retrato"
-                      ? "bg-accent text-bg shadow-glow"
-                      : "bg-panel border border-line text-ink-mute hover:text-ink hover:border-line-strong"
-                  )}
-                >
-                  <User className="w-4 h-4" strokeWidth={2.5} />
-                  Imagem de frente
-                </button>
-                <button
-                  type="button"
                   onClick={() => setImagemTipo("referencia")}
                   className={cn(
                     "inline-flex items-center gap-2 rounded-full h-10 px-5 text-sm font-bold transition active:translate-y-px",
@@ -410,6 +397,19 @@ export function CreateDialog({ open, onClose }: Props) {
                 >
                   <ImageIcon className="w-4 h-4" strokeWidth={2.5} />
                   Card de referência
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setImagemTipo("retrato")}
+                  className={cn(
+                    "inline-flex items-center gap-2 rounded-full h-10 px-5 text-sm font-bold transition active:translate-y-px",
+                    imagemTipo === "retrato"
+                      ? "bg-accent text-bg shadow-glow"
+                      : "bg-panel border border-line text-ink-mute hover:text-ink hover:border-line-strong"
+                  )}
+                >
+                  <User className="w-4 h-4" strokeWidth={2.5} />
+                  Imagem de perfil
                 </button>
               </div>
 

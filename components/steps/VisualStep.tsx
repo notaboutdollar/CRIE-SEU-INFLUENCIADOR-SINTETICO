@@ -16,7 +16,7 @@ const MAX_SIZE = 4 * 1024 * 1024; // 4MB
 export function VisualStep({ id }: { id: string }) {
   const { character, set } = useCharacter(id);
   const inputRef = useRef<HTMLInputElement>(null);
-  const [tipoImagem, setTipoImagem] = useState<TipoImagem>("retrato");
+  const [tipoImagem, setTipoImagem] = useState<TipoImagem>("referencia");
   const [gerarOpen, setGerarOpen] = useState(false);
   if (!character) return null;
   const v = character.visual;
@@ -77,19 +77,6 @@ export function VisualStep({ id }: { id: string }) {
             <div className="flex gap-2 flex-wrap">
               <button
                 type="button"
-                onClick={() => setTipoImagem("retrato")}
-                className={cn(
-                  "inline-flex items-center gap-2 rounded-full h-10 px-5 text-sm font-bold transition active:translate-y-px",
-                  tipoImagem === "retrato"
-                    ? "bg-accent text-bg shadow-glow"
-                    : "bg-panel border border-line text-ink-mute hover:text-ink hover:border-line-strong"
-                )}
-              >
-                <User className="w-4 h-4" strokeWidth={2.5} />
-                Imagem de frente
-              </button>
-              <button
-                type="button"
                 onClick={() => setTipoImagem("referencia")}
                 className={cn(
                   "inline-flex items-center gap-2 rounded-full h-10 px-5 text-sm font-bold transition active:translate-y-px",
@@ -100,6 +87,19 @@ export function VisualStep({ id }: { id: string }) {
               >
                 <ImageIcon className="w-4 h-4" strokeWidth={2.5} />
                 Card de referência
+              </button>
+              <button
+                type="button"
+                onClick={() => setTipoImagem("retrato")}
+                className={cn(
+                  "inline-flex items-center gap-2 rounded-full h-10 px-5 text-sm font-bold transition active:translate-y-px",
+                  tipoImagem === "retrato"
+                    ? "bg-accent text-bg shadow-glow"
+                    : "bg-panel border border-line text-ink-mute hover:text-ink hover:border-line-strong"
+                )}
+              >
+                <User className="w-4 h-4" strokeWidth={2.5} />
+                Imagem de perfil
               </button>
             </div>
 

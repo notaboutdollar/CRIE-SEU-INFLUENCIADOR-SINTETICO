@@ -61,42 +61,55 @@ export function GerarImagem({ character, variant = "imagem", tipo = "referencia"
   const title = isCard
     ? "Gerar card com posicionamentos"
     : tipo === "retrato"
-    ? "Gerar imagem de frente"
+    ? "Gerar imagem de perfil"
     : "Gerar card de referência";
 
   const subtitle = tipo === "retrato"
-    ? "Retrato frontal · corpo inteiro"
+    ? "A partir do card · anexe a imagem"
     : "Character reference sheet · 5 views + closes";
 
   const description = isCard
     ? "Card de posicionamentos do personagem: 5 views do corpo (frente, ¾, perfil, ¾ costas, costas) + 3-4 closes de rosto, no estilo editorial surreal (Loewe por Juergen Teller, Comme des Garçons, Diane Arbus). Cole em qualquer gerador de imagem."
     : tipo === "retrato"
-    ? "Prompt para gerar um retrato de frente do personagem no estilo editorial surreal (think Loewe por Juergen Teller, Comme des Garçons, Diane Arbus): corpo inteiro, vista frontal, fundo cinza de estúdio, pose neutra, traço marcante exagerado. Cole em qualquer gerador de imagem."
-    : "Prompt para gerar uma folha de referência do personagem no estilo editorial surreal (think Loewe por Juergen Teller, Comme des Garçons, Diane Arbus): 5 views do corpo em cima, closes de rosto embaixo, fundo cinza de estúdio, pose neutra, traço marcante exagerado. Cole em qualquer gerador de imagem.";
+    ? "Gere o card de referência primeiro. Depois, cole este prompt junto com a imagem do card no gerador — ele vai criar um retrato de perfil fiel ao card."
+    : "Prompt para gerar a folha de referência do personagem: 5 views do corpo + closes de rosto, estilo editorial surreal. Este card é a base de tudo — gere ele primeiro.";
+
+  const isRetrato = tipo === "retrato";
 
   const content = (
     <>
       <p className="text-[13px] text-ink-mute mb-4 leading-relaxed">{description}</p>
 
-      <div className="mb-4">
-        <Field
-          label="Ideia visual (opcional)"
-          hint="Descreva a aparência do personagem em texto livre. Já é suficiente — não precisa preencher os campos abaixo. Se tiver as duas coisas, essa ideia vem primeiro e os campos entram como complemento."
-          counter={{ value: ideia.length, max: 1500 }}
-        >
-          <Textarea
-            rows={3}
-            maxLength={1500}
-            placeholder={PLACEHOLDER_IDEIA}
-            value={ideia}
-            onChange={(e) =>
-              update(character.id, (c) => {
-                c.visual.ideiaLivre = e.target.value;
-              })
-            }
-          />
-        </Field>
-      </div>
+      {isRetrato && (
+        <div className="rounded-xl border border-amber-500/30 bg-amber-500/5 px-3.5 py-2.5 mb-4 flex items-start gap-2.5">
+          <span className="text-amber-400 text-base mt-0.5">!</span>
+          <p className="text-[13px] text-ink-mute leading-relaxed">
+            <strong className="text-ink">Anexe a imagem do card</strong> junto com este prompt no gerador de imagem. O prompt instrui a IA a replicar o personagem exatamente como está no card.
+          </p>
+        </div>
+      )}
+
+      {!isRetrato && (
+        <div className="mb-4">
+          <Field
+            label="Ideia visual (opcional)"
+            hint="Descreva a aparência do personagem em texto livre. Já é suficiente — não precisa preencher os campos abaixo. Se tiver as duas coisas, essa ideia vem primeiro e os campos entram como complemento."
+            counter={{ value: ideia.length, max: 1500 }}
+          >
+            <Textarea
+              rows={3}
+              maxLength={1500}
+              placeholder={PLACEHOLDER_IDEIA}
+              value={ideia}
+              onChange={(e) =>
+                update(character.id, (c) => {
+                  c.visual.ideiaLivre = e.target.value;
+                })
+              }
+            />
+          </Field>
+        </div>
+      )}
 
       {/* Abas */}
       <div className="flex gap-1 border border-line rounded-full p-1 bg-panel w-fit mb-3">

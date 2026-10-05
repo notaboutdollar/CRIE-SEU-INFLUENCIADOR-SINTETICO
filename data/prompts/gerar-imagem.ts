@@ -1,17 +1,12 @@
 /**
  * Templates do prompt "Gerar imagem com IA".
  *
- * A vibe-alvo é "surreal character portrait meets high-fashion editorial":
- * personagens com traços intencionalmente bizarros (cabelo esculpido como
- * estrutura, proporções exageradas, acessórios teatrais, figurino absurdo)
- * MAS renderizados com fidelidade fotográfica total. Referências mentais:
- * Loewe por Juergen Teller, Comme des Garçons runway, Diane Arbus.
- *
- * CONSISTÊNCIA ENTRE RETRATO E REFERÊNCIA
- * Os dois tipos (retrato de frente / card de referência) compartilham
- * o mesmo bloco CHARACTER + SIGNATURE TRAIT + VISUAL FIDELITY + STYLE
- * + AVOID. Diferem APENAS no enquadramento / layout. Isso garante que
- * o mesmo personagem saia visualmente idêntico nos dois formatos.
+ * FLUXO DE CONSISTÊNCIA
+ * 1. O card de referência (5 views + closes) é a "fonte de verdade".
+ *    Gerado a partir da ficha do personagem ({{descricao}}).
+ * 2. O retrato de perfil é derivado DO card: o usuário anexa/cola o
+ *    card gerado e o prompt instrui o modelo a replicar o personagem
+ *    exatamente. Isso garante 100% de fidelidade entre formatos.
  *
  * Placeholders:
  *   {{nome}}       nome do personagem (ou "the character")
@@ -65,16 +60,24 @@ const MJ_AVOID = `safe realism, generic model, stock photo, beauty shot, smiling
 
 /* shared Flux fragments */
 const FLUX_TRAIT = `Signature exaggerated trait (required): the character must carry at least one striking, intentionally bizarre visual element — impossible hair sculpture, theatrical accessory, elaborate anachronistic costume, surreal body proportion, or extreme pattern/colour. If the description already names one, amplify it to the extreme. If not, invent one and commit fully. Never default to a generic/stock look.`;
-const FLUX_FIDELITY_PORTRAIT = `Visual fidelity: every clothing item, accessory, hairstyle, body feature, and colour must match the character description exactly. Do not invent or swap garments beyond the signature trait. Appearance must be identical to a multi-view reference sheet of the same character.`;
 const FLUX_FIDELITY_SHEET = `Visual fidelity: every clothing item, accessory, hairstyle, body feature, and colour must match the character description exactly. Do not invent or swap garments beyond the signature trait. Appearance must be identical to a single front portrait of the same character.`;
 const FLUX_STYLE = `Style: photoreal with AAA high-fashion editorial polish, detailed skin micro-pores and visible imperfections, realistic fabric with material-specific detail (velvet, wool, brocade, latex, feather, denim). Design can be absurd; rendering is 100% photographic.`;
 const FLUX_AVOID = `safe generic realism, stock-model look, beauty-shot sameness, smiling, acting pose, text, logos (unless on clothing), watermark, extra limbs, extra fingers, cartoon, anime, concept-art styling, painterly, blurry, low-res, artifacts, deformed anatomy, mannequin blank face`;
 
 /* ================================================================== */
-/* RETRATO DE FRENTE — single front-facing portrait                   */
+/* RETRATO DE PERFIL — portrait derived from the reference card       */
+/* The user attaches/pastes the card image as visual reference.       */
 /* ================================================================== */
 
-export const RETRATO_NEUTRO = `Portrait of {{nome}}, hyperrealistic character portrait in the style of high-fashion editorial meets surreal character design. Think Loewe campaign by Juergen Teller, Comme des Garçons runway, Diane Arbus editorial — intentionally striking, never generic.
+export const RETRATO_NEUTRO = `I'm attaching my character's reference card (a 5-view character sheet showing front, ¾, side, ¾ back and back views, plus head closeups). Using that reference card as the DEFINITIVE visual guide, generate a single full-body front-facing portrait of this EXACT same character: {{nome}}.
+
+CRITICAL — VISUAL MATCH
+The portrait MUST be a pixel-perfect match to the character in the reference card:
+- Same face: identical bone structure, skin tone, expression, facial hair
+- Same hair: identical style, colour, volume, direction
+- Same clothing: identical garments, colours, patterns, layers, accessories
+- Same shoes, props, and every visible detail
+Do NOT alter, reinterpret, simplify, or "improve" any visual element. If the card shows a purple velvet suit with an oversized bow tie and a flower in the pocket, the portrait shows exactly that — same shade of purple, same bow tie, same flower.
 
 FRAMING
 Single full-body front-facing portrait. Straight-on camera angle at eye level.
@@ -85,36 +88,26 @@ ${SHARED_STUDIO}
 ${SHARED_POSE_BASE}
 Looking directly at camera.
 
-${SHARED_CHARACTER}
-
-${SHARED_TRAIT}
-
-${SHARED_FIDELITY}
-
 ${SHARED_STYLE}
 
 ${SHARED_AVOID}
 {{negativos}}
 `;
 
-export const RETRATO_MIDJOURNEY = `front-facing full body portrait of {{nome}}, {{descricao}}, surreal character portrait meets high-fashion editorial, ${MJ_TRAIT}, ${MJ_FIDELITY}, ${MJ_STYLE}, single portrait, straight-on camera at eye level, neutral grey or soft white studio backdrop with gentle vignette, soft diffused catalog lighting, ${MJ_RENDER}, neutral stance arms at sides, no smiling, looking at camera, 50-85mm lens --ar 2:3 --style raw --v 6.1 --no ${MJ_AVOID}{{negativos}}
+export const RETRATO_MIDJOURNEY = `front-facing full body portrait of the character shown in the attached reference card, {{descricao}}, must match the reference card exactly — same face same hair same clothing same accessories same colors same props, do not alter reinterpret or simplify any visual detail, ${MJ_STYLE}, single portrait, straight-on camera at eye level, neutral grey or soft white studio backdrop with gentle vignette, soft diffused catalog lighting, ${MJ_RENDER}, neutral stance arms at sides, no smiling, looking at camera, 50-85mm lens --cref [cole a URL da imagem do card aqui] --ar 2:3 --style raw --v 6.1 --no ${MJ_AVOID}, different clothing than reference, altered accessories{{negativos}}
 `;
 
 export const RETRATO_FLUX = `Positive:
-front-facing full body portrait of {{nome}}, in the vein of high-fashion editorial x surreal character portrait (Loewe by Juergen Teller, Comme des Garcons runway, Diane Arbus). Single portrait, straight-on camera at eye level. Neutral grey or soft white studio backdrop with gentle vignette. Soft diffused key light + fill, catalog-style illumination. 50-85mm lens, shallow DOF.
+Using the attached character reference card as the definitive visual guide, generate a single front-facing full body portrait of this EXACT same character. The portrait must match the reference card exactly: same face, same hair, same clothing, same accessories, same colors, same props. Do not alter, reinterpret, or simplify any visual element.
+
+Framing: single portrait, straight-on camera at eye level. Neutral grey or soft white studio backdrop with gentle vignette. Soft diffused key light + fill, catalog-style illumination. 50-85mm lens, shallow DOF.
 
 Pose: neutral stance, arms relaxed at sides, straight posture, neutral or slightly serious expression. No smiling, no acting. Looking directly at camera.
-
-Character: {{descricao}}
-
-${FLUX_TRAIT}
-
-${FLUX_FIDELITY_PORTRAIT}
 
 ${FLUX_STYLE}
 
 Negative:
-${FLUX_AVOID}{{negativos}}
+${FLUX_AVOID}, different clothing than reference, altered accessories, reinterpreted styling{{negativos}}
 `;
 
 /* ================================================================== */
