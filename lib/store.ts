@@ -7,6 +7,20 @@ import { duplicateCharacter, emptyCharacter, hydrate } from "./defaults";
 import { readPath, writePath } from "./paths";
 import { deleteImageData, loadManyImages, saveImageData } from "./image-db";
 
+const STORE_KEY = "cis.characters.v1";
+
+if (typeof window !== "undefined") {
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    if (raw && raw.includes('"dataUrl":"data:')) {
+      localStorage.setItem(
+        STORE_KEY,
+        raw.replace(/"dataUrl":"data:[^"]*"/g, '"dataUrl":""')
+      );
+    }
+  } catch {}
+}
+
 type Updater = (c: Character) => void;
 
 export interface Suggestion {
@@ -34,7 +48,17 @@ interface State {
   undoLast: (id: string) => void;
 }
 
-/** Atualização sem auto-confirmar sugestões (usada internamente). */
+function cloneCharacter(c: Character): Character {
+  const next = JSON.parse(
+    JSON.stringify(c, (k, v) => (k === "dataUrl" ? undefined : v))
+  ) as Character;
+  for (const ref of next.visual.referencias) {
+    const orig = c.visual.referencias.find((r) => r.id === ref.id);
+    if (orig?.dataUrl) ref.dataUrl = orig.dataUrl;
+  }
+  return next;
+}
+
 function mutateCharacter(
   list: Character[],
   id: string,
@@ -42,18 +66,13 @@ function mutateCharacter(
 ): Character[] {
   return list.map((c) => {
     if (c.id !== id) return c;
-    const next = JSON.parse(JSON.stringify(c)) as Character;
+    const next = cloneCharacter(c);
     mutate(next);
     next.updatedAt = Date.now();
     return next;
   });
 }
 
-/**
- * Atualização pública: compara os paths em _suggestions antes/depois.
- * Qualquer campo que o usuário tenha editado automaticamente perde o
- * badge "Sugestão da IA" — a edição conta como aceitação.
- */
 function mutateWithAutoConfirm(
   list: Character[],
   id: string,
@@ -61,7 +80,7 @@ function mutateWithAutoConfirm(
 ): Character[] {
   return list.map((c) => {
     if (c.id !== id) return c;
-    const next = JSON.parse(JSON.stringify(c)) as Character;
+    const next = cloneCharacter(c);
     mutate(next);
     next.updatedAt = Date.now();
     for (const fieldId of Object.keys(next._suggestions)) {
@@ -221,7 +240,7 @@ export const useCharacters = create<State>()(
       },
     }),
     {
-      name: "cis.characters.v1",
+      name: STORE_KEY,
       onRehydrateStorage: () => (state) => {
         if (!state) return;
         state.characters = state.characters.map((c) => hydrate(c));
