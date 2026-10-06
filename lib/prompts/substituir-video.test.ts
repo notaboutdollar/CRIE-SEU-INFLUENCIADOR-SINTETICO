@@ -9,11 +9,26 @@ describe("promptSubstituirVideo", () => {
     expect(p).toContain("Substitua a pessoa do vídeo pelo personagem o personagem");
   });
 
-  it("sempre mantém a instrução de preservar movimento e enquadramento", () => {
+  it("sempre mantém a instrução de 100% de consistência com o vídeo de referência", () => {
+    const c = emptyCharacter();
+    const p = promptSubstituirVideo(c);
+    expect(p).toContain("Mantenha 100% de consistência com o vídeo de referência");
+    expect(p).toContain("movimentos, gestual, ritmo, enquadramento, câmera, iluminação e cenário");
+  });
+
+  it("sempre proíbe mudar qualquer característica do personagem", () => {
     const c = emptyCharacter();
     const p = promptSubstituirVideo(c);
     expect(p).toContain(
-      "Mantenha exatamente os movimentos, o gestual, o ritmo e o enquadramento do vídeo original."
+      "Não altere nenhuma característica do personagem: rosto, cabelo, pele, olhos, roupa, acessórios e paleta devem ficar idênticos em todos os frames, sem variação nem reinterpretação."
+    );
+  });
+
+  it("sempre proíbe o personagem de falar sem que seja pedido", () => {
+    const c = emptyCharacter();
+    const p = promptSubstituirVideo(c);
+    expect(p).toContain(
+      "Não adicione fala, texto, legenda, voz ou narração. O personagem não deve dizer nada além do que já existir no áudio original do vídeo, a menos que seja pedido explicitamente."
     );
   });
 

@@ -16,7 +16,7 @@ export function promptSubstituirVideo(c: Character): string {
     `Substitua a pessoa do vídeo pelo personagem ${nome}, ${descricaoCorpo(c)}.`
   );
   linhas.push(
-    "Mantenha exatamente os movimentos, o gestual, o ritmo e o enquadramento do vídeo original."
+    "Mantenha 100% de consistência com o vídeo de referência: os mesmos movimentos, gestual, ritmo, enquadramento, câmera, iluminação e cenário do vídeo original, frame a frame. Não invente nem altere nada do vídeo original além da identidade da pessoa."
   );
   linhas.push("");
 
@@ -34,8 +34,17 @@ export function promptSubstituirVideo(c: Character): string {
   // 4. Estilo e cenário
   const estilo = montarEstilo(c);
   linhas.push(`Estilo: ${estilo}.`);
+  linhas.push("");
 
-  // 5. Restrições específicas (não mudar X, não adicionar Y)
+  // 5. Restrições fixas — sempre presentes, independente dos campos preenchidos
+  linhas.push(
+    "Não altere nenhuma característica do personagem: rosto, cabelo, pele, olhos, roupa, acessórios e paleta devem ficar idênticos em todos os frames, sem variação nem reinterpretação."
+  );
+  linhas.push(
+    "Não adicione fala, texto, legenda, voz ou narração. O personagem não deve dizer nada além do que já existir no áudio original do vídeo, a menos que seja pedido explicitamente."
+  );
+
+  // 6. Restrições específicas adicionais (quando a ficha dá sinais extras)
   const restricoes = montarRestricoes(c);
   if (restricoes) linhas.push(restricoes);
 
