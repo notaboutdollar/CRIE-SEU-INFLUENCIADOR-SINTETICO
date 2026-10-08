@@ -12,6 +12,7 @@ import { AI_ENABLED } from "@/lib/ai/flag";
 import { AccountMenu } from "@/components/auth/AccountMenu";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { AUTH_ENABLED } from "@/lib/supabase/env";
+import { SyncBadge } from "@/components/sync/SyncBadge";
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -76,6 +77,7 @@ export default function Home() {
           <div>
             <div className="eyebrow-accent mb-2">Biblioteca</div>
             <h2 className="display text-3xl uppercase">Seus Personagens</h2>
+            {mounted ? <SyncBadge className="mt-2" /> : null}
           </div>
           {mounted && characters.length > 0 ? (
             <Button variant="accent" onClick={handleCreateClick}>

@@ -9,9 +9,10 @@ import { Input, Textarea } from "@/components/ui/Input";
 import type { ReferenciaImagem } from "@/lib/types";
 import { GerarImagem } from "@/components/revisao/GerarImagem";
 import { cn } from "@/lib/cn";
+import { fileToCompressedDataUrl } from "@/lib/image-compress";
 import type { TipoImagem } from "@/lib/prompts/gerar-imagem";
 
-const MAX_SIZE = 4 * 1024 * 1024; // 4MB
+const MAX_SIZE = 15 * 1024 * 1024; // comprimida antes de salvar
 
 export function VisualStep({ id }: { id: string }) {
   const { character, set } = useCharacter(id);
@@ -27,11 +28,11 @@ export function VisualStep({ id }: { id: string }) {
     for (const f of Array.from(files)) {
       if (!f.type.startsWith("image/")) continue;
       if (f.size > MAX_SIZE) {
-        alert(`${f.name}: imagem maior que 4 MB — reduza antes.`);
+        alert(`${f.name}: imagem maior que 15 MB — reduza antes.`);
         continue;
       }
-      const dataUrl = await readAsDataUrl(f);
-      novos.push({ id: nanoid(8), name: f.name, dataUrl, size: f.size });
+      const dataUrl = await fileToCompressedDataUrl(f);
+      novos.push({ id: nanoid(8), name: f.name, dataUrl, size: Math.round(dataUrl.length * 0.75) });
     }
     if (novos.length) {
       set((c) => {
@@ -110,7 +111,7 @@ export function VisualStep({ id }: { id: string }) {
 
       <Field
         label="Imagens de referência"
-        hint="Mínimo 1 para marcar o personagem como completo. Até 4 MB por imagem."
+        hint="Mínimo 1 para marcar o personagem como completo. Até 15 MB por imagem."
       >
         <input
           ref={inputRef}
@@ -221,13 +222,4 @@ export function VisualStep({ id }: { id: string }) {
 
     </div>
   );
-}
-
-function readAsDataUrl(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const r = new FileReader();
-    r.onload = () => resolve(r.result as string);
-    r.onerror = reject;
-    r.readAsDataURL(file);
-  });
 }

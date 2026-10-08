@@ -14,6 +14,7 @@ import { copyToClipboard } from "@/lib/export";
 import { GerarImagem } from "@/components/revisao/GerarImagem";
 import type { TipoImagem } from "@/lib/prompts/gerar-imagem";
 import { nanoid } from "nanoid";
+import { fileToCompressedDataUrl } from "@/lib/image-compress";
 
 type Mode = "pick" | "claude" | "imagem" | "expand" | "loading";
 
@@ -136,18 +137,13 @@ export function CreateDialog({ open, onClose }: Props) {
     if (!files || !imagemCharId) return;
     for (const f of Array.from(files)) {
       if (!f.type.startsWith("image/")) continue;
-      if (f.size > 4 * 1024 * 1024) {
-        alert(`${f.name}: maior que 4 MB.`);
+      if (f.size > 15 * 1024 * 1024) {
+        alert(`${f.name}: maior que 15 MB.`);
         continue;
       }
-      const dataUrl = await new Promise<string>((resolve, reject) => {
-        const r = new FileReader();
-        r.onload = () => resolve(r.result as string);
-        r.onerror = reject;
-        r.readAsDataURL(f);
-      });
+      const dataUrl = await fileToCompressedDataUrl(f);
       updateChar(imagemCharId, (c) => {
-        c.visual.referencias.push({ id: nanoid(8), name: f.name, dataUrl, size: f.size });
+        c.visual.referencias.push({ id: nanoid(8), name: f.name, dataUrl, size: Math.round(dataUrl.length * 0.75) });
       });
     }
   }

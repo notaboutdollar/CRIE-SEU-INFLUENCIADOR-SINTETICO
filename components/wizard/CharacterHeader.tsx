@@ -5,6 +5,7 @@ import { ArrowLeft } from "lucide-react";
 import type { Character } from "@/lib/types";
 import { status } from "@/lib/completion";
 import { StatusBadge } from "./StatusBadge";
+import { SyncBadge } from "@/components/sync/SyncBadge";
 
 export function CharacterHeader({ character: c }: { character: Character }) {
   const nome = c.identidade.nome || "Sem nome";
@@ -22,7 +23,7 @@ export function CharacterHeader({ character: c }: { character: Character }) {
           <h1 className="display text-2xl sm:text-3xl truncate text-ink uppercase">{nome}</h1>
           <div className="flex items-center gap-2 mt-1.5">
             <StatusBadge status={status(c)} />
-            <span className="eyebrow">Salvamento automático</span>
+            <SyncBadge />
           </div>
         </div>
       </div>

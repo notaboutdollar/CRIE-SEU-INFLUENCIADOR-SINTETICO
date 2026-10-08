@@ -6,20 +6,40 @@ import type { Character } from "./types";
 import { duplicateCharacter, emptyCharacter, hydrate } from "./defaults";
 import { readPath, writePath } from "./paths";
 import { deleteImageData, loadManyImages, saveImageData } from "./image-db";
+import { deleteRemote } from "./sync/supabaseSync";
 
 const STORE_KEY = "cis.characters.v1";
+
+/**
+ * Versões antigas guardavam as imagens em base64 dentro do localStorage, o
+ * que estourava memória. Antes de removê-las de lá, move cada uma para o
+ * IndexedDB — nenhuma imagem é descartada.
+ */
+let legacyImagesMigrated: Promise<void> = Promise.resolve();
 
 if (typeof window !== "undefined") {
   try {
     const raw = localStorage.getItem(STORE_KEY);
     if (raw && raw.includes('"dataUrl":"data:')) {
+      const found = new Map<string, string>();
+      const re = /"id":"([^"]+)","name":"(?:[^"\\]|\\.)*","dataUrl":"(data:[^"]*)"/g;
+      let m: RegExpExecArray | null;
+      while ((m = re.exec(raw))) {
+        if (!found.has(m[1])) found.set(m[1], m[2]);
+      }
       localStorage.setItem(
         STORE_KEY,
         raw.replace(/"dataUrl":"data:[^"]*"/g, '"dataUrl":""')
       );
+      legacyImagesMigrated = Promise.all(
+        [...found].map(([id, url]) => saveImageData(id, url).catch(() => {}))
+      ).then(() => {});
     }
   } catch {}
 }
+
+/** Imagens que sabemos estar no IndexedDB (id → dataUrl), para não regravar à toa. */
+const imagesInDb = new Map<string, string>();
 
 type Updater = (c: Character) => void;
 
@@ -98,6 +118,7 @@ function rehydrateImages(state: State) {
   );
   if (ids.length === 0) return;
   loadManyImages(ids).then((map) => {
+    for (const [id, url] of map) imagesInDb.set(id, url);
     if (map.size === 0) return;
     useCharacters.setState((prev) => ({
       characters: prev.characters.map((c) => {
@@ -121,14 +142,17 @@ function syncImagesToDb(prev: Character[], next: Character[]) {
   for (const nc of next) {
     const pc = prev.find((c) => c.id === nc.id);
     for (const ref of nc.visual.referencias) {
-      if (ref.dataUrl && (!pc || !pc.visual.referencias.some((r) => r.id === ref.id))) {
-        saveImageData(ref.id, ref.dataUrl);
+      // Grava toda imagem nova ou que chegou depois (ex.: vinda do banco).
+      if (ref.dataUrl && imagesInDb.get(ref.id) !== ref.dataUrl) {
+        imagesInDb.set(ref.id, ref.dataUrl);
+        saveImageData(ref.id, ref.dataUrl).catch((e) => console.error("[images] save", e));
       }
     }
     if (pc) {
       for (const pr of pc.visual.referencias) {
         if (!nc.visual.referencias.some((r) => r.id === pr.id)) {
-          deleteImageData(pr.id);
+          imagesInDb.delete(pr.id);
+          deleteImageData(pr.id).catch(() => {});
         }
       }
     }
@@ -136,10 +160,18 @@ function syncImagesToDb(prev: Character[], next: Character[]) {
   for (const pc of prev) {
     if (!next.some((c) => c.id === pc.id)) {
       for (const ref of pc.visual.referencias) {
-        deleteImageData(ref.id);
+        imagesInDb.delete(ref.id);
+        deleteImageData(ref.id).catch(() => {});
       }
     }
   }
+}
+
+/** Snapshot pro histórico sem as imagens (economiza memória; elas ficam no IndexedDB). */
+function snapshotOf(c: Character) {
+  const { _history, ...rest } = c;
+  void _history;
+  return JSON.parse(JSON.stringify(rest, (k, v) => (k === "dataUrl" ? "" : v)));
 }
 
 export const useCharacters = create<State>()(
@@ -151,8 +183,11 @@ export const useCharacters = create<State>()(
         set({ characters: [c, ...get().characters] });
         return c.id;
       },
-      deleteCharacter: (id) =>
-        set({ characters: get().characters.filter((c) => c.id !== id) }),
+      // Único caminho que remove um personagem do banco: exclusão explícita.
+      deleteCharacter: (id) => {
+        set({ characters: get().characters.filter((c) => c.id !== id) });
+        void deleteRemote(id);
+      },
       duplicate: (id) => {
         const found = get().characters.find((c) => c.id === id);
         if (!found) return null;
@@ -175,10 +210,8 @@ export const useCharacters = create<State>()(
         // interpretados como "edição do usuário").
         set({
           characters: mutateCharacter(get().characters, id, (c) => {
-            const { _history, ...rest } = c;
-            void _history;
             c._history = [
-              { at: Date.now(), label, snapshot: JSON.parse(JSON.stringify(rest)) },
+              { at: Date.now(), label, snapshot: snapshotOf(c) },
               ...c._history,
             ].slice(0, 3);
             for (const s of suggestions) {
@@ -218,10 +251,8 @@ export const useCharacters = create<State>()(
       snapshotHistory: (id, label) =>
         set({
           characters: mutateCharacter(get().characters, id, (c) => {
-            const { _history, ...rest } = c;
-            void _history;
             c._history = [
-              { at: Date.now(), label, snapshot: JSON.parse(JSON.stringify(rest)) },
+              { at: Date.now(), label, snapshot: snapshotOf(c) },
               ...c._history,
             ].slice(0, 3);
           }),
@@ -230,13 +261,21 @@ export const useCharacters = create<State>()(
         const c = get().characters.find((x) => x.id === id);
         if (!c || c._history.length === 0) return;
         const [head, ...rest] = c._history;
-        set({
-          characters: get().characters.map((x) =>
-            x.id === id
-              ? ({ ...head.snapshot, _history: rest, updatedAt: Date.now() } as Character)
-              : x
-          ),
+        const restored = hydrate({
+          ...head.snapshot,
+          id: c.id,
+          _history: rest,
+          updatedAt: Date.now(),
+        } as Character);
+        // O snapshot não guarda imagens: reaproveita as que já estão em memória.
+        restored.visual.referencias = restored.visual.referencias.map((r) => {
+          const cur = c.visual.referencias.find((x) => x.id === r.id);
+          return cur?.dataUrl ? { ...r, dataUrl: cur.dataUrl } : r;
         });
+        set({
+          characters: get().characters.map((x) => (x.id === id ? restored : x)),
+        });
+        rehydrateImages(get());
       },
     }),
     {
@@ -244,7 +283,7 @@ export const useCharacters = create<State>()(
       onRehydrateStorage: () => (state) => {
         if (!state) return;
         state.characters = state.characters.map((c) => hydrate(c));
-        rehydrateImages(state);
+        void legacyImagesMigrated.then(() => rehydrateImages(useCharacters.getState()));
       },
       partialize: (state) => ({
         ...state,
